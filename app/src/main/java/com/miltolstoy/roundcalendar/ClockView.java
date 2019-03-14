@@ -47,6 +47,7 @@ public class ClockView extends View {
             drawEvents(canvas);
         }
         drawHand(canvas);
+
         postInvalidateDelayed(refreshTimeout);
     }
 
@@ -68,43 +69,53 @@ public class ClockView extends View {
 
     private Map<String, Paint> initPaints() {
         Map <String, Paint> paints = new HashMap<>();
+
         Paint fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setColor(ClockWidget.fillColor);
         paints.put("fill", fillPaint);
+
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setColor(ClockWidget.borderColor);
         borderPaint.setStrokeWidth(ClockWidget.borderWidth);
         paints.put("border", borderPaint);
+
         Paint handPaint = new Paint();
         handPaint.setColor(Color.RED);
         handPaint.setStrokeWidth(ClockWidget.handWidth);
         paints.put("hand", handPaint);
+
         Paint smallDigitsPaint = new Paint();
         smallDigitsPaint.setTextSize(ClockWidget.smallDigitSize);
         smallDigitsPaint.setTextAlign(Paint.Align.CENTER);
         paints.put("smallDigits", smallDigitsPaint);
+
         Paint bigDigitsPaint = new Paint();
         bigDigitsPaint.setTextSize(ClockWidget.bigDigitSize);
         bigDigitsPaint.setTextAlign(Paint.Align.CENTER);
         paints.put("bigDigits", bigDigitsPaint);
+
         Paint datePaint = new Paint();
         datePaint.setTextSize(ClockWidget.dateSize);
         datePaint.setTextAlign(Paint.Align.LEFT);
         paints.put("date", datePaint);
+
         Paint delimiterPaint = new Paint();
         delimiterPaint.setStrokeWidth(delimiterWidth);
         paints.put("delimiter", delimiterPaint);
+
         Paint eventLinePaint = new Paint();
         eventLinePaint.setStrokeWidth(ClockWidget.handWidth);
         eventLinePaint.setColor(Color.BLUE);
         eventLinePaint.setAlpha(100);
         eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         paints.put("eventLine", eventLinePaint);
+
         for (Paint p : paints.values()) {
             p.setAntiAlias(true);
         }
+
         return paints;
     }
 

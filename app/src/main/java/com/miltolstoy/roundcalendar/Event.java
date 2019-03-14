@@ -1,5 +1,7 @@
 package com.miltolstoy.roundcalendar;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -12,8 +14,10 @@ class Event {
     private String dateTimeFormat = "dd.MM.yyyy HH:mm";
     private String dateFormat = "dd.MM.yyyy";
     private String timeFormat = "HH:mm";
+    private static String tag = "Event";
 
     Event(String title, String start, String finish) {
+        Log.d(tag, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
         this.title = title;
         this.start = Long.parseLong(start);
         try {

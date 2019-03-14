@@ -8,7 +8,7 @@ import android.view.WindowManager;
 
 abstract class Widget {
 
-    private String TAG = "Widget";
+    private String tag = "Widget";
     Point screenSize;
 
     Widget(Context context) {
@@ -20,7 +20,7 @@ abstract class Widget {
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
+        Log.d(tag, String.format("Screen size: (%d, %d)", size.x, size.y));
         return size;
     }
 }

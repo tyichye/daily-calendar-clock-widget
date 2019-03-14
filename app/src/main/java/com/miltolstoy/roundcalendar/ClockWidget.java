@@ -56,6 +56,7 @@ public class ClockWidget extends Widget {
             if (i % 3 != 0) {
                 continue;
             }
+
             Point hTStart = hoursCoordinates.get(i);
             double xStop, yStop;
             switch (i) {
@@ -103,6 +104,7 @@ public class ClockWidget extends Widget {
         float minutes = calendar.get(Calendar.MINUTE);
         float degrees = (hours + minutes / 60) * 15;
         Log.d(TAG, String.format("Time for hand drawing: %d:%d (%f degrees)", (int) hours, (int) minutes, degrees));
+
         Point handEnd = calculateCircumferencePoint(degrees);
         List<Point> handLine = new ArrayList<>(Arrays.asList(center, handEnd));
         calendar.get(Calendar.HOUR);
@@ -144,10 +146,8 @@ public class ClockWidget extends Widget {
         return new Point(screenSize.x, (int) Math.round(hoursCoordinates.get(11).y + digitRadiusPadding + bigDigitSize));
     }
 
-
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
-//        TODO: save these values to instance variable?
         List<List<Point>> markers = getHourMarkersCoordinates();
         oval.set(markers.get(6).get(0).x,
                 markers.get(0).get(0).y,
@@ -200,6 +200,5 @@ public class ClockWidget extends Widget {
         }
         return hours;
     }
-
-
+    
 }

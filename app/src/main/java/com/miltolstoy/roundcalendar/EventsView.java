@@ -1,19 +1,15 @@
 package com.miltolstoy.roundcalendar;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.util.List;
 
 class EventsView extends ScrollView {
 
     private CalendarAdapter calendarAdapter;
-    private LinearLayout linearLayout;
 
     EventsView(Context context) {
         super(context);
