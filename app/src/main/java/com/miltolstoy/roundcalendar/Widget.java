@@ -6,9 +6,10 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+
 abstract class Widget {
 
-    private String tag = "Widget";
     Point screenSize;
 
     Widget(Context context) {
@@ -20,7 +21,7 @@ abstract class Widget {
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Log.d(tag, String.format("Screen size: (%d, %d)", size.x, size.y));
+        Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
         return size;
     }
 }

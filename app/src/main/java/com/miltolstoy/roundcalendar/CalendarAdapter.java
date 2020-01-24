@@ -15,30 +15,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+
 class CalendarAdapter {
 
     private Activity context;
-    private static final String tag = "CalendarAdapter";
 
     CalendarAdapter(Activity context) {
         this.context = context;
     }
 
     void requestCalendarPermissionsIfNeeded() {
-        Log.d(tag, "Checking READ_CALENDAR permission");
+        Log.d(TAG, "Checking READ_CALENDAR permission");
         int permission_status = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.READ_CALENDAR);
         if (permission_status == PackageManager.PERMISSION_GRANTED)
         {
-            Log.d(tag, "READ_CALENDAR permission granted");
+            Log.d(TAG, "READ_CALENDAR permission granted");
             return;
         }
 
-        Log.d(tag, "Requesting READ_CALENDAR permission");
+        Log.d(TAG, "Requesting READ_CALENDAR permission");
         int request_status = 0;
         ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_CALENDAR},
                 request_status);
-        Log.d(tag, "Permission request status: " + request_status);
+        Log.d(TAG, "Permission request status: " + request_status);
     }
 
     List<Event> getTodayEvents() {
@@ -56,17 +57,17 @@ class CalendarAdapter {
         try {
             cursor.moveToFirst();
         } catch (NullPointerException e) {
-            Log.w(tag, "No events for today");
+            Log.w(TAG, "No events for today");
             return events;
         }
 
-        Log.d(tag, "Today events:");
+        Log.d(TAG, "Today events:");
         do {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2));
-            Log.d(tag, String.format("%s: %s %s-%s", event.getTitle(), event.getStartDate(), event.getStartTime(), event.getFinishTime()));
+            Log.d(TAG, String.format("%s: %s %s-%s", event.getTitle(), event.getStartDate(), event.getStartTime(), event.getFinishTime()));
             events.add(event);
         } while (cursor.moveToNext());
-        Log.d(tag, "Total: " + events.size());
+        Log.d(TAG, "Total: " + events.size());
 
         cursor.close();
         return events;

@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String tag = "MainActivity";
+    static final String TAG = "RoundCalendar";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

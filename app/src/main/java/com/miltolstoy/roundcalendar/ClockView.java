@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -16,12 +17,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+
 public class ClockView extends View {
 
     private Paint paint;
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
-    private String tag = "ClockView";
     private static final int backgroundColor = Color.WHITE;
     private static final int refreshTimeout = 5 * 60 * 1000;
     private final int delimiterWidth = 5;

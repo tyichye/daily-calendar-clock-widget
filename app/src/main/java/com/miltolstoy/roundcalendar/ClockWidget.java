@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class ClockWidget extends Widget {
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+
+class ClockWidget extends Widget {
 
     static final int borderColor = Color.BLACK;
     static final int fillColor = Color.rgb(211, 211, 211);
@@ -22,7 +24,6 @@ public class ClockWidget extends Widget {
     static final int bigDigitSize = 40;
     static final int dateSize = 60;
 
-    static private final String TAG = "ClockWidget";
     static private int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
     static private final int markersLength = 30;
     static private final double tiltedMarkersLength = markersLength * 0.7;

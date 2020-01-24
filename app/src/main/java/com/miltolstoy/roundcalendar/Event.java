@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+
 class Event {
 
     private String title;
@@ -14,10 +16,9 @@ class Event {
     private String dateTimeFormat = "dd.MM.yyyy HH:mm";
     private String dateFormat = "dd.MM.yyyy";
     private String timeFormat = "HH:mm";
-    private static String tag = "Event";
 
     Event(String title, String start, String finish) {
-        Log.d(tag, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
+        Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
         this.title = title;
         this.start = Long.parseLong(start);
         try {
