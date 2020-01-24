@@ -161,8 +161,9 @@ public class ClockView extends View {
     private void drawDate(Canvas canvas) {
         Point datePoint = clockWidget.getDateCoordinates();
         Calendar calendar = Calendar.getInstance();
-        canvas.drawText(String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)).replace(' ', '0'),
-                datePoint.x, datePoint.y, paints.get("date"));
+        String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
+                (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.YEAR)).replace(' ', '0');
+        canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
     }
 
     private void drawDelimiter(Canvas canvas) {
