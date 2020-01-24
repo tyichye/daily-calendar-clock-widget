@@ -16,17 +16,16 @@ class Event {
     private long finish;
     private boolean isFullDay;
 
-    Event(String title, String start, String finish) {
+    Event(String title, long start, long finish) {
         Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
         this.title = title;
-        this.start = Long.parseLong(start);
-        try {
-            this.finish = Long.parseLong(finish);
-        } catch (NumberFormatException e) {
-            Log.e(TAG, e.getMessage());
-            this.finish = 0;
-        }
-        this.isFullDay = ((this.finish - this.start) == DateUtils.DAY_IN_MILLIS);
+        this.start = start;
+        this.finish = finish;
+        isFullDay = ((this.finish - this.start) == DateUtils.DAY_IN_MILLIS);
+    }
+
+    Event(String title, String start, String finish) {
+        this(title, Long.parseLong(start), Long.parseLong(finish));
     }
 
     String getTitle() {

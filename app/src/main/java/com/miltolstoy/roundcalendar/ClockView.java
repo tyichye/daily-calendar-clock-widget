@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
 
 
 public class ClockView extends View {
@@ -110,6 +114,13 @@ public class ClockView extends View {
         eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         paints.put("eventLine", eventLinePaint);
 
+        Paint sleepEventLinePaint = new Paint();
+        sleepEventLinePaint.setStrokeWidth(1);
+        sleepEventLinePaint.setColor(Color.GRAY);
+        sleepEventLinePaint.setAlpha(100);
+        sleepEventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paints.put("sleepEventLine", sleepEventLinePaint);
+
         for (Paint p : paints.values()) {
             p.setAntiAlias(true);
         }
@@ -165,7 +176,7 @@ public class ClockView extends View {
         Point datePoint = clockWidget.getDateCoordinates();
         Calendar calendar = Calendar.getInstance();
         String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
-                (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.YEAR)).replace(' ', '0');
+                (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
         canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
     }
 
@@ -175,15 +186,39 @@ public class ClockView extends View {
     }
 
     private void drawEvents(Canvas canvas) {
-        List<Event> todayEvents = calendarAdapter.getTodayEvents();
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
-        for (Event event : todayEvents) {
+
+        for (Event event : getSleepEvents()) {
+            ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
+            canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("sleepEventLine"));
+        }
+
+        for (Event event : calendarAdapter.getTodayEvents()) {
             if (event.isFullDay()) {
                 continue;
             }
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
             canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("eventLine"));
         }
+    }
+
+    private List<Event> getSleepEvents() {
+        Calendar calendar = Calendar.getInstance();
+        List<Event> events = new ArrayList<>();
+
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 21, 0, 0);
+        long startTimeBeforeMidnight = calendar.getTimeInMillis();
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 23, 59, 59);
+        long endTimeBeforeMidnight = calendar.getTimeInMillis();
+        events.add(new Event("sleep before midnight", startTimeBeforeMidnight, endTimeBeforeMidnight));
+
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 0, 0, 0);
+        long startTimeAfterMidnigth = calendar.getTimeInMillis();
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 6, 0, 0);
+        long endTimeAfterMidnigth = calendar.getTimeInMillis();
+        events.add(new Event("sleep after midnight", startTimeAfterMidnigth, endTimeAfterMidnigth));
+
+        return events;
     }
 
 }
