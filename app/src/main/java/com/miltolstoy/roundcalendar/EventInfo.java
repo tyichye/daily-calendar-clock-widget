@@ -19,7 +19,18 @@ class EventInfo extends AppCompatTextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        String text = String.format("%s: %s-%s", event.getTitle(), event.getStartTime(), event.getFinishTime());
+        String startTime = event.getStartTime();
+        String finishTime = event.getFinishTime();
+        String timeInfo;
+        if (event.isFullDay()) {
+            timeInfo = "full day";
+        } else if (startTime.equals(finishTime)) {
+            timeInfo = startTime;
+        } else {
+            timeInfo = String.format("%s-%s", startTime, finishTime);
+        }
+
+        String text = String.format("%s: %s", event.getTitle(), timeInfo);
         canvas.drawText(text, 40, 40, paint);
     }
 }
