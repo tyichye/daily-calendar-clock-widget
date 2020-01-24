@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 
 public class ClockView extends View {
@@ -175,8 +178,8 @@ public class ClockView extends View {
         List<Event> todayEvents = calendarAdapter.getTodayEvents();
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
         for (Event event : todayEvents) {
-            float[] degrees = clockWidget.getEventDegrees(event);
-            canvas.drawArc(widgetCircle, degrees[0], degrees[1], true, paints.get("eventLine"));
+            ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
+            canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("eventLine"));
         }
     }
 

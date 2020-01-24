@@ -157,15 +157,24 @@ class ClockWidget extends Widget {
         return oval;
     }
 
-    float[] getEventDegrees(Event event) {
-        float[] degrees = new float[2];
-        String[] eventTimes = {event.getStartTime(), event.getFinishTime()};
-        for (int i = 0; i < eventTimes.length; i++) {
-            String[] splitTime = eventTimes[i].split(":");
-            degrees[i] = (Integer.valueOf(splitTime[0]) + (float) Integer.valueOf(splitTime[1]) / 60) * 15 - 90;
+    EventDegreeData getEventDegrees(Event event) {
+        float startDegree = timeToDegree(event.getStartTime());
+        float endDegree = timeToDegree(event.getFinishTime());
+
+        float sweepDegree;
+        if (startDegree == endDegree) { // event with zero duration
+            sweepDegree = (float) 0.001;
+        } else {
+            sweepDegree = endDegree - startDegree;
         }
-        degrees[1] = degrees[1] - degrees[0];
-        return degrees;
+
+        return new EventDegreeData(startDegree, sweepDegree);
+    }
+
+
+    private float timeToDegree(String time) {
+        String[] timeSplitted = time.split(":");
+        return (Integer.valueOf(timeSplitted[0]) + (float) Integer.valueOf(timeSplitted[1]) / 60) * 15 - 90;
     }
 
     private Point calculateWidgetCenter() {
@@ -200,6 +209,17 @@ class ClockWidget extends Widget {
             hours.add(calculateCircumferencePoint(degree));
         }
         return hours;
+    }
+
+    class EventDegreeData {
+
+        float start;
+        float sweep;
+
+        EventDegreeData(float startDegree, float sweepDegree) {
+            this.start = startDegree;
+            this.sweep = sweepDegree;
+        }
     }
     
 }
