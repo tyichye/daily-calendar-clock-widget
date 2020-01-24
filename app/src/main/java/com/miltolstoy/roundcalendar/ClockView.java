@@ -178,6 +178,9 @@ public class ClockView extends View {
         List<Event> todayEvents = calendarAdapter.getTodayEvents();
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
         for (Event event : todayEvents) {
+            if (event.isFullDay()) {
+                continue;
+            }
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
             canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("eventLine"));
         }

@@ -1,5 +1,6 @@
 package com.miltolstoy.roundcalendar;
 
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ class Event {
     private String title;
     private long start;
     private long finish;
+    private boolean isFullDay;
 
     Event(String title, String start, String finish) {
         Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
@@ -21,8 +23,10 @@ class Event {
         try {
             this.finish = Long.parseLong(finish);
         } catch (NumberFormatException e) {
+            Log.e(TAG, e.getMessage());
             this.finish = 0;
         }
+        this.isFullDay = ((this.finish - this.start) == DateUtils.DAY_IN_MILLIS);
     }
 
     String getTitle() {
@@ -39,6 +43,10 @@ class Event {
 
     String getFinishTime() {
         return formatToTime(finish);
+    }
+
+    boolean isFullDay() {
+        return isFullDay;
     }
 
     private String format(long milliSeconds, String format) {
