@@ -11,10 +11,6 @@ class EventsView extends ScrollView {
 
     private CalendarAdapter calendarAdapter;
 
-    EventsView(Context context) {
-        super(context);
-    }
-
     EventsView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

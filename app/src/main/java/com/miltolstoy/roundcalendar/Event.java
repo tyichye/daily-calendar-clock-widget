@@ -13,9 +13,6 @@ class Event {
     private String title;
     private long start;
     private long finish;
-    private String dateTimeFormat = "dd.MM.yyyy HH:mm";
-    private String dateFormat = "dd.MM.yyyy";
-    private String timeFormat = "HH:mm";
 
     Event(String title, String start, String finish) {
         Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
@@ -32,20 +29,8 @@ class Event {
         return title;
     }
 
-    String getStartDateTime() {
-        return formatToDateTime(start);
-    }
-
-    String getFinishDateTime() {
-        return formatToDateTime(finish);
-    }
-
     String getStartDate() {
         return formatToDate(start);
-    }
-
-    String getFinishDate() {
-        return formatToDate(finish);
     }
 
     String getStartTime() {
@@ -63,16 +48,12 @@ class Event {
         return formatter.format(calendar.getTime());
     }
 
-    private String formatToDateTime(long milliSeconds) {
-        return format(milliSeconds, dateTimeFormat);
-    }
-
     private String formatToDate(long milliSeconds) {
-        return format(milliSeconds, dateFormat);
+        return format(milliSeconds, "dd.MM.yyyy");
     }
 
     private String formatToTime(long milliSeconds) {
-        return format(milliSeconds, timeFormat);
+        return format(milliSeconds, "HH:mm");
     }
 
 }

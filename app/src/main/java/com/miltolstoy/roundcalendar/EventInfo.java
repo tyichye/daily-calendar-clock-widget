@@ -3,9 +3,9 @@ package com.miltolstoy.roundcalendar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.widget.TextView;
+import android.support.v7.widget.AppCompatTextView;
 
-class EventInfo extends TextView {
+class EventInfo extends AppCompatTextView {
 
     private Event event;
     private Paint paint;

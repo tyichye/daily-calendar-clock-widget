@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 public class ClockView extends View {
 
@@ -28,11 +26,6 @@ public class ClockView extends View {
     private static final int refreshTimeout = 5 * 60 * 1000;
     private final int delimiterWidth = 5;
     private CalendarAdapter calendarAdapter = null;
-
-    ClockView(Context context) {
-        super(context);
-        init(context);
-    }
 
     ClockView(Context context, AttributeSet attrs) {
         super(context, attrs);

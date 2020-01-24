@@ -124,10 +124,10 @@ class ClockWidget extends Widget {
                 degree -= 1;
             }
             if (degree <= 180) {
-                padding = padding - (10 - degree / 15);
+                padding = padding - (10 - (float) degree / 15);
             }
             else {
-                padding = padding - (10 - (360 - degree) / 15);
+                padding = padding - (10 -  (360 - (float) degree) / 15);
             }
             digitsCoordinates.add(calculateConcentricPoint(degree, Math.round(radius + padding)));
         }
@@ -170,7 +170,7 @@ class ClockWidget extends Widget {
 
     private Point calculateWidgetCenter() {
         float yPosition = padding + radius + dateSize;
-        yPosition = yPosition > screenSize.y / 2 ? screenSize.y / 2 : yPosition;
+        yPosition = yPosition > (float) screenSize.y / 2 ? (float) screenSize.y / 2 : yPosition;
         center = new Point(screenSize.x / 2, Math.round(yPosition));
         Log.d(TAG, String.format("Widget center: (%d, %d)", center.x, center.y));
         return center;

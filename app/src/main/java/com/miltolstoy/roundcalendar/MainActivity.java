@@ -22,6 +22,4 @@ public class MainActivity extends AppCompatActivity {
         EventsView eventsView = findViewById(R.id.eventsView);
         eventsView.setCalendarAdapter(calendarAdapter);
     }
-
 }
-

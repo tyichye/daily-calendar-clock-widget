@@ -54,9 +54,9 @@ class CalendarAdapter {
                 null,null, null);
 
         List<Event> events = new ArrayList<>();
-        try {
+        if (cursor != null) {
             cursor.moveToFirst();
-        } catch (NullPointerException e) {
+        } else {
             Log.w(TAG, "No events for today");
             return events;
         }
