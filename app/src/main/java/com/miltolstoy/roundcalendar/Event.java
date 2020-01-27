@@ -21,7 +21,7 @@ class Event {
         this.title = title;
         this.start = start;
         this.finish = finish;
-        isFullDay = ((this.finish - this.start) == DateUtils.DAY_IN_MILLIS);
+        isFullDay = ((this.finish - this.start) % DateUtils.DAY_IN_MILLIS) == 0;
     }
 
     Event(String title, String start, String finish) {
@@ -46,6 +46,15 @@ class Event {
 
     boolean isFullDay() {
         return isFullDay;
+    }
+
+    boolean isFullDayEndingToday() {
+        if (!isFullDay) {
+            return false;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(finish);
+        return calendar.get(Calendar.HOUR_OF_DAY) == 2;
     }
 
     private String format(long milliSeconds, String format) {
