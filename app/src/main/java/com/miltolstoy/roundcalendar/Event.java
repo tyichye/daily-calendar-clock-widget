@@ -14,14 +14,12 @@ class Event {
     private String title;
     private long start;
     private long finish;
-    private boolean isFullDay;
 
     Event(String title, long start, long finish) {
         Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
         this.title = title;
         this.start = start;
-        this.finish = finish;
-        isFullDay = ((this.finish - this.start) % DateUtils.DAY_IN_MILLIS) == 0;
+        this.finish = (finish != 0) ? finish : start;
     }
 
     Event(String title, String start, String finish) {
@@ -45,11 +43,15 @@ class Event {
     }
 
     boolean isFullDay() {
-        return isFullDay;
+        long timeDiff = this.finish - this.start;
+        if (timeDiff == 0) {
+            return false;
+        }
+        return (timeDiff % DateUtils.DAY_IN_MILLIS) == 0;
     }
 
     boolean isFullDayEndingToday() {
-        if (!isFullDay) {
+        if (!isFullDay()) {
             return false;
         }
         Calendar calendar = Calendar.getInstance();
