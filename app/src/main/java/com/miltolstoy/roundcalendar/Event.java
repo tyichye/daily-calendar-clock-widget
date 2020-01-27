@@ -25,7 +25,7 @@ class Event {
     }
 
     Event(String title, String start, String finish) {
-        this(title, Long.parseLong(start), Long.parseLong(finish));
+        this(title, parseLongSafe(start), parseLongSafe(finish));
     }
 
     String getTitle() {
@@ -61,6 +61,15 @@ class Event {
 
     private String formatToTime(long milliSeconds) {
         return format(milliSeconds, "HH:mm");
+    }
+
+    private static long parseLongSafe(String value) {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Failed to parse event time. Value: " + value);
+            return 0;
+        }
     }
 
 }
