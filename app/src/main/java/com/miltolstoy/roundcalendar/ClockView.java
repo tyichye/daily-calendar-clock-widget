@@ -34,7 +34,7 @@ public class ClockView extends View {
     private final int delimiterWidth = 5;
     private CalendarAdapter calendarAdapter = null;
 
-    ClockView(Context context, AttributeSet attrs) {
+    public ClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
