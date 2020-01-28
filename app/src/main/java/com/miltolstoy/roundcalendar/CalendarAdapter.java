@@ -63,14 +63,9 @@ class CalendarAdapter {
 
         Log.d(TAG, "Today events:");
         do {
-
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2));
             Log.d(TAG, String.format("%s: %s %s-%s", event.getTitle(), event.getStartDate(), event.getStartTime(), event.getFinishTime()));
-            if (!event.isFullDayEndingToday()) {
-                events.add(event);
-            } else {
-                Log.d(TAG, "Skipping full-day event which ends today");
-            }
+            events.add(event);
         } while (cursor.moveToNext());
         Log.d(TAG, "Total: " + events.size());
 

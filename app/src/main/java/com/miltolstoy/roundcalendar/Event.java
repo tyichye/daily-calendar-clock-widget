@@ -50,15 +50,6 @@ class Event {
         return (timeDiff % DateUtils.DAY_IN_MILLIS) == 0;
     }
 
-    boolean isFullDayEndingToday() {
-        if (!isFullDay()) {
-            return false;
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(finish);
-        return calendar.get(Calendar.HOUR_OF_DAY) == 2;
-    }
-
     private String format(long milliSeconds, String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.US);
         Calendar calendar = Calendar.getInstance();
