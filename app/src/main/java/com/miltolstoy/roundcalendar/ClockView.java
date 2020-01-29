@@ -210,13 +210,15 @@ public class ClockView extends View {
         long startTimeBeforeMidnight = calendar.getTimeInMillis();
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 23, 59, 59);
         long endTimeBeforeMidnight = calendar.getTimeInMillis();
-        events.add(new Event("sleep before midnight", startTimeBeforeMidnight, endTimeBeforeMidnight));
+        events.add(new Event("sleep before midnight", Long.toString(startTimeBeforeMidnight),
+                Long.toString(endTimeBeforeMidnight), null, null, null, null));
 
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 0, 0, 0);
         long startTimeAfterMidnigth = calendar.getTimeInMillis();
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 6, 0, 0);
         long endTimeAfterMidnigth = calendar.getTimeInMillis();
-        events.add(new Event("sleep after midnight", startTimeAfterMidnigth, endTimeAfterMidnigth));
+        events.add(new Event("sleep after midnight", Long.toString(startTimeAfterMidnigth),
+                Long.toString(endTimeAfterMidnigth), null, null, null, null));
 
         return events;
     }

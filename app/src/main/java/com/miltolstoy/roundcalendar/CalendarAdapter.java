@@ -15,6 +15,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.provider.CalendarContract.Events.TITLE;
+import static android.provider.CalendarContract.Events.DTSTART;
+import static android.provider.CalendarContract.Events.DTEND;
+import static android.provider.CalendarContract.Events.DURATION;
+import static android.provider.CalendarContract.Events.ALL_DAY;
+import static android.provider.CalendarContract.Events.RRULE;
+import static android.provider.CalendarContract.Events.RDATE;
 import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 class CalendarAdapter {
@@ -50,8 +57,8 @@ class CalendarAdapter {
 
         Cursor cursor = context.getContentResolver().query(
                 builder.build(),
-                new String[] { "title", "dtstart", "dtend"},
-                null,null, null);
+                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY, RRULE, RDATE},
+                null /* selection */, null /* selectionArgs */, DTSTART /* sortOrder */);
 
         List<Event> events = new ArrayList<>();
         if (cursor != null) {
@@ -63,8 +70,8 @@ class CalendarAdapter {
 
         Log.d(TAG, "Today events:");
         do {
-            Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2));
-            Log.d(TAG, String.format("%s: %s %s-%s", event.getTitle(), event.getStartDate(), event.getStartTime(), event.getFinishTime()));
+            Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                    cursor.getString(4), cursor.getString(5), cursor.getString(6));
             events.add(event);
         } while (cursor.moveToNext());
         Log.d(TAG, "Total: " + events.size());

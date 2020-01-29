@@ -14,16 +14,22 @@ class Event {
     private String title;
     private long start;
     private long finish;
+    private boolean allDay;
+    private String recurRule;
+    private String recurDate;
 
-    Event(String title, long start, long finish) {
-        Log.d(TAG, "Creating event. Title: " + title + ". Start: " + start + ". Finish: " + finish);
+    Event(String title, String start, String finish, String duration, String allDay,
+          String recurRule, String recurDate) {
+        Log.d(TAG, "Creating event.\nTitle: " + title + "\nStart: " + start + "\nFinish: " + finish +
+                "\nDuration: " + duration + "\nAll-day: " + allDay + "\nRecurrence rule: " + recurRule +
+                "\nRecurrence date: " + recurDate);
         this.title = title;
-        this.start = start;
-        this.finish = (finish != 0) ? finish : start;
-    }
-
-    Event(String title, String start, String finish) {
-        this(title, parseLongSafe(start), parseLongSafe(finish));
+        this.start = parseLongSafe(start);
+        this.finish = parseLongSafe(finish);
+        this.finish = (this.finish != 0) ? this.finish : this.start;
+        this.allDay = (allDay != null) && allDay.equals("1");
+        this.recurRule = recurRule;
+        this.recurDate = recurDate;
     }
 
     String getTitle() {
