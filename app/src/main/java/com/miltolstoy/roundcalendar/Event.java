@@ -14,6 +14,7 @@ class Event {
     private String title;
     private long start;
     private long finish;
+    private long duration;
     private boolean allDay;
     private String recurRule;
     private String recurDate;
@@ -26,7 +27,8 @@ class Event {
         this.title = title;
         this.start = parseLongSafe(start);
         this.finish = parseLongSafe(finish);
-        this.finish = (this.finish != 0) ? this.finish : this.start;
+        this.duration = Rfc5545Duration.toMilliSeconds(duration);
+        this.finish = (this.finish != 0) ? this.finish : (this.start + this.duration);
         this.allDay = (allDay != null) && allDay.equals("1");
         this.recurRule = recurRule;
         this.recurDate = recurDate;
