@@ -8,7 +8,7 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.AppCompatImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
 
-public class ClockView extends View {
+public class ClockView extends AppCompatImageView {
 
     private Paint paint;
     private Map<String, Paint> paints;
