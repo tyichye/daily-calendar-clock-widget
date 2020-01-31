@@ -61,7 +61,7 @@ class CalendarAdapter {
                 null /* selection */, null /* selectionArgs */, DTSTART /* sortOrder */);
 
         List<Event> events = new ArrayList<>();
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
         } else {
             Log.w(TAG, "No events for today");
