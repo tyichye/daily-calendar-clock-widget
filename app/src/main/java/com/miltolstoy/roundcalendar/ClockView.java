@@ -36,7 +36,16 @@ public class ClockView extends AppCompatImageView {
 
     public ClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        paint = new Paint();
+        clockWidget = new ClockWidget(context);
+        paints = initPaints();
+    }
+
+    public ClockView(Context context, float radius, Point center) {
+        super(context);
+        paint = new Paint();
+        clockWidget = new ClockWidget(context, radius, center);
+        paints = initPaints();
     }
 
     @Override
@@ -63,11 +72,6 @@ public class ClockView extends AppCompatImageView {
         return new LinearLayout.LayoutParams(maxPoint.x, maxPoint.y + delimiterWidth);
     }
 
-    private void init(Context context) {
-        paint = new Paint();
-        clockWidget = new ClockWidget(context);
-        paints = initPaints();
-    }
 
     private Map<String, Paint> initPaints() {
         Map <String, Paint> paints = new HashMap<>();

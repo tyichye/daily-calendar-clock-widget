@@ -3,6 +3,7 @@ package com.miltolstoy.roundcalendar;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,9 +27,9 @@ import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 class CalendarAdapter {
 
-    private Activity context;
+    private Context context;
 
-    CalendarAdapter(Activity context) {
+    CalendarAdapter(Context context) {
         this.context = context;
     }
 
@@ -44,7 +45,7 @@ class CalendarAdapter {
 
         Log.d(TAG, "Requesting READ_CALENDAR permission");
         int request_status = 0;
-        ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_CALENDAR},
+        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CALENDAR},
                 request_status);
         Log.d(TAG, "Permission request status: " + request_status);
     }

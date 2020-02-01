@@ -36,10 +36,17 @@ class ClockWidget extends Widget {
     private float radius;
     private List<Point> hoursCoordinates;
 
-    ClockWidget (Context context) {
+    ClockWidget(Context context) {
         super(context);
         radius = calculateWidgetRadius();
         center = calculateWidgetCenter();
+        hoursCoordinates = calculateHoursCoordinates();
+    }
+
+    ClockWidget(Context context, float radius, Point center) {
+        super(context);
+        this.radius = radius;
+        this.center = center;
         hoursCoordinates = calculateHoursCoordinates();
     }
 
