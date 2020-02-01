@@ -78,32 +78,32 @@ public class ClockView extends AppCompatImageView {
 
         Paint fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
-        fillPaint.setColor(ClockWidget.fillColor);
+        fillPaint.setColor(clockWidget.getFillColor());
         paints.put("fill", fillPaint);
 
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setColor(ClockWidget.borderColor);
-        borderPaint.setStrokeWidth(ClockWidget.borderWidth);
+        borderPaint.setColor(clockWidget.getBorderColor());
+        borderPaint.setStrokeWidth(clockWidget.getBorderWidth());
         paints.put("border", borderPaint);
 
         Paint handPaint = new Paint();
         handPaint.setColor(Color.RED);
-        handPaint.setStrokeWidth(ClockWidget.handWidth);
+        handPaint.setStrokeWidth(clockWidget.getHandWidth());
         paints.put("hand", handPaint);
 
         Paint smallDigitsPaint = new Paint();
-        smallDigitsPaint.setTextSize(ClockWidget.smallDigitSize);
+        smallDigitsPaint.setTextSize(clockWidget.getSmallDigitSize());
         smallDigitsPaint.setTextAlign(Paint.Align.CENTER);
         paints.put("smallDigits", smallDigitsPaint);
 
         Paint bigDigitsPaint = new Paint();
-        bigDigitsPaint.setTextSize(ClockWidget.bigDigitSize);
+        bigDigitsPaint.setTextSize(clockWidget.getBigDigitSize());
         bigDigitsPaint.setTextAlign(Paint.Align.CENTER);
         paints.put("bigDigits", bigDigitsPaint);
 
         Paint datePaint = new Paint();
-        datePaint.setTextSize(ClockWidget.dateSize);
+        datePaint.setTextSize(clockWidget.getDateSize());
         datePaint.setTextAlign(Paint.Align.LEFT);
         paints.put("date", datePaint);
 
@@ -112,7 +112,7 @@ public class ClockView extends AppCompatImageView {
         paints.put("delimiter", delimiterPaint);
 
         Paint eventLinePaint = new Paint();
-        eventLinePaint.setStrokeWidth(ClockWidget.handWidth);
+        eventLinePaint.setStrokeWidth(clockWidget.getHandWidth());
         eventLinePaint.setColor(Color.BLUE);
         eventLinePaint.setAlpha(100);
         eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -153,7 +153,7 @@ public class ClockView extends AppCompatImageView {
 //        dots
         List<Point> dots = clockWidget.getHourDotsCoordinates();
         for (Point dot : dots) {
-            canvas.drawCircle(dot.x, dot.y, ClockWidget.dotRadius, paints.get("dots"));
+            canvas.drawCircle(dot.x, dot.y, clockWidget.getDotRadius(), paints.get("dots"));
         }
 //        digits
         List<Point> digits = clockWidget.getDigitsCoordinates();
@@ -173,7 +173,7 @@ public class ClockView extends AppCompatImageView {
     private void drawHand(Canvas canvas) {
         List<Point> hand = clockWidget.getCurrentTimeHandCoordinates();
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
-        canvas.drawCircle(hand.get(0).x, hand.get(0).y, ClockWidget.dotRadius, paints.get("dots"));
+        canvas.drawCircle(hand.get(0).x, hand.get(0).y, clockWidget.getDotRadius(), paints.get("dots"));
     }
 
     private void drawDate(Canvas canvas) {

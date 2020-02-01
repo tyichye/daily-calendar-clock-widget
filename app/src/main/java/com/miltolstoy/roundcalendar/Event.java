@@ -7,11 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import lombok.Getter;
+
 import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 class Event {
 
-    private String title;
+    @Getter private String title;
     private long start;
     private long finish;
     private long duration;
@@ -34,14 +36,6 @@ class Event {
         this.recurDate = recurDate;
     }
 
-    String getTitle() {
-        return title;
-    }
-
-    String getStartDate() {
-        return formatToDate(start);
-    }
-
     String getStartTime() {
         return formatToTime(start);
     }
@@ -58,19 +52,11 @@ class Event {
         return (timeDiff % DateUtils.DAY_IN_MILLIS) == 0;
     }
 
-    private String format(long milliSeconds, String format) {
-        SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.US);
+    private String formatToTime(long milliSeconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
-    }
-
-    private String formatToDate(long milliSeconds) {
-        return format(milliSeconds, "dd.MM.yyyy");
-    }
-
-    private String formatToTime(long milliSeconds) {
-        return format(milliSeconds, "HH:mm");
     }
 
     private static long parseLongSafe(String value) {

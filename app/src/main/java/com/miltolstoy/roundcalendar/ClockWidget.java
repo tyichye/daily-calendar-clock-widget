@@ -13,30 +13,32 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.Getter;
+
 import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
 class ClockWidget {
 
-    static final int borderColor = Color.BLACK;
-    static final int fillColor = Color.rgb(211, 211, 211);
-    static private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
+    @Getter private final int borderColor = Color.BLACK;
+    @Getter private final int fillColor = Color.rgb(211, 211, 211);
+    private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
 
-    static int borderWidth;
-    static int handWidth;
-    static int dotRadius;
-    static int smallDigitSize;
-    static int bigDigitSize;
-    static int dateSize;
-    static private int markersLength;
-    static private double tiltedMarkersLength;
-    static private int padding;
-    static private double digitRadiusPadding;
-    static private int dateXPadding;
-    static private int dateYPadding;
+    @Getter private int borderWidth;
+    @Getter private int handWidth;
+    @Getter private int dotRadius;
+    @Getter private int smallDigitSize;
+    @Getter private int bigDigitSize;
+    @Getter private int dateSize;
+    private int markersLength;
+    private double tiltedMarkersLength;
+    private int padding;
+    private double digitRadiusPadding;
+    private int dateXPadding;
+    private int dateYPadding;
 
+    @Getter private Point center;
+    @Getter private float radius;
     private Point screenSize;
-    private Point center;
-    private float radius;
     private List<Point> hoursCoordinates;
 
     ClockWidget(Context context) {
@@ -49,14 +51,6 @@ class ClockWidget {
         radius = calculateWidgetRadius();
         center = calculateWidgetCenter();
         hoursCoordinates = calculateHoursCoordinates();
-    }
-
-    Point getCenter() {
-        return center;
-    }
-
-    float getRadius() {
-        return radius;
     }
 
     List<List<Point>> getHourMarkersCoordinates() {
