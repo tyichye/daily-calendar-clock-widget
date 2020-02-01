@@ -26,7 +26,6 @@ import static java.util.Calendar.YEAR;
 
 public class ClockView extends AppCompatImageView {
 
-    private Paint paint;
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
     private static final int backgroundColor = Color.WHITE;
@@ -36,14 +35,12 @@ public class ClockView extends AppCompatImageView {
 
     public ClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        paint = new Paint();
         clockWidget = new ClockWidget(context);
         paints = initPaints();
     }
 
     public ClockView(Context context, float radius, Point center) {
         super(context);
-        paint = new Paint();
         clockWidget = new ClockWidget(context, radius, center);
         paints = initPaints();
     }
@@ -75,6 +72,9 @@ public class ClockView extends AppCompatImageView {
 
     private Map<String, Paint> initPaints() {
         Map <String, Paint> paints = new HashMap<>();
+
+        Paint dotsPaint = new Paint();
+        paints.put("dots", dotsPaint);
 
         Paint fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
@@ -153,7 +153,7 @@ public class ClockView extends AppCompatImageView {
 //        dots
         List<Point> dots = clockWidget.getHourDotsCoordinates();
         for (Point dot : dots) {
-            canvas.drawCircle(dot.x, dot.y, ClockWidget.dotRadius, paint);
+            canvas.drawCircle(dot.x, dot.y, ClockWidget.dotRadius, paints.get("dots"));
         }
 //        digits
         List<Point> digits = clockWidget.getDigitsCoordinates();
@@ -173,7 +173,7 @@ public class ClockView extends AppCompatImageView {
     private void drawHand(Canvas canvas) {
         List<Point> hand = clockWidget.getCurrentTimeHandCoordinates();
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
-        canvas.drawCircle(hand.get(0).x, hand.get(0).y, ClockWidget.dotRadius, paint);
+        canvas.drawCircle(hand.get(0).x, hand.get(0).y, ClockWidget.dotRadius, paints.get("dots"));
     }
 
     private void drawDate(Canvas canvas) {
