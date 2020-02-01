@@ -19,20 +19,20 @@ class ClockWidget {
 
     static final int borderColor = Color.BLACK;
     static final int fillColor = Color.rgb(211, 211, 211);
-    static final int borderWidth = 10;
-    static final int handWidth = borderWidth / 2;
-    static final int dotRadius = 8;
-    static final int smallDigitSize = 25;
-    static final int bigDigitSize = 40;
-    static final int dateSize = 60;
+    static private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
 
-    static private int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
-    static private final int markersLength = 30;
-    static private final double tiltedMarkersLength = markersLength * 0.7;
-    static private final int padding = 80;
-    static private final double digitRadiusPadding = padding * 0.5;
-    static private final int dateXPadding = 30;
-    static private final int dateYPadding = 70;
+    static int borderWidth;
+    static int handWidth;
+    static int dotRadius;
+    static int smallDigitSize;
+    static int bigDigitSize;
+    static int dateSize;
+    static private int markersLength;
+    static private double tiltedMarkersLength;
+    static private int padding;
+    static private double digitRadiusPadding;
+    static private int dateXPadding;
+    static private int dateYPadding;
 
     private Point screenSize;
     private Point center;
@@ -45,6 +45,7 @@ class ClockWidget {
 
     ClockWidget(Point screenSize) {
         this.screenSize = screenSize;
+        calculateSizesAccordingToScreen(screenSize.x);
         radius = calculateWidgetRadius();
         center = calculateWidgetCenter();
         hoursCoordinates = calculateHoursCoordinates();
@@ -186,6 +187,21 @@ class ClockWidget {
         display.getSize(size);
         Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
         return size;
+    }
+
+    private void calculateSizesAccordingToScreen(int side) {
+        borderWidth = side / 100;
+        handWidth = borderWidth / 2;
+        dotRadius = side / 100;
+        smallDigitSize = side / 40;
+        bigDigitSize = side / 25;
+        dateSize = side / 18;
+        markersLength = side / 36;
+        tiltedMarkersLength = markersLength * 0.7;
+        padding = side / 13;
+        digitRadiusPadding = padding * 0.5;
+        dateXPadding = side / 36;
+        dateYPadding = side / 15;
     }
 
     private float timeToDegree(String time) {
