@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +15,7 @@ import java.util.List;
 
 import static com.miltolstoy.roundcalendar.MainActivity.TAG;
 
-class ClockWidget extends Widget {
+class ClockWidget {
 
     static final int borderColor = Color.BLACK;
     static final int fillColor = Color.rgb(211, 211, 211);
@@ -32,19 +34,20 @@ class ClockWidget extends Widget {
     static private final int dateXPadding = 30;
     static private final int dateYPadding = 70;
 
+    private Point screenSize;
     private Point center;
     private float radius;
     private List<Point> hoursCoordinates;
 
     ClockWidget(Context context) {
-        super(context);
+        screenSize = getScreenSize(context);
         radius = calculateWidgetRadius();
         center = calculateWidgetCenter();
         hoursCoordinates = calculateHoursCoordinates();
     }
 
     ClockWidget(Context context, float radius, Point center) {
-        super(context);
+        screenSize = getScreenSize(context);
         this.radius = radius;
         this.center = center;
         hoursCoordinates = calculateHoursCoordinates();
@@ -178,6 +181,15 @@ class ClockWidget extends Widget {
         return new EventDegreeData(startDegree, sweepDegree);
     }
 
+
+    private Point getScreenSize(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
+        return size;
+    }
 
     private float timeToDegree(String time) {
         String[] timeSplitted = time.split(":");
