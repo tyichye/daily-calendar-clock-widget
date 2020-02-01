@@ -39,9 +39,9 @@ public class ClockView extends AppCompatImageView {
         paints = initPaints();
     }
 
-    public ClockView(Context context, float radius, Point center) {
+    public ClockView(Context context, Point screenSize) {
         super(context);
-        clockWidget = new ClockWidget(context, radius, center);
+        clockWidget = new ClockWidget(screenSize);
         paints = initPaints();
     }
 

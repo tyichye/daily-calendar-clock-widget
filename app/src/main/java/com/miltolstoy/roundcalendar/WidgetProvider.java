@@ -1,6 +1,5 @@
 package com.miltolstoy.roundcalendar;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetProviderInfo;
@@ -21,10 +20,11 @@ public class WidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
 
         AppWidgetProviderInfo widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetIds[0]);
-        int sideSize = widgetInfo.minHeight;
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(context);
-        ClockView clockView = new ClockView(context, sideSize / 5, new Point(sideSize / 4, sideSize / 4));
+        Point screenCenter = new Point(pxToDp(context, widgetInfo.minWidth),
+                pxToDp(context, widgetInfo.minHeight));
+        ClockView clockView = new ClockView(context, screenCenter);
         clockView.setCalendarAdapter(calendarAdapter);
 
         Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
@@ -32,5 +32,9 @@ public class WidgetProvider extends AppWidgetProvider {
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
         appWidgetManager.updateAppWidget(appWidgetIds[0], views);
 
+    }
+
+    private int pxToDp(Context context, int dp) {
+        return dp / (int) context.getResources().getDisplayMetrics().density;
     }
 }

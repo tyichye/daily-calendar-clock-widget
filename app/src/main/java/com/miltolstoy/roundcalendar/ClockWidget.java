@@ -40,16 +40,13 @@ class ClockWidget {
     private List<Point> hoursCoordinates;
 
     ClockWidget(Context context) {
-        screenSize = getScreenSize(context);
-        radius = calculateWidgetRadius();
-        center = calculateWidgetCenter();
-        hoursCoordinates = calculateHoursCoordinates();
+        this(getScreenSize(context));
     }
 
-    ClockWidget(Context context, float radius, Point center) {
-        screenSize = getScreenSize(context);
-        this.radius = radius;
-        this.center = center;
+    ClockWidget(Point screenSize) {
+        this.screenSize = screenSize;
+        radius = calculateWidgetRadius();
+        center = calculateWidgetCenter();
         hoursCoordinates = calculateHoursCoordinates();
     }
 
@@ -182,7 +179,7 @@ class ClockWidget {
     }
 
 
-    private Point getScreenSize(Context context) {
+    private static Point getScreenSize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
