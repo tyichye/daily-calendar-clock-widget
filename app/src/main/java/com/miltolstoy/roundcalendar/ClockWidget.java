@@ -47,7 +47,9 @@ class ClockWidget {
 
     ClockWidget(Point screenSize) {
         this.screenSize = screenSize;
-        calculateSizesAccordingToScreen(screenSize.x);
+        int minSide = (screenSize.x < screenSize.y) ? screenSize.x : screenSize.y;
+        calculateSizesAccordingToScreen(minSide);
+        
         radius = calculateWidgetRadius();
         center = calculateWidgetCenter();
         hoursCoordinates = calculateHoursCoordinates();
