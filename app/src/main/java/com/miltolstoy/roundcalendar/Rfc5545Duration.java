@@ -14,7 +14,7 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 class Rfc5545Duration {
 
     static long toMilliSeconds(String duration) {
-        if (duration == null) {
+        if (duration == null || duration.isEmpty()) {
             return 0;
         }
 
