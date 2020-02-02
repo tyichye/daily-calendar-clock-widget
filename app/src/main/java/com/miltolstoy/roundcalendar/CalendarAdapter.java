@@ -23,7 +23,7 @@ import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.RRULE;
 import static android.provider.CalendarContract.Events.RDATE;
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
 

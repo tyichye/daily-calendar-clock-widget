@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class Rfc5545Duration {
 

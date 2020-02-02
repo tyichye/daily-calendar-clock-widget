@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import lombok.Getter;
 
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class Event {
 

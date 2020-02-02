@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -63,11 +63,6 @@ public class ClockView extends AppCompatImageView {
     void setCalendarAdapter(CalendarAdapter adapter) {
         calendarAdapter = adapter;
         invalidate();
-    }
-
-    LinearLayout.LayoutParams getLayoutParamsObject() {
-        Point maxPoint = clockWidget.getWidgetMaxPoint();
-        return new LinearLayout.LayoutParams(maxPoint.x, maxPoint.y + delimiterWidth);
     }
 
 

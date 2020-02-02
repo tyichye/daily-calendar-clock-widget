@@ -10,7 +10,7 @@ import android.graphics.Point;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import static com.miltolstoy.roundcalendar.MainActivity.TAG;
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 
 public class WidgetProvider extends AppWidgetProvider {
@@ -24,6 +24,8 @@ public class WidgetProvider extends AppWidgetProvider {
         int height = pxToDp(context, widgetInfo.minHeight);
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(context);
+        calendarAdapter.requestCalendarPermissionsIfNeeded();
+
         ClockView clockView = new ClockView(context, new Point(width, height));
         clockView.setCalendarAdapter(calendarAdapter);
 
