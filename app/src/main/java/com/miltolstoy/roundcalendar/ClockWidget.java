@@ -29,6 +29,7 @@ class ClockWidget {
     @Getter private int smallDigitSize;
     @Getter private int bigDigitSize;
     @Getter private int dateSize;
+    @Getter private int titleSize;
     private int markersLength;
     private double tiltedMarkersLength;
     private int padding;
@@ -175,6 +176,10 @@ class ClockWidget {
         return new EventDegreeData(startDegree, sweepDegree);
     }
 
+    Point calculateEventTitlePoint(double degree) {
+        return calculateConcentricPoint(degree, radius - markersLength);
+    }
+
 
     private static Point getScreenSize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -198,6 +203,7 @@ class ClockWidget {
         digitRadiusPadding = padding * 0.5;
         dateXPadding = side / 36;
         dateYPadding = side / 15;
+        titleSize = side / 27;
     }
 
     private float timeToDegree(String time) {

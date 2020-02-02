@@ -132,6 +132,10 @@ public class ClockView extends AppCompatImageView {
         sleepEventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         paints.put("sleepEventLine", sleepEventLinePaint);
 
+        Paint textTitlePaint = new Paint();
+        textTitlePaint.setTextSize(clockWidget.getTitleSize());
+        paints.put("title", textTitlePaint);
+
         for (Paint p : paints.values()) {
             p.setAntiAlias(true);
         }
@@ -210,6 +214,12 @@ public class ClockView extends AppCompatImageView {
             }
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
             canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("eventLine"));
+
+            canvas.save();
+            Point eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.start + 90);
+            canvas.rotate(degrees.start - 180, eventTitlePoint.x, eventTitlePoint.y);
+            canvas.drawText(event.getTitle(), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
+            canvas.restore();
         }
     }
 
