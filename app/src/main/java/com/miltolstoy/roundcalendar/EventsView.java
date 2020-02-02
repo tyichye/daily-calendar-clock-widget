@@ -13,11 +13,15 @@ class EventsView extends ScrollView {
 
     public EventsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        int refreshTimeoutMillis = context.getResources().getInteger(R.integer.refreshPeriodMillis);
+        postInvalidateDelayed(refreshTimeoutMillis);
     }
 
     void setCalendarAdapter(CalendarAdapter adapter) {
         calendarAdapter = adapter;
         initEventsInfo(getContext());
+        invalidate();
     }
 
     void initEventsInfo(Context context) {
