@@ -20,14 +20,14 @@ public class WidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
 
         AppWidgetProviderInfo widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetIds[0]);
+        int width = pxToDp(context, widgetInfo.minWidth);
+        int height = pxToDp(context, widgetInfo.minHeight);
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(context);
-        Point screenCenter = new Point(pxToDp(context, widgetInfo.minWidth),
-                pxToDp(context, widgetInfo.minHeight));
-        ClockView clockView = new ClockView(context, screenCenter);
+        ClockView clockView = new ClockView(context, new Point(width, height));
         clockView.setCalendarAdapter(calendarAdapter);
 
-        Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         clockView.draw(new Canvas(bitmap));
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
         appWidgetManager.updateAppWidget(appWidgetIds[0], views);
