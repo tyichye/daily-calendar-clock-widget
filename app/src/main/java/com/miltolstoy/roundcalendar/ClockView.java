@@ -29,21 +29,22 @@ public class ClockView extends AppCompatImageView {
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
     private static final int backgroundColor = Color.WHITE;
-    private static final int refreshTimeout = 5 * 60 * 1000;
+    private static int refreshTimeoutMillis;
     private final int delimiterWidth = 5;
     private CalendarAdapter calendarAdapter = null;
 
     public ClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
         clockWidget = new ClockWidget(context);
-        paints = initPaints();
+        init(context);
     }
 
     public ClockView(Context context, Point screenSize) {
         super(context);
         clockWidget = new ClockWidget(screenSize);
-        paints = initPaints();
+        init(context);
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -56,7 +57,7 @@ public class ClockView extends AppCompatImageView {
         }
         drawHand(canvas);
 
-        postInvalidateDelayed(refreshTimeout);
+        postInvalidateDelayed(refreshTimeoutMillis);
     }
 
     void setCalendarAdapter(CalendarAdapter adapter) {
@@ -67,6 +68,12 @@ public class ClockView extends AppCompatImageView {
     LinearLayout.LayoutParams getLayoutParamsObject() {
         Point maxPoint = clockWidget.getWidgetMaxPoint();
         return new LinearLayout.LayoutParams(maxPoint.x, maxPoint.y + delimiterWidth);
+    }
+
+
+    private void init(Context context) {
+        paints = initPaints();
+        refreshTimeoutMillis = context.getResources().getInteger(R.integer.refreshPeriodMillis);
     }
 
 
