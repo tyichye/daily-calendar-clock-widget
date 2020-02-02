@@ -225,15 +225,17 @@ public class ClockView extends AppCompatImageView {
         long startTimeBeforeMidnight = calendar.getTimeInMillis();
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 23, 59, 59);
         long endTimeBeforeMidnight = calendar.getTimeInMillis();
+        long beforeMidnightduration = endTimeBeforeMidnight - startTimeBeforeMidnight;
         events.add(new Event("sleep before midnight", Long.toString(startTimeBeforeMidnight),
-                Long.toString(endTimeBeforeMidnight), null, null, null, null));
+                Long.toString(endTimeBeforeMidnight), Long.toString(beforeMidnightduration), "0" /*false*/));
 
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 0, 0, 0);
-        long startTimeAfterMidnigth = calendar.getTimeInMillis();
+        long startTimeAfterMidnight = calendar.getTimeInMillis();
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 6, 0, 0);
-        long endTimeAfterMidnigth = calendar.getTimeInMillis();
-        events.add(new Event("sleep after midnight", Long.toString(startTimeAfterMidnigth),
-                Long.toString(endTimeAfterMidnigth), null, null, null, null));
+        long endTimeAfterMidnight = calendar.getTimeInMillis();
+        long afterMidnightDuration = endTimeAfterMidnight - startTimeAfterMidnight;
+        events.add(new Event("sleep after midnight", Long.toString(startTimeAfterMidnight),
+                Long.toString(endTimeAfterMidnight), Long.toString(afterMidnightDuration), "0" /*false*/));
 
         return events;
     }

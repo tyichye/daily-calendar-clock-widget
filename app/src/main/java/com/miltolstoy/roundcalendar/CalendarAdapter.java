@@ -58,7 +58,7 @@ class CalendarAdapter {
 
         Cursor cursor = context.getContentResolver().query(
                 builder.build(),
-                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY, RRULE, RDATE},
+                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY},
                 null /* selection */, null /* selectionArgs */, DTSTART /* sortOrder */);
 
         List<Event> events = new ArrayList<>();
@@ -72,7 +72,7 @@ class CalendarAdapter {
         Log.d(TAG, "Today events:");
         do {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                    cursor.getString(4), cursor.getString(5), cursor.getString(6));
+                    cursor.getString(4));
             events.add(event);
         } while (cursor.moveToNext());
         Log.d(TAG, "Total: " + events.size());

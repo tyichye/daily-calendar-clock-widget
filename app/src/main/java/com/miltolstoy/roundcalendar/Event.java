@@ -17,22 +17,16 @@ class Event {
     private long finish;
     private long duration;
     @Getter private boolean allDay;
-    private String recurRule;
-    private String recurDate;
 
-    Event(String title, String start, String finish, String duration, String allDay,
-          String recurRule, String recurDate) {
+    Event(String title, String start, String finish, String duration, String allDay) {
         Log.d(TAG, "Creating event.\nTitle: " + title + "\nStart: " + start + "\nFinish: " + finish +
-                "\nDuration: " + duration + "\nAll-day: " + allDay + "\nRecurrence rule: " + recurRule +
-                "\nRecurrence date: " + recurDate);
+                "\nDuration: " + duration + "\nAll-day: " + allDay + "\n");
         this.title = title;
         this.start = parseLongSafe(start);
         this.finish = parseLongSafe(finish);
         this.duration = Rfc5545Duration.toMilliSeconds(duration);
         this.finish = (this.finish != 0) ? this.finish : (this.start + this.duration);
         this.allDay = (allDay != null) && allDay.equals("1");
-        this.recurRule = recurRule;
-        this.recurDate = recurDate;
     }
 
     String getStartTime() {
