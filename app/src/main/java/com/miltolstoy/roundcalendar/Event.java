@@ -19,14 +19,21 @@ class Event {
     @Getter private boolean allDay;
 
     Event(String title, String start, String finish, String duration, String allDay) {
+        this(title, parseLongSafe(start), parseLongSafe(finish), Rfc5545Duration.toMilliSeconds(duration),
+                ((allDay != null) && allDay.equals("1")));
+    }
+
+    Event(String title, long start, long finish, long duration, boolean allDay) {
         Log.d(TAG, "Creating event.\nTitle: " + title + "\nStart: " + start + "\nFinish: " + finish +
                 "\nDuration: " + duration + "\nAll-day: " + allDay + "\n");
+
         this.title = title;
-        this.start = parseLongSafe(start);
-        this.finish = parseLongSafe(finish);
-        this.duration = Rfc5545Duration.toMilliSeconds(duration);
+        this.start = start;
+        this.finish = finish;
+        this.duration = duration;
+        this.allDay = allDay;
+
         this.finish = (this.finish != 0) ? this.finish : (this.start + this.duration);
-        this.allDay = (allDay != null) && allDay.equals("1");
     }
 
     String getStartTime() {
