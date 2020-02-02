@@ -52,7 +52,6 @@ public class ClockView extends AppCompatImageView {
         drawClock(canvas);
         drawDate(canvas);
         if (calendarAdapter != null) {
-            drawDelimiter(canvas);
             drawEvents(canvas);
         }
         drawHand(canvas);
@@ -188,11 +187,6 @@ public class ClockView extends AppCompatImageView {
         String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
                 (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
         canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
-    }
-
-    private void drawDelimiter(Canvas canvas) {
-        List<Point> line = clockWidget.getDelimiterLineCoordinates();
-        canvas.drawLine(line.get(0).x, line.get(0).y, line.get(1).x, line.get(1).y, paints.get("delimiter"));
     }
 
     private void drawEvents(Canvas canvas) {
