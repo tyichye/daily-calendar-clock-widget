@@ -1,6 +1,5 @@
 package com.miltolstoy.roundcalendar;
 
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -17,7 +16,7 @@ class Event {
     private long start;
     private long finish;
     private long duration;
-    private boolean allDay;
+    @Getter private boolean allDay;
     private String recurRule;
     private String recurDate;
 
@@ -44,13 +43,6 @@ class Event {
         return formatToTime(finish);
     }
 
-    boolean isFullDay() {
-        long timeDiff = this.finish - this.start;
-        if (timeDiff == 0) {
-            return false;
-        }
-        return (timeDiff % DateUtils.DAY_IN_MILLIS) == 0;
-    }
 
     private String formatToTime(long milliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);

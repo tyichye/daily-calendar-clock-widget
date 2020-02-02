@@ -203,7 +203,7 @@ public class ClockView extends AppCompatImageView {
         }
 
         for (Event event : calendarAdapter.getTodayEvents()) {
-            if (event.isFullDay()) {
+            if (event.isAllDay()) {
                 continue;
             }
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
