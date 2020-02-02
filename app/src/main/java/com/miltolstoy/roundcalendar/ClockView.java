@@ -28,7 +28,7 @@ public class ClockView extends AppCompatImageView {
 
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
-    private static final int backgroundColor = Color.WHITE;
+    private static final int backgroundColor = Color.TRANSPARENT;
     private static int refreshTimeoutMillis;
     private final int delimiterWidth = 5;
     private CalendarAdapter calendarAdapter = null;
@@ -75,6 +75,7 @@ public class ClockView extends AppCompatImageView {
         Map <String, Paint> paints = new HashMap<>();
 
         Paint dotsPaint = new Paint();
+        dotsPaint.setColor(clockWidget.getBorderColor());
         paints.put("dots", dotsPaint);
 
         Paint fillPaint = new Paint();
@@ -96,16 +97,19 @@ public class ClockView extends AppCompatImageView {
         Paint smallDigitsPaint = new Paint();
         smallDigitsPaint.setTextSize(clockWidget.getSmallDigitSize());
         smallDigitsPaint.setTextAlign(Paint.Align.CENTER);
+        smallDigitsPaint.setColor(clockWidget.getDigitColor());
         paints.put("smallDigits", smallDigitsPaint);
 
         Paint bigDigitsPaint = new Paint();
         bigDigitsPaint.setTextSize(clockWidget.getBigDigitSize());
         bigDigitsPaint.setTextAlign(Paint.Align.CENTER);
+        bigDigitsPaint.setColor(clockWidget.getDigitColor());
         paints.put("bigDigits", bigDigitsPaint);
 
         Paint datePaint = new Paint();
         datePaint.setTextSize(clockWidget.getDateSize());
         datePaint.setTextAlign(Paint.Align.LEFT);
+        datePaint.setColor(clockWidget.getDigitColor());
         paints.put("date", datePaint);
 
         Paint delimiterPaint = new Paint();
@@ -128,6 +132,7 @@ public class ClockView extends AppCompatImageView {
 
         Paint textTitlePaint = new Paint();
         textTitlePaint.setTextSize(clockWidget.getTitleSize());
+        textTitlePaint.setColor(clockWidget.getEventTitleColor());
         paints.put("title", textTitlePaint);
 
         for (Paint p : paints.values()) {

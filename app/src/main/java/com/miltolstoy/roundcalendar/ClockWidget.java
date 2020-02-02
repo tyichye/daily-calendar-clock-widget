@@ -19,8 +19,10 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class ClockWidget {
 
-    @Getter private final int borderColor = Color.BLACK;
-    @Getter private final int fillColor = Color.rgb(211, 211, 211);
+    @Getter private final int borderColor = Color.WHITE;
+    @Getter private final int fillColor = Color.TRANSPARENT;
+    @Getter private final int digitColor = Color.WHITE;
+    @Getter private final int eventTitleColor = Color.WHITE;
     private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
 
     @Getter private int borderWidth;
