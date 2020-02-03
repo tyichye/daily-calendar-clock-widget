@@ -13,9 +13,12 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class Rfc5545Duration {
 
-    static long toMilliSeconds(String duration) {
-        if (duration == null || duration.isEmpty()) {
-            return 0;
+    static long toMilliSeconds(String duration) throws IllegalArgumentException {
+        if (duration == null || duration.length() <= 1) {
+            throw new IllegalArgumentException("Duration should be not empty");
+        }
+        if (!duration.startsWith("P")) {
+            throw new IllegalArgumentException("Duration string should start with \"P\" prefix");
         }
 
         duration = duration.substring(1); // remove "P" constant prefix
@@ -25,6 +28,10 @@ class Rfc5545Duration {
         long milliSeconds = 0;
         while (matcher.find()) {
             milliSeconds += entryToMillis(Integer.parseInt(matcher.group(1)), matcher.group(2));
+        }
+
+        if (milliSeconds == 0) {
+            throw new IllegalArgumentException("Malformed duration string: \"" + duration + "\"");
         }
 
         return milliSeconds;
@@ -41,8 +48,7 @@ class Rfc5545Duration {
 
         Long millis = dimensionMap.get(dimension);
         if (millis == null) {
-            Log.e(TAG, "Unknown dimension: " + dimension);
-            return 0;
+            throw new IllegalArgumentException("Unknown dimension: " + dimension);
         }
         return count * millis;
     }
