@@ -31,7 +31,10 @@ public class Rfc5545DurationTest {
                 {"P5D", 5 * DateUtils.DAY_IN_MILLIS},
                 {"P6W", 6 * DateUtils.WEEK_IN_MILLIS},
                 {"P11W12D13H14M15S", 11 * DateUtils.WEEK_IN_MILLIS + 12 * DateUtils.DAY_IN_MILLIS +
-                    13 * DateUtils.HOUR_IN_MILLIS + 14 * DateUtils.MINUTE_IN_MILLIS + 15 * DateUtils.SECOND_IN_MILLIS}
+                    13 * DateUtils.HOUR_IN_MILLIS + 14 * DateUtils.MINUTE_IN_MILLIS + 15 * DateUtils.SECOND_IN_MILLIS},
+                {"P15DT5H0M20S", 15 * DateUtils.DAY_IN_MILLIS + 5 * DateUtils.HOUR_IN_MILLIS +
+                        20 * DateUtils.SECOND_IN_MILLIS}, // rfc example
+                {"P7W", 7 * DateUtils.WEEK_IN_MILLIS}, // rfc example
         });
     }
 
