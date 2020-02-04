@@ -14,6 +14,7 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 class Rfc5545Duration {
 
     static long toMilliSeconds(String duration) throws IllegalArgumentException {
+        Log.d(TAG, "Parsing duration: \"" + duration + "\"");
         if (duration == null || duration.length() <= 1) {
             throw new IllegalArgumentException("Duration should be not empty");
         }
@@ -27,6 +28,7 @@ class Rfc5545Duration {
 
         long milliSeconds = 0;
         while (matcher.find()) {
+            Log.d(TAG, "count: " + matcher.group(1) + ", dimension: " + matcher.group(2));
             milliSeconds += entryToMillis(Integer.parseInt(matcher.group(1)), matcher.group(2));
         }
 
