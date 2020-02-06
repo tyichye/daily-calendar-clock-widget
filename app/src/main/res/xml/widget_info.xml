@@ -4,5 +4,6 @@
     android:updatePeriodMillis="@integer/refreshPeriodMillis"
     android:initialLayout="@layout/widget"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:configure="com.miltolstoy.roundcalendar.WidgetConfigurationActivity">
 </appwidget-provider>

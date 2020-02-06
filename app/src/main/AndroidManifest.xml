@@ -5,7 +5,6 @@
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,13 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <receiver android:name="WidgetProvider" >
+        <receiver android:name=".WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+        <activity android:name=".WidgetConfigurationActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
