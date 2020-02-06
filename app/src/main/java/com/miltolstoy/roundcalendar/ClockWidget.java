@@ -145,11 +145,6 @@ class ClockWidget {
         return new Point(dateXPadding, dateYPadding);
     }
 
-    List<Point> getDelimiterLineCoordinates() {
-        Point maxPoint = getWidgetMaxPoint();
-        return new ArrayList<>(Arrays.asList(new Point(0, maxPoint.y), maxPoint));
-    }
-
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
         List<List<Point>> markers = getHourMarkersCoordinates();
@@ -186,10 +181,6 @@ class ClockWidget {
         display.getSize(size);
         Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
         return size;
-    }
-
-    private Point getWidgetMaxPoint() {
-        return new Point(screenSize.x, (int) Math.round(hoursCoordinates.get(11).y + digitRadiusPadding + bigDigitSize));
     }
 
     private void calculateSizesAccordingToScreen(int side) {

@@ -3,7 +3,6 @@ package com.miltolstoy.roundcalendar;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;

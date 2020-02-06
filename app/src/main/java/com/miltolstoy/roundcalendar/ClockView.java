@@ -7,9 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.support.v7.widget.AppCompatImageView;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -30,7 +27,6 @@ public class ClockView extends AppCompatImageView {
     private ClockWidget clockWidget;
     private static final int backgroundColor = Color.TRANSPARENT;
     private static int refreshTimeoutMillis;
-    private final int delimiterWidth = 5;
     private CalendarAdapter calendarAdapter = null;
 
     public ClockView(Context context, AttributeSet attrs) {
@@ -111,10 +107,6 @@ public class ClockView extends AppCompatImageView {
         datePaint.setTextAlign(Paint.Align.LEFT);
         datePaint.setColor(clockWidget.getDigitColor());
         paints.put("date", datePaint);
-
-        Paint delimiterPaint = new Paint();
-        delimiterPaint.setStrokeWidth(delimiterWidth);
-        paints.put("delimiter", delimiterPaint);
 
         Paint eventLinePaint = new Paint();
         eventLinePaint.setStrokeWidth(clockWidget.getHandWidth());
