@@ -15,11 +15,10 @@ class Event {
     @Getter private String title;
     private long start;
     private long finish;
-    private long duration;
     @Getter private boolean allDay;
 
     Event(String title, String start, String finish, String duration, String allDay) {
-        this(title, parseLongSafe(start), parseLongSafe(finish), Rfc5545Duration.toMilliSeconds(duration),
+        this(title, parseLongSafe(start), parseLongSafe(finish), parseDurationSafe(duration),
                 ((allDay != null) && allDay.equals("1")));
     }
 
@@ -29,11 +28,8 @@ class Event {
 
         this.title = title;
         this.start = start;
-        this.finish = finish;
-        this.duration = duration;
+        this.finish = (finish != 0) ? finish : (this.start + duration);
         this.allDay = allDay;
-
-        this.finish = (this.finish != 0) ? this.finish : (this.start + this.duration);
     }
 
     String getStartTime() {
@@ -57,6 +53,15 @@ class Event {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
             Log.e(TAG, "Failed to parse event time. Value: " + value);
+            return 0;
+        }
+    }
+
+    private static long parseDurationSafe(String duration) {
+        try {
+            return Rfc5545Duration.toMilliSeconds(duration);
+        } catch (IllegalArgumentException e) {
+            Log.w(TAG, e.getMessage());
             return 0;
         }
     }
