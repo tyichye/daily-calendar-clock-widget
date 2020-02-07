@@ -23,7 +23,8 @@ class ClockWidget {
     @Getter private final int fillColor = Color.TRANSPARENT;
     @Getter private final int digitColor = Color.WHITE;
     @Getter private final int eventTitleColor = Color.WHITE;
-    private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
+    private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255,
+            270, 285, 300, 315, 330, 345};
 
     @Getter private int borderWidth;
     @Getter private int handWidth;
@@ -34,7 +35,6 @@ class ClockWidget {
     @Getter private int titleSize;
     private int markersLength;
     private double tiltedMarkersLength;
-    private int padding;
     private double digitRadiusPadding;
     private int dateXPadding;
     private int dateYPadding;
@@ -52,10 +52,6 @@ class ClockWidget {
         this.screenSize = screenSize;
         int minSide = (screenSize.x < screenSize.y) ? screenSize.x : screenSize.y;
         calculateSizesAccordingToScreen(minSide);
-
-        radius = calculateWidgetRadius();
-        center = calculateWidgetCenter();
-        hoursCoordinates = calculateHoursCoordinates();
     }
 
     List<List<Point>> getHourMarkersCoordinates() {
@@ -184,39 +180,35 @@ class ClockWidget {
     }
 
     private void calculateSizesAccordingToScreen(int side) {
+        int padding = side / 13;
         borderWidth = side / 100;
-        handWidth = borderWidth / 2;
         dotRadius = side / 100;
         smallDigitSize = side / 40;
         bigDigitSize = side / 25;
         dateSize = side / 18;
         markersLength = side / 36;
-        tiltedMarkersLength = markersLength * 0.7;
-        padding = side / 13;
-        digitRadiusPadding = padding * 0.5;
         dateXPadding = side / 36;
         dateYPadding = side / 15;
         titleSize = side / 27;
+
+        handWidth = borderWidth / 2;
+        tiltedMarkersLength = markersLength * 0.7;
+        digitRadiusPadding = padding * 0.5;
+        radius = side / 2 - padding;
+
+        center = calculateWidgetCenter(screenSize, padding, radius, dateSize);
+        hoursCoordinates = calculateHoursCoordinates();
+    }
+
+    private static Point calculateWidgetCenter(Point screenSize, int padding, float radius, int dateSize) {
+        float yPosition = padding + radius + dateSize;
+        yPosition = (yPosition > (float) screenSize.y / 2) ? (float) screenSize.y / 2 : yPosition;
+        return new Point(screenSize.x / 2, Math.round(yPosition));
     }
 
     private float timeToDegree(String time) {
         String[] timeSplitted = time.split(":");
         return (Integer.valueOf(timeSplitted[0]) + (float) Integer.valueOf(timeSplitted[1]) / 60) * 15 - 90;
-    }
-
-    private Point calculateWidgetCenter() {
-        float yPosition = padding + radius + dateSize;
-        yPosition = yPosition > (float) screenSize.y / 2 ? (float) screenSize.y / 2 : yPosition;
-        center = new Point(screenSize.x / 2, Math.round(yPosition));
-        Log.d(TAG, String.format("Widget center: (%d, %d)", center.x, center.y));
-        return center;
-    }
-
-    private float calculateWidgetRadius() {
-        float smallerSide = screenSize.x < screenSize.y ? screenSize.x : screenSize.y;
-        radius = smallerSide / 2 - padding;
-        Log.d(TAG, String.format("Radius: %f", radius));
-        return radius;
     }
 
     private Point calculateCircumferencePoint(double degree) {
