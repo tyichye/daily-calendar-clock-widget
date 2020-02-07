@@ -191,7 +191,7 @@ public class ClockView extends AppCompatImageView {
 
         for (Event event : getSleepEvents()) {
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
-            canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("sleepEventLine"));
+            canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("sleepEventLine"));
         }
 
         for (Event event : calendarAdapter.getTodayEvents()) {
@@ -199,11 +199,11 @@ public class ClockView extends AppCompatImageView {
                 continue;
             }
             ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
-            canvas.drawArc(widgetCircle, degrees.start, degrees.sweep, true, paints.get("eventLine"));
+            canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("eventLine"));
 
             canvas.save();
-            Point eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.start + 90);
-            canvas.rotate(degrees.start - 180, eventTitlePoint.x, eventTitlePoint.y);
+            Point eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90);
+            canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
             canvas.drawText(event.getTitle(), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
             canvas.restore();
         }

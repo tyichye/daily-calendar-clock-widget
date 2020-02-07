@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static com.miltolstoy.roundcalendar.Logging.TAG;
@@ -230,15 +231,10 @@ class ClockWidget {
         return hours;
     }
 
+    @AllArgsConstructor
     class EventDegreeData {
-
-        float start;
-        float sweep;
-
-        EventDegreeData(float startDegree, float sweepDegree) {
-            this.start = startDegree;
-            this.sweep = sweepDegree;
-        }
+        @Getter private float start;
+        @Getter private float sweep;
     }
     
 }
