@@ -29,10 +29,9 @@ public class ClockView extends AppCompatImageView {
     private static int refreshTimeoutMillis;
     private CalendarAdapter calendarAdapter = null;
 
-    public ClockView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        clockWidget = new ClockWidget(context);
-        init(context);
+    public ClockView(Context context) throws IllegalStateException {
+        super(context);
+        throw new IllegalStateException("Use another constructor");
     }
 
     public ClockView(Context context, Point screenSize) {

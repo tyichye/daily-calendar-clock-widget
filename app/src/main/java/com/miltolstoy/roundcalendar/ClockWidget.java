@@ -45,10 +45,6 @@ class ClockWidget {
     private Point screenSize;
     private List<Point> hoursCoordinates;
 
-    ClockWidget(Context context) {
-        this(getScreenSize(context));
-    }
-
     ClockWidget(Point screenSize) {
         this.screenSize = screenSize;
         int minSide = (screenSize.x < screenSize.y) ? screenSize.x : screenSize.y;
@@ -170,15 +166,6 @@ class ClockWidget {
         return calculateConcentricPoint(degree, radius - markersLength);
     }
 
-
-    private static Point getScreenSize(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Log.d(TAG, String.format("Screen size: (%d, %d)", size.x, size.y));
-        return size;
-    }
 
     private void calculateSizesAccordingToScreen(int side) {
         int padding = side / 13;
