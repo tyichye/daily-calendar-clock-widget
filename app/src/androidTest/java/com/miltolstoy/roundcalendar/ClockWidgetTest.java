@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -154,5 +155,13 @@ public class ClockWidgetTest {
     @Test
     public void calculateEventTitlePoint() {
         assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100), new Point(891, 624));
+    }
+
+    @Test
+    public void getCurrentTimeHandCoordinates() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(1234567890);
+        List<Point> expCoordinates = new ArrayList<>(Arrays.asList(new Point(500, 555), new Point(915, 469)));
+        assertThat(new ClockWidget(defaultScreenSize).getCurrentTimeHandCoordinates(), is(expCoordinates));
     }
 }
