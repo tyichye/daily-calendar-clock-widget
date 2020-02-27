@@ -98,6 +98,32 @@ public class CalendarAdapterTest {
         checkEvent(events.get(0), defaultTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
     }
 
+    @Test
+    public void noCalendarId() {
+        long startTime = getDayStart();
+        long endTime = startTime + DateUtils.HOUR_IN_MILLIS;
+        boolean isAllDay = false;
+        addEvent(defaultTitle, startTime, endTime, isAllDay, calendarId);
+
+        String anotherCalendarName = "anotherCalendar";
+        int anotherCalendarId = addCalendar(anotherCalendarName, accountName, accountType);
+        String anotherEventTitle = "anotherTitle";
+        addEvent(anotherEventTitle, startTime, endTime, isAllDay, anotherCalendarId);
+
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context);
+        calendarAdapter.requestCalendarPermissionsIfNeeded();
+        List<Event> events = calendarAdapter.getTodayEvents();
+
+        clearCalendar(anotherCalendarId);
+        removeCalendar(anotherCalendarName, accountName, accountType);
+
+        // events should be retrieved from both calendars
+        assertEquals(events.size(), 2);
+        checkEvent(events.get(0), defaultTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
+        checkEvent(events.get(1), anotherEventTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
+    }
+
+
     private int addCalendar(String calendarName, String accountName, String accountType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ACCOUNT_NAME, accountName);
@@ -130,7 +156,7 @@ public class CalendarAdapterTest {
         context.getContentResolver().delete(uri, where, selectionArgs);
     }
 
-    private void addEvent(String title, long startTime, long endTime, boolean isAllDay) {
+    private void addEvent(String title, long startTime, long endTime, boolean isAllDay, int calendarId) {
         ContentResolver cr = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put(DTSTART, startTime);
@@ -140,6 +166,10 @@ public class CalendarAdapterTest {
         values.put(CALENDAR_ID, calendarId);
         values.put(EVENT_TIMEZONE, "Europe/Kiev");
         cr.insert(CalendarContract.Events.CONTENT_URI, values);
+    }
+
+    private void addEvent(String title, long startTime, long endTime, boolean isAllDay) {
+        addEvent(title, startTime, endTime, isAllDay, calendarId);
     }
 
     private void addEvent(String title, long startTime, String duration, boolean isAllDay) {
