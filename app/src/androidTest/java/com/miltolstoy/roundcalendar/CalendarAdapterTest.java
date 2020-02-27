@@ -1,15 +1,18 @@
 package com.miltolstoy.roundcalendar;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.GrantPermissionRule;
 import android.text.format.DateUtils;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +35,11 @@ import static org.junit.Assert.assertEquals;
 
 public class CalendarAdapterTest {
 
+    @Rule
+    public GrantPermissionRule readRule = GrantPermissionRule.grant(Manifest.permission.READ_CALENDAR);
+    @Rule
+    public GrantPermissionRule writeRule = GrantPermissionRule.grant(Manifest.permission.WRITE_CALENDAR);
+
     private int calendarId;
     private Context context;
 
@@ -39,6 +47,7 @@ public class CalendarAdapterTest {
     private final String accountName = "dummyName";
     private final String accountType = "dummyType";
 
+    
     @Before
     public void setup() {
         context = InstrumentationRegistry.getContext();
