@@ -1,0 +1,136 @@
+package com.miltolstoy.roundcalendar;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
+import android.provider.CalendarContract;
+import android.support.test.InstrumentationRegistry;
+import android.text.format.DateUtils;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import static android.provider.CalendarContract.Events.CALENDAR_ID;
+import static android.provider.CalendarContract.Events.DTEND;
+import static android.provider.CalendarContract.Events.DTSTART;
+import static android.provider.CalendarContract.Events.ALL_DAY;
+import static android.provider.CalendarContract.Events.EVENT_TIMEZONE;
+import static android.provider.CalendarContract.Events.TITLE;
+import static android.provider.CalendarContract.Calendars.NAME;
+import static android.provider.CalendarContract.Calendars.ACCOUNT_NAME;
+import static android.provider.CalendarContract.Calendars.ACCOUNT_TYPE;
+import static android.provider.CalendarContract.CALLER_IS_SYNCADAPTER;
+import static org.junit.Assert.assertEquals;
+
+
+public class CalendarAdapterTest {
+
+    private int calendarId;
+    private Context context;
+
+    private final String calendarName = "dummyCalendar";
+    private final String accountName = "dummyName";
+    private final String accountType = "dummyType";
+
+    @Before
+    public void setup() {
+        context = InstrumentationRegistry.getContext();
+        calendarId = addCalendar(calendarName, accountName, accountType);
+    }
+
+    @After
+    public void teardown() {
+        clearCalendar(calendarId);
+        removeCalendar(calendarName, accountName, accountType);
+    }
+
+    @Test
+    public void noEvents() {
+        assertEquals(new CalendarAdapter(context, calendarId).getTodayEvents().size(), 0);
+    }
+
+    @Test
+    public void singleEvent() {
+        long startTime = getDayStart();
+        long endTime = startTime + DateUtils.HOUR_IN_MILLIS;
+        String title = "dummyTitle";
+        boolean isAllDay = false;
+        addEvent(title, startTime, endTime, isAllDay);
+
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+        calendarAdapter.requestCalendarPermissionsIfNeeded();
+        List<Event> events = calendarAdapter.getTodayEvents();
+
+        assertEquals(events.size(), 1);
+        checkEvent(events.get(0), title, startTime, endTime, isAllDay);
+    }
+
+    private int addCalendar(String calendarName, String accountName, String accountType) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ACCOUNT_NAME, accountName);
+        contentValues.put(ACCOUNT_TYPE, accountType);
+        contentValues.put(NAME, calendarName);
+
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        uri = uri.buildUpon().appendQueryParameter(CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(ACCOUNT_NAME, accountName)
+                .appendQueryParameter(ACCOUNT_TYPE, accountType).build();
+        Uri result = context.getContentResolver().insert(uri, contentValues);
+        final int calendarIdOffset = 41;
+        return Integer.parseInt(result.toString().substring(calendarIdOffset, calendarIdOffset + 1));
+    }
+
+    private void removeCalendar(String calendarName, String accountName, String accountType) {
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        String where = NAME + "=? AND " + ACCOUNT_NAME + "=? AND " + ACCOUNT_TYPE + "=?";
+        String[] selectionArgs = {calendarName, accountName, accountType};
+        context.getContentResolver().delete(uri, where, selectionArgs);
+    }
+
+    private void clearCalendar(int calendarId) {
+        Uri uri = CalendarContract.Events.CONTENT_URI;
+        String where = CALENDAR_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(calendarId)};
+        context.getContentResolver().delete(uri, where, selectionArgs);
+    }
+
+    private void addEvent(String title, long startTime, long endTime, boolean isAllDay) {
+        ContentResolver cr = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(DTSTART, startTime);
+        values.put(DTEND, endTime);
+        values.put(ALL_DAY, isAllDay ? "1" : "0");
+        values.put(TITLE, title);
+        values.put(CALENDAR_ID, calendarId);
+        values.put(EVENT_TIMEZONE, "Europe/Kiev");
+        cr.insert(CalendarContract.Events.CONTENT_URI, values);
+    }
+
+    private void checkEvent(Event event, String title, long startTime, long endTime, boolean isAllDay) {
+        assertEquals(event.getTitle(), title);
+        assertEquals(event.getStartTime(), millisToTime(startTime));
+        assertEquals(event.getFinishTime(), millisToTime(endTime));
+        assertEquals(event.isAllDay(), isAllDay);
+    }
+
+    private String millisToTime(long milliSeconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
+
+    private long getDayStart() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0,
+                0, 0);
+        return calendar.getTime().getTime();
+    }
+}

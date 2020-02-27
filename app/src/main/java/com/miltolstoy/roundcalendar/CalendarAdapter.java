@@ -21,14 +21,23 @@ import static android.provider.CalendarContract.Events.DTSTART;
 import static android.provider.CalendarContract.Events.DTEND;
 import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
+import static android.provider.CalendarContract.Events.CALENDAR_ID;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
 
     private Context context;
+    private int calendarId;
+
+    private static final int CALENDAR_EMPTY_ID = -1;
 
     CalendarAdapter(Context context) {
+        this(context, CALENDAR_EMPTY_ID);
+    }
+
+    CalendarAdapter(Context context, int calendarId) {
         this.context = context;
+        this.calendarId = calendarId;
     }
 
     void requestCalendarPermissionsIfNeeded() {
@@ -54,10 +63,14 @@ class CalendarAdapter {
         ContentUris.appendId(builder, dayStart);
         ContentUris.appendId(builder, dayStart + DateUtils.DAY_IN_MILLIS);
 
-        Cursor cursor = context.getContentResolver().query(
-                builder.build(),
-                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY},
-                null /* selection */, null /* selectionArgs */, DTSTART /* sortOrder */);
+        String where = null;
+        String[] selectionArgs = null;
+        if (calendarId != CALENDAR_EMPTY_ID) {
+            where = CALENDAR_ID + "=?";
+            selectionArgs = new String[] {String.valueOf(calendarId)};
+        }
+        Cursor cursor = context.getContentResolver().query(builder.build(),
+                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY}, where, selectionArgs, DTSTART);
 
         List<Event> events = new ArrayList<>();
         if (cursor != null && cursor.getCount() != 0) {
@@ -89,5 +102,4 @@ class CalendarAdapter {
 
         return calendar.getTime().getTime();
     }
-
 }
