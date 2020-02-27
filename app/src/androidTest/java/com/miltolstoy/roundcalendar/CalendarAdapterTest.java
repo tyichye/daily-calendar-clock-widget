@@ -9,7 +9,6 @@ import android.provider.CalendarContract;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.GrantPermissionRule;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +28,7 @@ import static android.provider.CalendarContract.Events.DTSTART;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.EVENT_TIMEZONE;
 import static android.provider.CalendarContract.Events.TITLE;
+import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Calendars.NAME;
 import static android.provider.CalendarContract.Calendars.ACCOUNT_NAME;
 import static android.provider.CalendarContract.Calendars.ACCOUNT_TYPE;
@@ -49,6 +49,7 @@ public class CalendarAdapterTest {
     private final String calendarName = "dummyCalendar";
     private final String accountName = "dummyName";
     private final String accountType = "dummyType";
+    private final String defaultTitle = "dummyTitle";
 
 
     @Before
@@ -69,19 +70,32 @@ public class CalendarAdapterTest {
     }
 
     @Test
-    public void singleEvent() {
+    public void eventWithEndTime() {
         long startTime = getDayStart();
         long endTime = startTime + DateUtils.HOUR_IN_MILLIS;
-        String title = "dummyTitle";
         boolean isAllDay = false;
-        addEvent(title, startTime, endTime, isAllDay);
+        addEvent(defaultTitle, startTime, endTime, isAllDay);
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
         calendarAdapter.requestCalendarPermissionsIfNeeded();
         List<Event> events = calendarAdapter.getTodayEvents();
 
         assertEquals(events.size(), 1);
-        checkEvent(events.get(0), title, startTime, endTime, isAllDay);
+        checkEvent(events.get(0), defaultTitle, startTime, endTime, isAllDay);
+    }
+
+    @Test
+    public void eventWithDuration() {
+        long startTime = getDayStart() + DateUtils.SECOND_IN_MILLIS;
+        boolean isAllDay = false;
+        addEvent(defaultTitle, startTime, "P1H", isAllDay);
+
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+        calendarAdapter.requestCalendarPermissionsIfNeeded();
+        List<Event> events = calendarAdapter.getTodayEvents();
+
+        assertEquals(events.size(), 1);
+        checkEvent(events.get(0), defaultTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
     }
 
     private int addCalendar(String calendarName, String accountName, String accountType) {
@@ -121,6 +135,18 @@ public class CalendarAdapterTest {
         ContentValues values = new ContentValues();
         values.put(DTSTART, startTime);
         values.put(DTEND, endTime);
+        values.put(ALL_DAY, isAllDay ? "1" : "0");
+        values.put(TITLE, title);
+        values.put(CALENDAR_ID, calendarId);
+        values.put(EVENT_TIMEZONE, "Europe/Kiev");
+        cr.insert(CalendarContract.Events.CONTENT_URI, values);
+    }
+
+    private void addEvent(String title, long startTime, String duration, boolean isAllDay) {
+        ContentResolver cr = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(DTSTART, startTime);
+        values.put(DURATION, duration);
         values.put(ALL_DAY, isAllDay ? "1" : "0");
         values.put(TITLE, title);
         values.put(CALENDAR_ID, calendarId);
