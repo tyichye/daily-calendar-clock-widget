@@ -65,8 +65,18 @@ public class CalendarAdapterTest {
     }
 
     @Test
-    public void noEvents() {
+    public void noEventsInOneCalendar() {
         assertEquals(new CalendarAdapter(context, calendarId).getTodayEvents().size(), 0);
+    }
+
+    @Test
+    public void noEventsInAllCalendars() {
+        assertEquals(new CalendarAdapter(context).getTodayEvents().size(), 0);
+    }
+
+    @Test
+    public void notExistingCalendar() {
+        assertEquals(new CalendarAdapter(context, 9999).getTodayEvents().size(), 0);
     }
 
     @Test
