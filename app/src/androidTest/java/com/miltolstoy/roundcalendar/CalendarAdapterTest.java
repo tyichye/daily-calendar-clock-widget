@@ -9,6 +9,7 @@ import android.provider.CalendarContract;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.GrantPermissionRule;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.provider.CalendarContract.Events.CALENDAR_ID;
 import static android.provider.CalendarContract.Events.DTEND;
@@ -47,7 +50,7 @@ public class CalendarAdapterTest {
     private final String accountName = "dummyName";
     private final String accountType = "dummyType";
 
-    
+
     @Before
     public void setup() {
         context = InstrumentationRegistry.getContext();
@@ -92,8 +95,11 @@ public class CalendarAdapterTest {
                 .appendQueryParameter(ACCOUNT_NAME, accountName)
                 .appendQueryParameter(ACCOUNT_TYPE, accountType).build();
         Uri result = context.getContentResolver().insert(uri, contentValues);
-        final int calendarIdOffset = 41;
-        return Integer.parseInt(result.toString().substring(calendarIdOffset, calendarIdOffset + 1));
+
+        Pattern pattern = Pattern.compile("^content://com\\.android\\.calendar/calendars/(\\d+)\\?.*");
+        Matcher matcher = pattern.matcher(result.toString());
+        matcher.find();
+        return Integer.parseInt(matcher.group(1));
     }
 
     private void removeCalendar(String calendarName, String accountName, String accountType) {
