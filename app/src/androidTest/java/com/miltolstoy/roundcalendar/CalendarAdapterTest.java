@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.GrantPermissionRule;
-import android.text.format.DateUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,9 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -35,6 +37,9 @@ import static android.provider.CalendarContract.Calendars.NAME;
 import static android.provider.CalendarContract.Calendars.ACCOUNT_NAME;
 import static android.provider.CalendarContract.Calendars.ACCOUNT_TYPE;
 import static android.provider.CalendarContract.CALLER_IS_SYNCADAPTER;
+import static android.text.format.DateUtils.HOUR_IN_MILLIS;
+import static android.text.format.DateUtils.SECOND_IN_MILLIS;
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static org.junit.Assert.assertEquals;
 
 
@@ -53,6 +58,58 @@ public class CalendarAdapterTest {
     private static final String accountName = "dummyName";
     private static final String accountType = "dummyType";
     private static final String defaultTitle = "dummyTitle";
+
+    @RunWith(Parameterized.class)
+    public static class GetEventsPositive {
+
+        @Parameterized.Parameter()
+        public long startTimeDelta;
+
+        @Parameterized.Parameter(1)
+        public long finishTimeDelta;
+
+        @Before
+        public void setup() {
+            context = InstrumentationRegistry.getContext();
+            calendarId = addCalendar(calendarName, accountName, accountType);
+        }
+
+        @After
+        public void teardown() {
+            clearCalendar(calendarId);
+            removeCalendar(calendarName, accountName, accountType);
+        }
+
+        @Parameterized.Parameters
+        public static Collection parameters() {
+            return Arrays.asList(new Object[][]{ // [day] {event}
+                    {0, 0}, // [={ }=]
+                    {HOUR_IN_MILLIS, -HOUR_IN_MILLIS}, // [ {} ]
+                    {0, -HOUR_IN_MILLIS}, // [={ } ]
+                    {HOUR_IN_MILLIS, 0}, // [ { }=]
+                    {-HOUR_IN_MILLIS, -HOUR_IN_MILLIS}, // { [ } ]
+                    {-HOUR_IN_MILLIS, 0}, // { [ }=]
+                    {HOUR_IN_MILLIS, HOUR_IN_MILLIS}, // [ { ] }
+                    {0, HOUR_IN_MILLIS}, // [={ ] }
+                    {-HOUR_IN_MILLIS, HOUR_IN_MILLIS}, // { [ ] }
+            });
+        }
+
+        @Test
+        public void test() {
+            long startTime = getDayStart() + startTimeDelta;
+            long endTime = (getDayStart() + DAY_IN_MILLIS) + finishTimeDelta;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, startTime, endTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 1);
+            checkEvent(events.get(0), defaultTitle, startTime, endTime, isAllDay);
+        }
+    }
 
     public static class NonParametrized {
 
@@ -86,7 +143,7 @@ public class CalendarAdapterTest {
         @Test
         public void eventWithEndTime() {
             long startTime = getDayStart();
-            long endTime = startTime + DateUtils.HOUR_IN_MILLIS;
+            long endTime = startTime + HOUR_IN_MILLIS;
             boolean isAllDay = false;
             addEvent(defaultTitle, startTime, endTime, isAllDay);
 
@@ -100,7 +157,7 @@ public class CalendarAdapterTest {
 
         @Test
         public void eventWithDuration() {
-            long startTime = getDayStart() + DateUtils.SECOND_IN_MILLIS;
+            long startTime = getDayStart() + SECOND_IN_MILLIS;
             boolean isAllDay = false;
             addEvent(defaultTitle, startTime, "P1H", isAllDay);
 
@@ -109,13 +166,13 @@ public class CalendarAdapterTest {
             List<Event> events = calendarAdapter.getTodayEvents();
 
             assertEquals(events.size(), 1);
-            checkEvent(events.get(0), defaultTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
+            checkEvent(events.get(0), defaultTitle, startTime, (startTime + HOUR_IN_MILLIS), isAllDay);
         }
 
         @Test
         public void noCalendarId() {
             long startTime = getDayStart();
-            long endTime = startTime + DateUtils.HOUR_IN_MILLIS;
+            long endTime = startTime + HOUR_IN_MILLIS;
             boolean isAllDay = false;
             addEvent(defaultTitle, startTime, endTime, isAllDay, calendarId);
 
@@ -133,8 +190,8 @@ public class CalendarAdapterTest {
 
             // events should be retrieved from both calendars
             assertEquals(events.size(), 2);
-            checkEvent(events.get(0), defaultTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
-            checkEvent(events.get(1), anotherEventTitle, startTime, (startTime + DateUtils.HOUR_IN_MILLIS), isAllDay);
+            checkEvent(events.get(0), defaultTitle, startTime, (startTime + HOUR_IN_MILLIS), isAllDay);
+            checkEvent(events.get(1), anotherEventTitle, startTime, (startTime + HOUR_IN_MILLIS), isAllDay);
         }
     }
 
