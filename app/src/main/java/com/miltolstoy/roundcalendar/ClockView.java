@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -108,14 +111,12 @@ public class ClockView extends AppCompatImageView {
         paints.put("date", datePaint);
 
         Paint eventLinePaint = new Paint();
-        eventLinePaint.setStrokeWidth(clockWidget.getHandWidth());
         eventLinePaint.setColor(Color.BLUE);
         eventLinePaint.setAlpha(100);
         eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         paints.put("eventLine", eventLinePaint);
 
         Paint sleepEventLinePaint = new Paint();
-        sleepEventLinePaint.setStrokeWidth(1);
         sleepEventLinePaint.setColor(Color.GRAY);
         sleepEventLinePaint.setAlpha(100);
         sleepEventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -214,7 +215,7 @@ public class ClockView extends AppCompatImageView {
 
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 21, 0, 0);
         long startTimeBeforeMidnight = calendar.getTimeInMillis();
-        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 23, 59, 59);
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH) + 1, 0, 0, 0);
         long endTimeBeforeMidnight = calendar.getTimeInMillis();
         long beforeMidnightduration = endTimeBeforeMidnight - startTimeBeforeMidnight;
         events.add(new Event("sleep before midnight", startTimeBeforeMidnight, endTimeBeforeMidnight,

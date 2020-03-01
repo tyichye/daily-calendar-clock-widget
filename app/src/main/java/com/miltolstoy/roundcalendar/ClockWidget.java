@@ -157,6 +157,9 @@ class ClockWidget {
             sweepDegree = (float) 0.001;
         } else {
             sweepDegree = endDegree - startDegree;
+            if (sweepDegree < -180) {
+                sweepDegree += 360;
+            }
         }
 
         return new EventDegreeData(startDegree, sweepDegree);
