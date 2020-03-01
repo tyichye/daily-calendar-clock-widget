@@ -193,6 +193,74 @@ public class CalendarAdapterTest {
             checkEvent(events.get(0), defaultTitle, startTime, (startTime + HOUR_IN_MILLIS), isAllDay);
             checkEvent(events.get(1), anotherEventTitle, startTime, (startTime + HOUR_IN_MILLIS), isAllDay);
         }
+
+        @Test
+        public void eventBeforeToday() {
+            long startTime = getDayStart() - DAY_IN_MILLIS;
+            long endTime = startTime + HOUR_IN_MILLIS;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, startTime, endTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 0);
+        }
+
+        @Test
+        public void eventAfterToday() {
+            long startTime = getDayStart() + DAY_IN_MILLIS + HOUR_IN_MILLIS;
+            long endTime = startTime + HOUR_IN_MILLIS;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, startTime, endTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 0);
+        }
+
+        @Test
+        public void allDayEvent() {
+            long startTime = getDayStart();
+            long endTime = startTime + DAY_IN_MILLIS;
+            boolean isAllDay = true;
+            addEvent(defaultTitle, startTime, endTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 1);
+            long expStartTime = startTime + 2 * HOUR_IN_MILLIS; // by default, all-day events start and finish at 2:00
+            long expEndTime = endTime + 2 * HOUR_IN_MILLIS;
+            checkEvent(events.get(0), defaultTitle, expStartTime, expEndTime, isAllDay);
+        }
+
+        @Test
+        public void severalEvents() {
+            long startTime1 = getDayStart();
+            long startTime2 = startTime1 + HOUR_IN_MILLIS;
+            long startTime3 = startTime2 + 3 * HOUR_IN_MILLIS;
+            long endTime1 = startTime1 + HOUR_IN_MILLIS;
+            long endTime2 = startTime2 + 5 * HOUR_IN_MILLIS;
+            long endTime3 = startTime3 + 2 * HOUR_IN_MILLIS;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, startTime1, endTime1, isAllDay);
+            addEvent(defaultTitle, startTime2, endTime2, isAllDay);
+            addEvent(defaultTitle, startTime3, endTime3, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 3);
+            checkEvent(events.get(0), defaultTitle, startTime1, endTime1, isAllDay);
+            checkEvent(events.get(1), defaultTitle, startTime2, endTime2, isAllDay);
+            checkEvent(events.get(2), defaultTitle, startTime3, endTime3, isAllDay);
+        }
     }
 
     private static int addCalendar(String calendarName, String accountName, String accountType) {
