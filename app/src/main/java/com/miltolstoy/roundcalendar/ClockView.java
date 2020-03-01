@@ -6,10 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.text.format.DateUtils;
-import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatImageView;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -204,7 +200,8 @@ public class ClockView extends AppCompatImageView {
             canvas.save();
             Point eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90);
             canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
-            canvas.drawText(event.getTitle(), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
+            canvas.drawText(cutEventTitleIfNeeded(event.getTitle()), eventTitlePoint.x, eventTitlePoint.y,
+                    paints.get("title"));
             canvas.restore();
         }
     }
@@ -232,4 +229,15 @@ public class ClockView extends AppCompatImageView {
         return events;
     }
 
+    private String cutEventTitleIfNeeded(String title) {
+        float textWidth = paints.get("title").measureText(title);
+        float maxWidth = clockWidget.getRadius();
+        if (textWidth > maxWidth) {
+            float maxSymbols = (maxWidth * title.length()) / textWidth;
+            maxSymbols -= 4; // "..." + one padding char
+            title = title.substring(0, Math.round(maxSymbols));
+            title += "...";
+        }
+        return title;
+    }
 }
