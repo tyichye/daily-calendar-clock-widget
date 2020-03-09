@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RoundCalendar</string>
+    <string name="prev_day">&lt;</string>
+    <string name="next_day">&gt;</string>
 </resources>

@@ -53,6 +53,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         AppWidgetProviderInfo widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
         int width = pxToDp(context, widgetInfo.minWidth);
         int height = pxToDp(context, widgetInfo.minHeight);
+        Log.d(TAG, "Widget height: " + height + ", width: " + width);
         return new Point(width, height);
     }
 
