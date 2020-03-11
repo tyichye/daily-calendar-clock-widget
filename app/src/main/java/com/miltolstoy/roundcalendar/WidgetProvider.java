@@ -13,13 +13,14 @@ public class WidgetProvider extends AppWidgetProvider {
 
     private static final String previousDayAction = "previousDayAction";
     private static final String nextDayAction = "nextDayAction";
+    private static final String todayAction = "todayAction";
 
     private static int daysShift = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (!action.equals(previousDayAction) && !action.equals(nextDayAction)) {
+        if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)) {
             super.onReceive(context, intent);
             return;
         }
@@ -28,6 +29,8 @@ public class WidgetProvider extends AppWidgetProvider {
             daysShift -= 1;
         } else if (action.equals(nextDayAction)) {
             daysShift += 1;
+        } else {
+            daysShift = 0;
         }
 
         int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
@@ -65,6 +68,7 @@ public class WidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
+        setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
     }
