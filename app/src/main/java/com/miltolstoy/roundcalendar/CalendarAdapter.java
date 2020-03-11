@@ -28,16 +28,22 @@ class CalendarAdapter {
 
     private Context context;
     private int calendarId;
+    private int daysShift;
 
-    private static final int CALENDAR_EMPTY_ID = -1;
+    static final int CALENDAR_EMPTY_ID = -1;
 
     CalendarAdapter(Context context) {
-        this(context, CALENDAR_EMPTY_ID);
+        this(context, CALENDAR_EMPTY_ID, 0);
     }
 
     CalendarAdapter(Context context, int calendarId) {
+        this(context, calendarId, 0);
+    }
+
+    CalendarAdapter(Context context, int calendarId, int daysShift) {
         this.context = context;
         this.calendarId = calendarId;
+        this.daysShift = daysShift;
     }
 
     void requestCalendarPermissionsIfNeeded() {
@@ -59,7 +65,7 @@ class CalendarAdapter {
 
     List<Event> getTodayEvents() {
         Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
-        long dayStart = getCurrentDayStart();
+        long dayStart = getDayStart();
         ContentUris.appendId(builder, dayStart);
         ContentUris.appendId(builder, dayStart + DateUtils.DAY_IN_MILLIS);
 
@@ -92,14 +98,18 @@ class CalendarAdapter {
         return events;
     }
 
-    private long getCurrentDayStart() {
+    Calendar getTodayCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH),
                 0, 0, 0);
+        calendar.add(Calendar.DAY_OF_MONTH, daysShift);
+        return calendar;
+    }
 
-        return calendar.getTime().getTime();
+    private long getDayStart() {
+        return getTodayCalendar().getTime().getTime();
     }
 }

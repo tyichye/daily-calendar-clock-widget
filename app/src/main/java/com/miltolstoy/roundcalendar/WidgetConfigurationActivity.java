@@ -33,15 +33,15 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
         Point widgetSize = getWidgetSize(this, appWidgetManager, appWidgetId);
-        drawWidget(this, views, widgetSize);
+        drawWidget(this, views, widgetSize, 0);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
         sendResultAndExit(RESULT_OK, appWidgetId);
     }
 
 
-    public static void drawWidget(Context context, RemoteViews views, Point widgetSize) {
-        CalendarAdapter calendarAdapter = new CalendarAdapter(context);
+    public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context, CalendarAdapter.CALENDAR_EMPTY_ID, dayShift);
         ClockView clockView = new ClockView(context, widgetSize);
         clockView.setCalendarAdapter(calendarAdapter);
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);

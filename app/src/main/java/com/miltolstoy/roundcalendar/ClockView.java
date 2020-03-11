@@ -176,7 +176,7 @@ public class ClockView extends AppCompatImageView {
 
     private void drawDate(Canvas canvas) {
         Point datePoint = clockWidget.getDateCoordinates();
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = calendarAdapter.getTodayCalendar();
         String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
                 (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
         canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
