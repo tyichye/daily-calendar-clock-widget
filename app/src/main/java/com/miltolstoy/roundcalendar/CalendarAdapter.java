@@ -109,6 +109,10 @@ class CalendarAdapter {
         return calendar;
     }
 
+    boolean isCalendarShifted() {
+        return (daysShift != 0);
+    }
+
     private long getDayStart() {
         return getTodayCalendar().getTime().getTime();
     }

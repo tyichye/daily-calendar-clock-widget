@@ -47,8 +47,10 @@ public class ClockView extends AppCompatImageView {
         drawDate(canvas);
         if (calendarAdapter != null) {
             drawEvents(canvas);
+            if (!calendarAdapter.isCalendarShifted()) {
+                drawHand(canvas);
+            }
         }
-        drawHand(canvas);
 
         postInvalidateDelayed(refreshTimeoutMillis);
     }
