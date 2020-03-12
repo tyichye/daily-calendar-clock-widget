@@ -61,4 +61,16 @@ public class EventTest {
         Event event = new Event(defaultTitle, "123456789", null, null, defaultAllDayStr);
         assertEquals(event.getFinishTime(), "13:17");
     }
+
+    @Test
+    public void isStartedFirstDayHalfTrue() {
+        Event event = new Event(defaultTitle, "12345678", defaultFinishStr, defaultDurationStr, defaultAllDayStr);
+        assertTrue(event.isStartedInFirstDayHalf());
+    }
+
+    @Test
+    public void isStartedFirstDayHalfFalse() {
+        Event event = new Event(defaultTitle, "123456789", defaultFinishStr, defaultDurationStr, defaultAllDayStr);
+        assertFalse(event.isStartedInFirstDayHalf());
+    }
 }
