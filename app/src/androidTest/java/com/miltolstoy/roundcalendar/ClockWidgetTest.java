@@ -153,8 +153,13 @@ public class ClockWidgetTest {
     }
 
     @Test
-    public void calculateEventTitlePoint() {
-        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100), new Point(891, 624));
+    public void calculateEventTitlePointSecondDayHalf() {
+        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, false), new Point(891, 624));
+    }
+
+    @Test
+    public void calculateEventTitlePointFirstDayHalf() {
+        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, true), new Point(553, 564));
     }
 
     @Test
