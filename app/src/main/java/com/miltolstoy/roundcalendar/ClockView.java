@@ -196,15 +196,7 @@ public class ClockView extends AppCompatImageView {
             if (event.isAllDay()) {
                 continue;
             }
-            ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
-            canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("eventLine"));
-
-            canvas.save();
-            Point eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90);
-            canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
-            canvas.drawText(cutEventTitleIfNeeded(event.getTitle()), eventTitlePoint.x, eventTitlePoint.y,
-                    paints.get("title"));
-            canvas.restore();
+            drawEvent(canvas, widgetCircle, event);
         }
     }
 
@@ -241,5 +233,25 @@ public class ClockView extends AppCompatImageView {
             title += "...";
         }
         return title;
+    }
+
+    private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
+        ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
+        canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("eventLine"));
+
+        canvas.save();
+
+        Point eventTitlePoint;
+        if (event.isStartedInFirstDayHalf())
+        {
+            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90, true);
+            canvas.rotate(degrees.getStart() + degrees.getSweep(), eventTitlePoint.x, eventTitlePoint.y);
+        } else {
+            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, false);
+            canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
+        }
+        canvas.drawText(cutEventTitleIfNeeded(event.getTitle()), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
+
+        canvas.restore();
     }
 }

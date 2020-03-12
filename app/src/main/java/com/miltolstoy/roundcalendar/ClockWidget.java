@@ -165,8 +165,12 @@ class ClockWidget {
         return new EventDegreeData(startDegree, sweepDegree);
     }
 
-    Point calculateEventTitlePoint(double degree) {
-        return calculateConcentricPoint(degree, radius - markersLength);
+    Point calculateEventTitlePoint(double degree, boolean isFirstDayHalf) {
+        if (isFirstDayHalf) {
+            return calculateConcentricPoint(degree, markersLength * 2);
+        } else {
+            return calculateConcentricPoint(degree, radius - markersLength);
+        }
     }
 
 
