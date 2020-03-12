@@ -40,7 +40,9 @@ import static android.provider.CalendarContract.CALLER_IS_SYNCADAPTER;
 import static android.text.format.DateUtils.HOUR_IN_MILLIS;
 import static android.text.format.DateUtils.SECOND_IN_MILLIS;
 import static android.text.format.DateUtils.DAY_IN_MILLIS;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 
 @RunWith(Enclosed.class)
@@ -261,6 +263,72 @@ public class CalendarAdapterTest {
             checkEvent(events.get(1), defaultTitle, startTime2, endTime2, isAllDay);
             checkEvent(events.get(2), defaultTitle, startTime3, endTime3, isAllDay);
         }
+
+        @Test
+        public void yesterdayEvent() {
+            long yesterdayStartTime = getDayStart() - DAY_IN_MILLIS;
+            long yesterdayEndTime = yesterdayStartTime + HOUR_IN_MILLIS;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, yesterdayStartTime, yesterdayEndTime, isAllDay);
+            long todayStartTime = getDayStart() + HOUR_IN_MILLIS;
+            long todayEndTime = todayStartTime + HOUR_IN_MILLIS;
+            addEvent(defaultTitle, todayStartTime, todayEndTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId, -1);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 1);
+            checkEvent(events.get(0), defaultTitle, yesterdayStartTime, yesterdayEndTime, isAllDay);
+        }
+
+        @Test
+        public void tomorrowEvent() {
+            long tomorrowStartTime = getDayStart() + DAY_IN_MILLIS;
+            long tomorrowEndTime = tomorrowStartTime + HOUR_IN_MILLIS;
+            boolean isAllDay = false;
+            addEvent(defaultTitle, tomorrowStartTime, tomorrowEndTime, isAllDay);
+            long todayStartTime = getDayStart() + HOUR_IN_MILLIS;
+            long todayEndTime = todayStartTime + HOUR_IN_MILLIS;
+            addEvent(defaultTitle, todayStartTime, todayEndTime, isAllDay);
+
+            CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId, 1);
+            calendarAdapter.requestCalendarPermissionsIfNeeded();
+            List<Event> events = calendarAdapter.getTodayEvents();
+
+            assertEquals(events.size(), 1);
+            checkEvent(events.get(0), defaultTitle, tomorrowStartTime, tomorrowEndTime, isAllDay);
+        }
+
+        @Test
+        public void isCalendarShiftedTrueFront() {
+            assertTrue(new CalendarAdapter(context, calendarId, 1).isCalendarShifted());
+        }
+
+        @Test
+        public void isCalendarShiftedTrueBack() {
+            assertTrue(new CalendarAdapter(context, calendarId, -1).isCalendarShifted());
+        }
+
+        @Test
+        public void isCalendarShiftedFalse() {
+            assertFalse(new CalendarAdapter(context, calendarId, 0).isCalendarShifted());
+        }
+
+        @Test
+        public void getDayStartCalendarNoShift() {
+            getDayStartCalendarCheck(0);
+        }
+
+        @Test
+        public void getDayStartCalendarFrontShift() {
+            getDayStartCalendarCheck(1);
+        }
+
+        @Test
+        public void getDayStartCalendarBackShift() {
+            getDayStartCalendarCheck(-1);
+        }
     }
 
     private static int addCalendar(String calendarName, String accountName, String accountType) {
@@ -342,5 +410,14 @@ public class CalendarAdapterTest {
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0,
                 0, 0);
         return calendar.getTime().getTime();
+    }
+
+    private static void getDayStartCalendarCheck(int daysShift) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        Calendar adapterCalendar = new CalendarAdapter(context, calendarId, daysShift).getDayStartCalendar();
+        long timeDiff = Math.abs(calendar.getTime().getTime() - adapterCalendar.getTime().getTime());
+        assertTrue(timeDiff < (5 + Math.abs(daysShift) * DAY_IN_MILLIS));
     }
 }

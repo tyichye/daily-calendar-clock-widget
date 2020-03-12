@@ -98,7 +98,7 @@ class CalendarAdapter {
         return events;
     }
 
-    Calendar getTodayCalendar() {
+    Calendar getDayStartCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(
                 calendar.get(Calendar.YEAR),
@@ -114,6 +114,6 @@ class CalendarAdapter {
     }
 
     private long getDayStart() {
-        return getTodayCalendar().getTime().getTime();
+        return getDayStartCalendar().getTime().getTime();
     }
 }
