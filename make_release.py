@@ -17,6 +17,7 @@ def copy_apk():
     released_apk_path = _get_last_released_apk_path()
     assert _is_version_incremented(generated_apk_path, released_apk_path)
     shutil.copy(generated_apk_path, released_apk_path)
+    _update_apk_name(released_apk_path)
     _print_step_finish("APK copy")
 
 
@@ -28,7 +29,7 @@ def _run_process(*args):
 
 
 def _print_step_finish(text):
-    print("\n\n{separator}\n{text} finished\n{separator}".format(separator=("=" * 50), text=text))
+    print("\n{separator}\n{text} finished\n{separator}\n".format(separator=("=" * 50), text=text))
 
 
 def _get_last_released_apk_path():
@@ -63,6 +64,14 @@ def _get_version_info(apk_path):
     version_code = re.findall("versionCode='(\d+)'", result)[0]
     major_version, minor_version = re.findall("versionName='(\d+)\.(\d+)'", result)[0]
     return version_code, major_version, minor_version
+
+
+def _update_apk_name(apk_path):
+    _, major_version, minor_version = _get_version_info(apk_path)
+    curr_version = re.findall("round_calendar_v(\d+\.\d+)\.apk$", apk_path)[0]
+    apk_path_renamed = apk_path.replace(curr_version, "{}.{}".format(major_version, minor_version))
+    print("Released application: {}".format(apk_path_renamed))
+    shutil.move(apk_path, apk_path_renamed)
 
 
 if __name__ == "__main__":
