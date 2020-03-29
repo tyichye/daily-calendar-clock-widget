@@ -1,5 +1,6 @@
 package com.miltolstoy.roundcalendar;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -16,6 +17,12 @@ class Event {
     private long start;
     private long finish;
     @Getter private boolean allDay;
+    @Getter private int color = Color.BLUE; // seems like default Google Calendar event color
+
+    Event(String title, String start, String finish, String duration, String allDay, int color) {
+        this(title, start, finish, duration, allDay);
+        this.color = color;
+    }
 
     Event(String title, String start, String finish, String duration, String allDay) {
         this(title, parseLongSafe(start), parseLongSafe(finish), parseDurationSafe(duration),

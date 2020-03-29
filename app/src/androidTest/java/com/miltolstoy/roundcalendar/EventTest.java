@@ -1,5 +1,7 @@
 package com.miltolstoy.roundcalendar;
 
+import android.graphics.Color;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,6 +15,7 @@ public class EventTest {
     private String defaultFinishStr = "987654321";
     private String defaultDurationStr = "P1H30M";
     private String defaultAllDayStr = "0";
+    private int defaultColor = Color.BLACK;
 
     @Test
     public void getTitle() {
@@ -72,5 +75,18 @@ public class EventTest {
     public void isStartedFirstDayHalfFalse() {
         Event event = new Event(defaultTitle, "123456789", defaultFinishStr, defaultDurationStr, defaultAllDayStr);
         assertFalse(event.isStartedInFirstDayHalf());
+    }
+
+    @Test
+    public void getColorDefault() {
+        Event event = new Event(defaultTitle, defaultStartStr, defaultFinishStr, defaultDurationStr, defaultAllDayStr);
+        assertEquals(event.getColor(), Color.BLUE);
+    }
+
+    @Test
+    public void getColor() {
+        Event event = new Event(defaultTitle, defaultStartStr, defaultFinishStr, defaultDurationStr, defaultAllDayStr,
+                defaultColor);
+        assertEquals(event.getColor(), defaultColor);
     }
 }
