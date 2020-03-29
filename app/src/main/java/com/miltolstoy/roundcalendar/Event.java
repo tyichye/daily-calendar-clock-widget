@@ -17,7 +17,7 @@ class Event {
     private long start;
     private long finish;
     @Getter private boolean allDay;
-    @Getter private int color = Color.BLUE; // seems like default Google Calendar event color
+    @Getter private int color = Color.TRANSPARENT;
 
     Event(String title, String start, String finish, String duration, String allDay, int color) {
         this(title, start, finish, duration, allDay);

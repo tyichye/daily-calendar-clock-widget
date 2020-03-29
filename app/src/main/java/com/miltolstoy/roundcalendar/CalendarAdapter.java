@@ -22,6 +22,7 @@ import static android.provider.CalendarContract.Events.DTEND;
 import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.CALENDAR_ID;
+import static android.provider.CalendarContract.Events.DISPLAY_COLOR;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
@@ -76,7 +77,7 @@ class CalendarAdapter {
             selectionArgs = new String[] {String.valueOf(calendarId)};
         }
         Cursor cursor = context.getContentResolver().query(builder.build(),
-                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY}, where, selectionArgs, DTSTART);
+                new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY, DISPLAY_COLOR}, where, selectionArgs, DTSTART);
 
         List<Event> events = new ArrayList<>();
         if (cursor != null && cursor.getCount() != 0) {
@@ -89,8 +90,9 @@ class CalendarAdapter {
         Log.d(TAG, "Today events:");
         do {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                    cursor.getString(4));
+                    cursor.getString(4), Integer.parseInt(cursor.getString(5)));
             events.add(event);
+
         } while (cursor.moveToNext());
         Log.d(TAG, "Total: " + events.size());
 

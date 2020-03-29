@@ -27,6 +27,7 @@ public class ClockView extends AppCompatImageView {
     private static final int backgroundColor = Color.TRANSPARENT;
     private static int refreshTimeoutMillis;
     private CalendarAdapter calendarAdapter = null;
+    private boolean useCalendarColors = false;
 
     public ClockView(Context context) throws IllegalStateException {
         super(context);
@@ -109,7 +110,7 @@ public class ClockView extends AppCompatImageView {
         paints.put("date", datePaint);
 
         Paint eventLinePaint = new Paint();
-        eventLinePaint.setColor(Color.BLUE);
+        eventLinePaint.setColor(clockWidget.getEventArcColor()); // can be redefined in case of calendar color usage
         eventLinePaint.setAlpha(100);
         eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         paints.put("eventLine", eventLinePaint);
@@ -237,7 +238,11 @@ public class ClockView extends AppCompatImageView {
 
     private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
         ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
-        canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("eventLine"));
+        Paint eventPaint = paints.get("eventLine");
+        if (useCalendarColors) {
+            eventPaint.setColor(event.getColor());
+        }
+        canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, eventPaint);
 
         canvas.save();
 
