@@ -34,8 +34,9 @@ public class ClockView extends AppCompatImageView {
         throw new IllegalStateException("Use another constructor");
     }
 
-    public ClockView(Context context, Point screenSize) {
+    public ClockView(Context context, Point screenSize, boolean useCalendarColors) {
         super(context);
+        this.useCalendarColors = useCalendarColors;
         clockWidget = new ClockWidget(screenSize);
         init(context);
     }

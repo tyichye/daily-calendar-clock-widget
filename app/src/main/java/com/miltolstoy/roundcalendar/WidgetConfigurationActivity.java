@@ -10,11 +10,17 @@ import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
+
+    private static boolean useCalendarEventColor = true;
+
+    private final Object saveButtonLock = new Object();
+    private boolean saveButtonLockNotified = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +30,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         CalendarAdapter calendarAdapter = new CalendarAdapter(this);
         calendarAdapter.requestCalendarPermissionsIfNeeded();
 
-        int appWidgetId = getAppWidgetId(getIntent());
+        final int appWidgetId = getAppWidgetId(getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             sendResultAndExit(RESULT_CANCELED, appWidgetId);
         }
@@ -36,13 +42,12 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         drawWidget(this, views, widgetSize, 0);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
-        sendResultAndExit(RESULT_OK, appWidgetId);
+        new WaitForOptionsSaveThread(appWidgetId).start();
     }
-
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, CalendarAdapter.CALENDAR_EMPTY_ID, dayShift);
-        ClockView clockView = new ClockView(context, widgetSize);
+        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
         clockView.setCalendarAdapter(calendarAdapter);
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
         clockView.draw(new Canvas(bitmap));
@@ -57,6 +62,31 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         return new Point(width, height);
     }
 
+    public void onColorChosen(View view) {
+        switch(view.getId()) {
+            case R.id.calendar_color_radio:
+                Log.d(TAG, "Calendar event color chosen");
+                useCalendarEventColor = true;
+                break;
+
+            case R.id.default_color_radio:
+                Log.d(TAG, "Default event color chosen");
+                useCalendarEventColor = false;
+                break;
+
+            default:
+                Log.e(TAG, "Unknown event color chooser radiobutton");
+                useCalendarEventColor = false;
+        }
+    }
+
+    public void onSaveClicked(View view) {
+        synchronized (saveButtonLock) {
+            saveButtonLock.notify();
+            saveButtonLockNotified = true;
+        }
+    }
+
 
     private int getAppWidgetId(Intent intent) {
         Bundle extras = intent.getExtras();
@@ -68,13 +98,42 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     }
 
     private void sendResultAndExit(int result, int appWidgetId) {
+        sendResultAndExit(result, null, appWidgetId);
+    }
+
+    private void sendResultAndExit(int result, String action, int appWidgetId) {
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        resultValue.setAction(action);
         setResult(result, resultValue);
         finish();
     }
 
     private static int pxToDp(Context context,int dp) {
         return dp / (int) context.getResources().getDisplayMetrics().density;
+    }
+
+    private class WaitForOptionsSaveThread extends Thread {
+
+        private int appWidgetId;
+
+        WaitForOptionsSaveThread(int widgetId) {
+            appWidgetId = widgetId;
+        }
+
+        @Override
+        public void run() {
+            try {
+                synchronized (saveButtonLock) {
+                    if (!saveButtonLockNotified) {
+                        saveButtonLock.wait();
+                    }
+                }
+                sendResultAndExit(RESULT_OK, AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED, appWidgetId);
+            } catch (InterruptedException e) {
+                Log.e(TAG, e.getMessage());
+                sendResultAndExit(RESULT_CANCELED, appWidgetId);
+            }
+        }
     }
 }

@@ -6,7 +6,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.util.Log;
 import android.widget.RemoteViews;
+
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 
 public class WidgetProvider extends AppWidgetProvider {
@@ -20,7 +23,14 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)) {
+        if (action == null) {
+            Log.d(TAG, "Empty action");
+            return;
+        }
+
+        if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)
+                && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
+            Log.d(TAG, "Unhandled action: " + action);
             super.onReceive(context, intent);
             return;
         }
