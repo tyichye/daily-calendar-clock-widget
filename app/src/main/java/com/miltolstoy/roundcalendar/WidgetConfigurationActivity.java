@@ -30,6 +30,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RemoteViews;
 
 import static com.miltolstoy.roundcalendar.Logging.TAG;
@@ -84,32 +85,16 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         return new Point(width, height);
     }
 
-    public void onColorChosen(View view) {
-        boolean useCalendarEventColor = true;
-
-        switch(view.getId()) {
-            case R.id.calendar_color_radio:
-                Log.d(TAG, "Calendar event color chosen");
-                useCalendarEventColor = true;
-                break;
-
-            case R.id.default_color_radio:
-                Log.d(TAG, "Default event color chosen");
-                useCalendarEventColor = false;
-                break;
-
-            default:
-                Log.e(TAG, "Unknown event color chooser radiobutton");
-                useCalendarEventColor = false;
-        }
+    public void onSaveClicked(View view) {
+        RadioButton calendarEventColorButton = findViewById(R.id.calendar_color_radio);
+        boolean useCalendarEventColor = calendarEventColorButton.isChecked();
+        Log.d(TAG, "Using " + (useCalendarEventColor ? "calendar" : "default") + " event color");
 
         SharedPreferences preferences = view.getContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(eventColorSettingName, useCalendarEventColor);
         editor.apply();
-    }
 
-    public void onSaveClicked(View view) {
         synchronized (saveButtonLock) {
             saveButtonLock.notify();
             saveButtonLockNotified = true;
