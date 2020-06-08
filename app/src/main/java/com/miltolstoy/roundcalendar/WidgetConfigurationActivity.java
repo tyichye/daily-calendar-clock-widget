@@ -22,6 +22,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -35,10 +36,11 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
 
-    private static boolean useCalendarEventColor = true;
-
     private final Object saveButtonLock = new Object();
     private boolean saveButtonLockNotified = false;
+
+    private static final String preferencesName = "RoundCalendarPrefs";
+    private static final String eventColorSettingName = "useCalendarEventColor";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, CalendarAdapter.CALENDAR_EMPTY_ID, dayShift);
+        SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
         clockView.setCalendarAdapter(calendarAdapter);
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
@@ -81,6 +85,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     }
 
     public void onColorChosen(View view) {
+        boolean useCalendarEventColor = true;
+
         switch(view.getId()) {
             case R.id.calendar_color_radio:
                 Log.d(TAG, "Calendar event color chosen");
@@ -96,6 +102,11 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
                 Log.e(TAG, "Unknown event color chooser radiobutton");
                 useCalendarEventColor = false;
         }
+
+        SharedPreferences preferences = view.getContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(eventColorSettingName, useCalendarEventColor);
+        editor.apply();
     }
 
     public void onSaveClicked(View view) {
