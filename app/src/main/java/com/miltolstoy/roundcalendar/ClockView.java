@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v7.widget.AppCompatImageView;
 
@@ -268,14 +269,22 @@ public class ClockView extends AppCompatImageView {
         Point eventTitlePoint;
         if (event.isStartedInFirstDayHalf())
         {
-            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90, true);
+            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90,
+                    calculateEventTitleWidth(event));
             canvas.rotate(degrees.getStart() + degrees.getSweep(), eventTitlePoint.x, eventTitlePoint.y);
         } else {
-            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, false);
+            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, 0);
             canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
         }
         canvas.drawText(cutEventTitleIfNeeded(event.getTitle()), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
 
         canvas.restore();
+    }
+
+    private int calculateEventTitleWidth(Event event) {
+        Rect bounds = new Rect();
+        Paint titlePaint = paints.get("title");
+        titlePaint.getTextBounds(event.getTitle(), 0, event.getTitle().length(), bounds);
+        return bounds.width();
     }
 }

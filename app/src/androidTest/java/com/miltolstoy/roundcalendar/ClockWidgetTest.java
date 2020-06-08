@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -172,13 +171,13 @@ public class ClockWidgetTest {
     }
 
     @Test
-    public void calculateEventTitlePointSecondDayHalf() {
-        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, false), new Point(891, 624));
+    public void calculateEventTitlePointNonZeroLength() {
+        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, 42), new Point(850, 617));
     }
 
     @Test
-    public void calculateEventTitlePointFirstDayHalf() {
-        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, true), new Point(553, 564));
+    public void calculateEventTitlePointZeroLength() {
+        assertEquals(new ClockWidget(defaultScreenSize).calculateEventTitlePoint(100, 0), new Point(891, 624));
     }
 
     @Test
