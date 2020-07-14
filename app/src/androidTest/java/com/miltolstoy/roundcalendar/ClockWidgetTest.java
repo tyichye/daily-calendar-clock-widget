@@ -158,6 +158,11 @@ public class ClockWidgetTest {
     }
 
     @Test
+    public void getDayOfWeekCoordinates() {
+        assertEquals(new ClockWidget(defaultScreenSize).getDayOfWeekCoordinates(), new Point(27, 125));
+    }
+
+    @Test
     public void getWidgetCircleObject() {
         assertEquals(new ClockWidget(defaultScreenSize).getWidgetCircleObject(), new RectF(76, 131, 924, 979));
     }

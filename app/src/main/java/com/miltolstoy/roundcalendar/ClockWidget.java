@@ -58,6 +58,8 @@ class ClockWidget {
     private double digitRadiusPadding;
     private int dateXPadding;
     private int dateYPadding;
+    private int dayOfWeekXPadding;
+    private int dayOfWeekYPadding;
 
     @Getter private Point center;
     @Getter private float radius;
@@ -157,6 +159,10 @@ class ClockWidget {
         return new Point(dateXPadding, dateYPadding);
     }
 
+    Point getDayOfWeekCoordinates() {
+        return new Point(dayOfWeekXPadding, dayOfWeekYPadding);
+    }
+
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
         List<List<Point>> markers = getHourMarkersCoordinates();
@@ -199,6 +205,9 @@ class ClockWidget {
         markersLength = side / 36;
         dateXPadding = side / 36;
         dateYPadding = side / 15;
+        dayOfWeekXPadding = side / 36;
+        dayOfWeekYPadding = side / 8;
+
         titleSize = side / 27;
 
         handWidth = borderWidth / 2;
