@@ -27,6 +27,12 @@ import android.graphics.Point;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 
@@ -37,6 +43,9 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String todayAction = "todayAction";
 
     private static int daysShift = 0;
+    private static Timer timer = new Timer();
+    private static List<Integer> timerWidgetIds = new ArrayList<>();
+    private static final long timerUpdatePeriodMilliseconds = 5 * 60 * 1000; // 5 minutes
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -72,6 +81,10 @@ public class WidgetProvider extends AppWidgetProvider {
         for (int id : appWidgetIds) {
             drawAndUpdate(context, id);
             setOnClickButtonsIntents(context, id);
+            if (!timerWidgetIds.contains(id)) {
+                timer.schedule(new WidgetUpdateTask(context, id), new Date(), timerUpdatePeriodMilliseconds);
+                timerWidgetIds.add(id);
+            }
         }
     }
 
@@ -99,5 +112,21 @@ public class WidgetProvider extends AppWidgetProvider {
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
+    }
+
+    private static class WidgetUpdateTask extends TimerTask {
+
+        private Context context;
+        private int widgetId;
+
+        WidgetUpdateTask(Context context, int widgetId) {
+            Log.d(TAG, "Widget update task created for widget id: " + widgetId);
+            this.context = context;
+            this.widgetId = widgetId;
+        }
+
+        public void run() {
+            drawAndUpdate(context, widgetId);
+        }
     }
 }
