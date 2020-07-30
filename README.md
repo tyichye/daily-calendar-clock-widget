@@ -4,6 +4,9 @@ Release application version can be found under "release_apk" directory.
 
 ![](docs/readme-screenshot.jpg)
 
+### Release application
+Release application file can be found under `./release_apk` directory
+
 ### Build
 GUI way: build using Android Studio  
 CLI way: ```./gradlew build```
