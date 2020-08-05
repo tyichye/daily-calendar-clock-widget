@@ -98,7 +98,7 @@ public class EventTest {
     @Test
     public void getColorDefault() {
         Event event = new Event(defaultTitle, defaultStartStr, defaultFinishStr, defaultDurationStr, defaultAllDayStr);
-        assertEquals(event.getColor(), Color.BLUE);
+        assertEquals(event.getColor(), Color.TRANSPARENT);
     }
 
     @Test
