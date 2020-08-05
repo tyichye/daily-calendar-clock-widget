@@ -18,20 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.miltolstoy.roundcalendar;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Calendar;
 
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
@@ -41,17 +39,31 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String previousDayAction = "previousDayAction";
     private static final String nextDayAction = "nextDayAction";
     private static final String todayAction = "todayAction";
+    private static final String tickAction = "com.miltolstoy.roundcalendar.clockTickAction";
 
     private static int daysShift = 0;
-    private static Timer timer = new Timer();
-    private static List<Integer> timerWidgetIds = new ArrayList<>();
-    private static final long timerUpdatePeriodMilliseconds = 5 * 60 * 1000; // 5 minutes
+
+    @Override
+    public void onEnabled(Context context) {
+        setupNextClockTick(context);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (action == null) {
             Log.d(TAG, "Empty action");
+            return;
+        }
+
+        if (action.equals(tickAction)) {
+            setupNextClockTick(context);
+            Intent updateIntent = new Intent(context, WidgetProvider.class);
+            updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            context.sendBroadcast(updateIntent);
+            super.onReceive(context, intent);
             return;
         }
 
@@ -81,10 +93,6 @@ public class WidgetProvider extends AppWidgetProvider {
         for (int id : appWidgetIds) {
             drawAndUpdate(context, id);
             setOnClickButtonsIntents(context, id);
-            if (!timerWidgetIds.contains(id)) {
-                timer.schedule(new WidgetUpdateTask(context, id), new Date(), timerUpdatePeriodMilliseconds);
-                timerWidgetIds.add(id);
-            }
         }
     }
 
@@ -114,19 +122,14 @@ public class WidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
-    private static class WidgetUpdateTask extends TimerTask {
-
-        private Context context;
-        private int widgetId;
-
-        WidgetUpdateTask(Context context, int widgetId) {
-            Log.d(TAG, "Widget update task created for widget id: " + widgetId);
-            this.context = context;
-            this.widgetId = widgetId;
-        }
-
-        public void run() {
-            drawAndUpdate(context, widgetId);
-        }
+    private void setupNextClockTick(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        final int tickPeriodMillisecond = 60 * 1000; // one minute
+        calendar.add(Calendar.MILLISECOND, tickPeriodMillisecond);
+        Intent tickIntent = new Intent(context, WidgetProvider.class);
+        tickIntent.setAction(tickAction);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, tickIntent, 0);
+        alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
     }
 }

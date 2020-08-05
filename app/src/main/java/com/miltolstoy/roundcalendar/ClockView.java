@@ -47,7 +47,7 @@ public class ClockView extends AppCompatImageView {
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
     private static final int backgroundColor = Color.TRANSPARENT;
-    private static int refreshTimeoutMillis;
+    private static final int refreshTimeoutMillis = 1800000; // 30 minutes - minimal valid value
     private CalendarAdapter calendarAdapter = null;
     private boolean useCalendarColors = false;
 
@@ -60,7 +60,7 @@ public class ClockView extends AppCompatImageView {
         super(context);
         this.useCalendarColors = useCalendarColors;
         clockWidget = new ClockWidget(screenSize);
-        init(context);
+        paints = initPaints();
     }
 
 
@@ -82,12 +82,6 @@ public class ClockView extends AppCompatImageView {
     void setCalendarAdapter(CalendarAdapter adapter) {
         calendarAdapter = adapter;
         invalidate();
-    }
-
-
-    private void init(Context context) {
-        paints = initPaints();
-        refreshTimeoutMillis = context.getResources().getInteger(R.integer.refreshPeriodMillis);
     }
 
 
