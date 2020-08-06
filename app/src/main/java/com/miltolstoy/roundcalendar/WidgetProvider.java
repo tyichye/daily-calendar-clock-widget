@@ -108,7 +108,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private static void drawAndUpdate(Context context, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        Point widgetSize = WidgetConfigurationActivity.getWidgetSize(context, appWidgetManager, widgetId);
+        Point widgetSize = WidgetConfigurationActivity.getWidgetSize(appWidgetManager, widgetId);
         WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift);
         appWidgetManager.updateAppWidget(widgetId, views);
     }

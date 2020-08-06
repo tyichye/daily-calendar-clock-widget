@@ -59,7 +59,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
-        Point widgetSize = getWidgetSize(this, appWidgetManager, appWidgetId);
+        Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         drawWidget(this, views, widgetSize, 0);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
@@ -77,12 +77,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
     }
 
-    public static Point getWidgetSize(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    public static Point getWidgetSize(AppWidgetManager appWidgetManager, int appWidgetId) {
         AppWidgetProviderInfo widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
-        int width = pxToDp(context, widgetInfo.minWidth);
-        int height = pxToDp(context, widgetInfo.minHeight);
-        Log.d(TAG, "Widget height: " + height + ", width: " + width);
-        return new Point(width, height);
+        Log.d(TAG, "Widget height: " + widgetInfo.minHeight + ", width: " + widgetInfo.minWidth);
+        return new Point(widgetInfo.minWidth, widgetInfo.minHeight);
     }
 
     public void onSaveClicked(View view) {
@@ -121,10 +119,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         resultValue.setAction(action);
         setResult(result, resultValue);
         finish();
-    }
-
-    private static int pxToDp(Context context,int dp) {
-        return dp / (int) context.getResources().getDisplayMetrics().density;
     }
 
     private class WaitForOptionsSaveThread extends Thread {
