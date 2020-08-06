@@ -216,12 +216,28 @@ public class ClockView extends AppCompatImageView {
             canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("sleepEventLine"));
         }
 
+        List<Event> allDayEvents = new ArrayList<>();
         for (Event event : calendarAdapter.getTodayEvents()) {
             if (event.isAllDay()) {
+                allDayEvents.add(event);
                 continue;
             }
             drawEvent(canvas, widgetCircle, event);
         }
+
+        if (allDayEvents.isEmpty()) {
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("All-day: ");
+        for (Event event : allDayEvents) {
+            builder.append(event.getTitle());
+            builder.append(", ");
+        }
+        builder.setLength(builder.length() - 2); // cut out last comma
+        Point allDayEventsPoint = clockWidget.getAllDayEventListCoordinates();
+        canvas.drawText(builder.toString(), allDayEventsPoint.x, allDayEventsPoint.y, paints.get("title"));
     }
 
     private List<Event> getSleepEvents() {

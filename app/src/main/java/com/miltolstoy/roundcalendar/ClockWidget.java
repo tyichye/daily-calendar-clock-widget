@@ -60,6 +60,8 @@ class ClockWidget {
     private int dateYPadding;
     private int dayOfWeekXPadding;
     private int dayOfWeekYPadding;
+    private int allDayEventsXPadding;
+    private int allDayEventsYPadding;
 
     @Getter private Point center;
     @Getter private float radius;
@@ -163,6 +165,10 @@ class ClockWidget {
         return new Point(dayOfWeekXPadding, dayOfWeekYPadding);
     }
 
+    Point getAllDayEventListCoordinates() {
+        return new Point(allDayEventsXPadding, allDayEventsYPadding);
+    }
+
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
         List<List<Point>> markers = getHourMarkersCoordinates();
@@ -207,6 +213,8 @@ class ClockWidget {
         dateYPadding = side / 15;
         dayOfWeekXPadding = side / 36;
         dayOfWeekYPadding = side / 8;
+        allDayEventsXPadding = side / 36;
+        allDayEventsYPadding = (int) (side * 0.99);
 
         titleSize = side / 27;
 
@@ -215,12 +223,12 @@ class ClockWidget {
         digitRadiusPadding = padding * 0.5;
         radius = side / 2 - padding;
 
-        center = calculateWidgetCenter(screenSize, padding, radius, dateSize);
+        center = calculateWidgetCenter(screenSize, radius, dateSize);
         hoursCoordinates = calculateHoursCoordinates();
     }
 
-    private static Point calculateWidgetCenter(Point screenSize, int padding, float radius, int dateSize) {
-        float yPosition = padding + radius + dateSize;
+    private static Point calculateWidgetCenter(Point screenSize, float radius, int dateSize) {
+        float yPosition = radius + dateSize;
         yPosition = (yPosition > (float) screenSize.y / 2) ? (float) screenSize.y / 2 : yPosition;
         return new Point(screenSize.x / 2, Math.round(yPosition));
     }
