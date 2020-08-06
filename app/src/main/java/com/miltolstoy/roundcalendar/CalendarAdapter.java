@@ -109,8 +109,11 @@ class CalendarAdapter {
         do {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
                     cursor.getString(4), Integer.parseInt(cursor.getString(5)));
+            int todayDayNumber = getDayOfMonth();
+            if ( (event.getStartDate() == (todayDayNumber - 1)) && (event.getFinishDate() == todayDayNumber) ) {
+                continue; // yesterday all-day one-day event
+            }
             events.add(event);
-
         } while (cursor.moveToNext());
         Log.d(TAG, "Total: " + events.size());
 
@@ -135,5 +138,9 @@ class CalendarAdapter {
 
     private long getDayStart() {
         return getDayStartCalendar().getTime().getTime();
+    }
+
+    private int getDayOfMonth() {
+        return getDayStartCalendar().get(Calendar.DATE);
     }
 }

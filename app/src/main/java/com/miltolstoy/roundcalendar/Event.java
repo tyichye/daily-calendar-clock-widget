@@ -71,6 +71,18 @@ class Event {
         return calendar.get(Calendar.HOUR_OF_DAY) < 12;
     }
 
+    int getStartDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(start);
+        return calendar.get(Calendar.DATE);
+    }
+
+    int getFinishDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(finish);
+        return calendar.get(Calendar.DATE);
+    }
+
 
     private String formatToTime(long milliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
