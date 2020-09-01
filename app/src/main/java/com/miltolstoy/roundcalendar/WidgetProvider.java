@@ -122,10 +122,11 @@ public class WidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
+
     private void setupNextClockTick(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
-        final int tickPeriodMillisecond = 60 * 1000; // one minute
+        final int tickPeriodMillisecond = 1000; // Intents are missed sometimes, so just bombing app with them.
         calendar.add(Calendar.MILLISECOND, tickPeriodMillisecond);
         Intent tickIntent = new Intent(context, WidgetProvider.class);
         tickIntent.setAction(tickAction);
