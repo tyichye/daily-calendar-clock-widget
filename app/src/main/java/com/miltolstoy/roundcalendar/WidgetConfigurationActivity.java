@@ -18,11 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.miltolstoy.roundcalendar;
 
+import android.Manifest;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -40,6 +42,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private final Object saveButtonLock = new Object();
     private boolean saveButtonLockNotified = false;
 
+    static final int CALENDAR_PERMISSION_CODE = 10;
+
     private static final String preferencesName = "RoundCalendarPrefs";
     private static final String eventColorSettingName = "useCalendarEventColor";
 
@@ -48,8 +52,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_configuration);
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(this);
-        calendarAdapter.requestCalendarPermissionsIfNeeded();
+        requestCalendarPermissionsIfNeeded();
 
         final int appWidgetId = getAppWidgetId(getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -99,6 +102,24 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
     }
 
+    void requestCalendarPermissionsIfNeeded() {
+        Log.d(TAG, "Checking READ_CALENDAR permission");
+        if (checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d(TAG, "READ_CALENDAR permission granted");
+            return;
+        }
+
+        Log.d(TAG, "Requesting READ_CALENDAR permission");
+        requestPermissions(new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
+        Log.e(TAG, "Calendar permission not granted");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        System.exit(0);
+    }
 
     private int getAppWidgetId(Intent intent) {
         Bundle extras = intent.getExtras();

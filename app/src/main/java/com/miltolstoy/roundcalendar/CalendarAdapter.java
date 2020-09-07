@@ -18,15 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.miltolstoy.roundcalendar;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -63,23 +58,6 @@ class CalendarAdapter {
         this.context = context;
         this.calendarId = calendarId;
         this.daysShift = daysShift;
-    }
-
-    void requestCalendarPermissionsIfNeeded() {
-        Log.d(TAG, "Checking READ_CALENDAR permission");
-        int permission_status = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.READ_CALENDAR);
-        if (permission_status == PackageManager.PERMISSION_GRANTED)
-        {
-            Log.d(TAG, "READ_CALENDAR permission granted");
-            return;
-        }
-
-        Log.d(TAG, "Requesting READ_CALENDAR permission");
-        int request_status = 0;
-        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CALENDAR},
-                request_status);
-        Log.d(TAG, "Permission request status: " + request_status);
     }
 
     List<Event> getTodayEvents() {
