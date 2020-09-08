@@ -286,7 +286,7 @@ public class ClockView extends AppCompatImageView {
         canvas.save();
 
         Point eventTitlePoint;
-        if (event.isStartedInFirstDayHalf())
+        if (event.isFinishedInFirstDayHalf())
         {
             eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90,
                     calculateEventTitleWidth(event));

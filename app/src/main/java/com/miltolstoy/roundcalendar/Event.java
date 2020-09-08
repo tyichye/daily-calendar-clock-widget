@@ -65,9 +65,9 @@ class Event {
         return formatToTime(finish);
     }
 
-    boolean isStartedInFirstDayHalf() {
+    boolean isFinishedInFirstDayHalf() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(start);
+        calendar.setTimeInMillis(finish);
         return calendar.get(Calendar.HOUR_OF_DAY) < 12;
     }
 
