@@ -26,16 +26,19 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.miltolstoy.roundcalendar.Logging.TAG;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
 import static java.util.Calendar.MONTH;
@@ -216,8 +219,14 @@ public class ClockView extends AppCompatImageView {
             canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("sleepEventLine"));
         }
 
+        List<Event> todayEvents = calendarAdapter.getTodayEvents();
+        List<List<Event>> sameTimeEventsList = extractSameTimeEvents(todayEvents);
+        for (List<Event> sameTimeEvents : sameTimeEventsList) {
+            drawSameTimeEvents(canvas, widgetCircle, sameTimeEvents);
+        }
+
         List<Event> allDayEvents = new ArrayList<>();
-        for (Event event : calendarAdapter.getTodayEvents()) {
+        for (Event event : todayEvents) {
             if (event.isAllDay()) {
                 allDayEvents.add(event);
                 continue;
@@ -276,26 +285,46 @@ public class ClockView extends AppCompatImageView {
     }
 
     private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
-        ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
+        drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
+                event.isFinishedInFirstDayHalf(), calculateEventTitleWidth(event), event.getTitle());
+    }
+
+    private void drawSameTimeEvents(Canvas canvas, RectF widgetCircle, List<Event> events) {
+        StringBuilder titleBuilder = new StringBuilder();
+        titleBuilder.append(events.size());
+        titleBuilder.append(": ");
+        for (Event event : events) {
+            titleBuilder.append(event.getTitle());
+            titleBuilder.append(", ");
+        }
+        titleBuilder.setLength(titleBuilder.length() - 2); // cut out last comma
+
+        Event event = events.get(0);
+        drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
+                event.isFinishedInFirstDayHalf(), calculateEventTitleWidth(event), titleBuilder.toString());
+    }
+
+    private void drawEventGeneralized(Canvas canvas, RectF widgetCircle, ClockWidget.EventDegreeData degrees, int color,
+                                      boolean isFinishedFirstDayHalf, int titleWidth, String title) {
         Paint eventPaint = paints.get("eventLine");
         if (useCalendarColors) {
-            eventPaint.setColor(event.getColor());
+            eventPaint.setColor(color);
         }
         canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, eventPaint);
 
         canvas.save();
 
         Point eventTitlePoint;
-        if (event.isFinishedInFirstDayHalf())
+        if (isFinishedFirstDayHalf)
         {
             eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90,
-                    calculateEventTitleWidth(event));
+                    titleWidth);
             canvas.rotate(degrees.getStart() + degrees.getSweep(), eventTitlePoint.x, eventTitlePoint.y);
         } else {
             eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, 0);
             canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
         }
-        canvas.drawText(cutEventTitleIfNeeded(event.getTitle()), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
+        canvas.drawText(cutEventTitleIfNeeded(title), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
 
         canvas.restore();
     }
@@ -305,5 +334,48 @@ public class ClockView extends AppCompatImageView {
         Paint titlePaint = paints.get("title");
         titlePaint.getTextBounds(event.getTitle(), 0, event.getTitle().length(), bounds);
         return bounds.width();
+    }
+
+    private List<List<Event>> extractSameTimeEvents(List<Event> events) {
+        List<List<Event>> result = findSameTimeEvents(events);
+        for (List<Event> sameTimeEvents : result) {
+            removeEventsFromList(events, sameTimeEvents);
+        }
+        return result;
+    }
+
+    private List<List<Event>> findSameTimeEvents(List<Event> events) {
+        List<List<Event>> result = new ArrayList<>();
+        List<Integer> foundIndexes = new ArrayList<>();
+        for (int outerIndex = 0; outerIndex < events.size(); outerIndex++) {
+            Event event = events.get(outerIndex);
+            String startTime = event.getStartTime();
+            String finishTime = event.getFinishTime();
+            List<Event> sameTimeEvents = new ArrayList<>();
+            sameTimeEvents.add(event);
+            for (int innerIndex = 0; innerIndex < events.size(); innerIndex++) {
+                if ((innerIndex == outerIndex) || foundIndexes.contains(innerIndex)) {
+                    continue;
+                }
+                Event anotherEvent = events.get(innerIndex);
+                if (anotherEvent.getStartTime().equals(startTime) && anotherEvent.getFinishTime().equals(finishTime)) {
+                    sameTimeEvents.add(anotherEvent);
+                    foundIndexes.add(innerIndex);
+                }
+            }
+            if (sameTimeEvents.size() > 1) {
+                result.add(sameTimeEvents);
+                foundIndexes.add(outerIndex);
+            }
+        }
+        return result;
+    }
+
+    private void removeEventsFromList(List<Event> eventsList, List<Event> eventsToRemove) {
+        for (Iterator<Event> iter = eventsList.listIterator(); iter.hasNext(); ) {
+            if (eventsToRemove.contains(iter.next())) {
+                iter.remove();
+            }
+        }
     }
 }
