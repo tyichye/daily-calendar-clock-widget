@@ -310,7 +310,9 @@ public class ClockView extends AppCompatImageView {
         if (useCalendarColors) {
             eventPaint.setColor(color);
         }
-        canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, eventPaint);
+
+        final float minSweep = (float) 0.5;
+        canvas.drawArc(widgetCircle, degrees.getStart(), Math.max(degrees.getSweep(), minSweep), true, eventPaint);
 
         canvas.save();
 
