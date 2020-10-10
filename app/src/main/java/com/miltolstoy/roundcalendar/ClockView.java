@@ -349,6 +349,9 @@ public class ClockView extends AppCompatImageView {
         List<Integer> foundIndexes = new ArrayList<>();
         for (int outerIndex = 0; outerIndex < events.size(); outerIndex++) {
             Event event = events.get(outerIndex);
+            if (event.isAllDay()) {
+                continue;
+            }
             String startTime = event.getStartTime();
             String finishTime = event.getFinishTime();
             List<Event> sameTimeEvents = new ArrayList<>();
