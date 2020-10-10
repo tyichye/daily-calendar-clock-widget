@@ -48,8 +48,12 @@ class Event {
     }
 
     Event(String title, long start, long finish, long duration, boolean allDay) {
-        Log.d(TAG, "Creating event.\nTitle: " + title + "\nStart: " + start + "\nFinish: " + finish +
-                "\nDuration: " + duration + "\nAll-day: " + allDay + "\n");
+        Log.d(TAG, "Creating event." +
+                "\nTitle: " + title +
+                "\nStart: " + formatToDateTime(start) + " (" + start + ")" +
+                "\nFinish: " + formatToDateTime(finish) + " (" + finish + ")" +
+                "\nDuration: " + duration +
+                "\nAll-day: " + allDay + "\n");
 
         this.title = title;
         this.start = start;
@@ -85,7 +89,15 @@ class Event {
 
 
     private String formatToTime(long milliSeconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
+        return formatTimestamp(milliSeconds, "HH:mm");
+    }
+
+    private String formatToDateTime(long milliSeconds) {
+        return formatTimestamp(milliSeconds, "dd.MM.YY HH:mm");
+    }
+
+    private String formatTimestamp(long milliSeconds, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.US);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
