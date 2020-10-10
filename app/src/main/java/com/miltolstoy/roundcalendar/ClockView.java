@@ -286,7 +286,7 @@ public class ClockView extends AppCompatImageView {
 
     private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
         drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
-                event.isFinishedInFirstDayHalf(), calculateEventTitleWidth(event), event.getTitle());
+                event.isFinishedInFirstDayHalf(), event.getTitle());
     }
 
     private void drawSameTimeEvents(Canvas canvas, RectF widgetCircle, List<Event> events) {
@@ -301,11 +301,11 @@ public class ClockView extends AppCompatImageView {
 
         Event event = events.get(0);
         drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
-                event.isFinishedInFirstDayHalf(), calculateEventTitleWidth(event), titleBuilder.toString());
+                event.isFinishedInFirstDayHalf(), titleBuilder.toString());
     }
 
     private void drawEventGeneralized(Canvas canvas, RectF widgetCircle, ClockWidget.EventDegreeData degrees, int color,
-                                      boolean isFinishedFirstDayHalf, int titleWidth, String title) {
+                                      boolean isFinishedFirstDayHalf, String title) {
         Paint eventPaint = paints.get("eventLine");
         if (useCalendarColors) {
             eventPaint.setColor(color);
@@ -315,24 +315,25 @@ public class ClockView extends AppCompatImageView {
         canvas.save();
 
         Point eventTitlePoint;
+        String titleNormalized = cutEventTitleIfNeeded(title);
         if (isFinishedFirstDayHalf)
         {
             eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90,
-                    titleWidth);
+                    calculateEventTitleWidth(titleNormalized));
             canvas.rotate(degrees.getStart() + degrees.getSweep(), eventTitlePoint.x, eventTitlePoint.y);
         } else {
             eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, 0);
             canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
         }
-        canvas.drawText(cutEventTitleIfNeeded(title), eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
+        canvas.drawText(titleNormalized, eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
 
         canvas.restore();
     }
 
-    private int calculateEventTitleWidth(Event event) {
+    private int calculateEventTitleWidth(String title) {
         Rect bounds = new Rect();
         Paint titlePaint = paints.get("title");
-        titlePaint.getTextBounds(event.getTitle(), 0, event.getTitle().length(), bounds);
+        titlePaint.getTextBounds(title, 0, title.length(), bounds);
         return bounds.width();
     }
 
