@@ -88,8 +88,8 @@ class CalendarAdapter {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
                     cursor.getString(4), Integer.parseInt(cursor.getString(5)));
             int todayDayNumber = getDayOfMonth();
-            if ( (event.getStartDate() == (todayDayNumber - 1)) && (event.getFinishDate() == todayDayNumber) ) {
-                continue; // yesterday all-day one-day event
+            if ( event.isAllDay() && (event.getFinishDate() == todayDayNumber) ) {
+                continue; // all-day event, which actually ended yesterday, but have finish time today at 3:00
             }
             events.add(event);
         } while (cursor.moveToNext());
