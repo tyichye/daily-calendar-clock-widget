@@ -200,6 +200,10 @@ class ClockWidget {
         return calculateConcentricPoint(degree, radius - markersLength - textWidth);
     }
 
+    float getWidgetWidth() {
+        return 2 * (radius + bigDigitSize + (float) digitRadiusPadding);
+    }
+
 
     private void calculateSizesAccordingToScreen(int side) {
         int padding = side / 13;

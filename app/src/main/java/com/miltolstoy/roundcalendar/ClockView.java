@@ -246,7 +246,8 @@ public class ClockView extends AppCompatImageView {
         }
         builder.setLength(builder.length() - 2); // cut out last comma
         Point allDayEventsPoint = clockWidget.getAllDayEventListCoordinates();
-        canvas.drawText(builder.toString(), allDayEventsPoint.x, allDayEventsPoint.y, paints.get("title"));
+        canvas.drawText(cutAllDayEventsTitlesIfNeeded(builder.toString()), allDayEventsPoint.x, allDayEventsPoint.y,
+                paints.get("title"));
     }
 
     private List<Event> getSleepEvents() {
@@ -273,8 +274,15 @@ public class ClockView extends AppCompatImageView {
     }
 
     private String cutEventTitleIfNeeded(String title) {
+        return normalizeEventTitle(title, clockWidget.getRadius());
+    }
+
+    private String cutAllDayEventsTitlesIfNeeded(String titles) {
+        return normalizeEventTitle(titles, clockWidget.getWidgetWidth());
+    }
+
+    private String normalizeEventTitle(String title, float maxWidth) {
         float textWidth = paints.get("title").measureText(title);
-        float maxWidth = clockWidget.getRadius();
         if (textWidth > maxWidth) {
             float maxSymbols = (maxWidth * title.length()) / textWidth;
             maxSymbols -= 4; // "..." + one padding char
