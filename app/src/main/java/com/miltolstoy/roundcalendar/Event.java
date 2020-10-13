@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.miltolstoy.roundcalendar;
 
 import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +40,7 @@ class Event {
 
     Event(String title, String start, String finish, String duration, String allDay, int color) {
         this(title, start, finish, duration, allDay);
-        this.color = color;
+        this.color = ColorUtils.blendARGB(color, Color.BLACK, 0.1f);
     }
 
     Event(String title, String start, String finish, String duration, String allDay) {
