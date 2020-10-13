@@ -197,7 +197,7 @@ class ClockWidget {
     }
 
     Point calculateEventTitlePoint(double degree, int textWidth) {
-        return calculateConcentricPoint(degree, radius - markersLength - textWidth);
+        return calculateConcentricPoint(degree + 0.5, radius - markersLength - textWidth);
     }
 
     float getWidgetWidth() {
