@@ -25,6 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 
@@ -320,7 +321,15 @@ public class ClockView extends AppCompatImageView {
         }
 
         final float minSweep = (float) 0.5;
-        canvas.drawArc(widgetCircle, degrees.getStart(), Math.max(degrees.getSweep(), minSweep), true, eventPaint);
+        float sweepAngle = Math.max(degrees.getSweep(), minSweep);
+        float startAngle = degrees.getStart();
+        canvas.drawArc(widgetCircle, startAngle, sweepAngle, true, eventPaint);
+
+        Point widgetCenter = clockWidget.getCenter();
+        List<Point> circlePoints = clockWidget.calculateEventCirclePoints(startAngle + 90, sweepAngle);
+        eventPaint.setColor(ColorUtils.blendARGB(eventPaint.getColor(), Color.BLACK, 0.1f));
+        canvas.drawLine(widgetCenter.x, widgetCenter.y, circlePoints.get(0).x, circlePoints.get(0).y, eventPaint);
+        canvas.drawLine(widgetCenter.x, widgetCenter.y, circlePoints.get(1).x, circlePoints.get(1).y, eventPaint);
 
         canvas.save();
 
