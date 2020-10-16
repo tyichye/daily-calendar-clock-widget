@@ -63,14 +63,15 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
-        drawWidget(this, views, widgetSize, 0);
+        final int dayShift = 0;
+        drawWidget(this, views, widgetSize, dayShift, CalendarAdapter.CALENDAR_EMPTY_ID);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
         new WaitForOptionsSaveThread(appWidgetId).start();
     }
 
-    public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
-        CalendarAdapter calendarAdapter = new CalendarAdapter(context, CalendarAdapter.CALENDAR_EMPTY_ID, dayShift);
+    public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift, int calendarId) {
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context, calendarId, dayShift);
         SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
