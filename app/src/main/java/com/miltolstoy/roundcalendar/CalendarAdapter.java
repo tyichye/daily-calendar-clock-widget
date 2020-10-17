@@ -22,13 +22,22 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import static android.provider.CalendarContract.Calendars.ACCOUNT_NAME;
+import static android.provider.CalendarContract.Calendars._ID;
+import static android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
 import static android.provider.CalendarContract.Events.TITLE;
 import static android.provider.CalendarContract.Events.DTSTART;
 import static android.provider.CalendarContract.Events.DTEND;
@@ -39,6 +48,19 @@ import static android.provider.CalendarContract.Events.DISPLAY_COLOR;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
+
+    @AllArgsConstructor
+    static class CalendarInfo {
+        @Getter private int id;
+        @Getter private String account;
+        @Getter private String name;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return String.format(Locale.getDefault(), "ID: %d; account: %s; name: %s", id, account, name);
+        }
+    }
 
     private Context context;
     private int calendarId;
@@ -58,6 +80,30 @@ class CalendarAdapter {
         this.context = context;
         this.calendarId = calendarId;
         this.daysShift = daysShift;
+    }
+
+    static List<CalendarInfo> getCalendars(Context context) {
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        final String[] projection = new String[] {_ID, ACCOUNT_NAME, CALENDAR_DISPLAY_NAME};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null /*selection*/, null /*selectionArgs*/,
+                null /*sortOrder*/);
+        if (cursor == null || cursor.getCount() == 0) {
+            Log.e(TAG, "No results");
+            return null;
+        }
+
+        List<CalendarInfo> calendarInfoList = new ArrayList<>();
+        cursor.moveToFirst();
+        Log.d(TAG, "Calendars list:");
+        do {
+            CalendarInfo info = new CalendarInfo(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
+                    cursor.getString(2));
+            Log.d(TAG, info.toString());
+            calendarInfoList.add(info);
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return calendarInfoList;
     }
 
     List<Event> getTodayEvents() {

@@ -35,6 +35,9 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
 
+import java.util.List;
+
+import static com.miltolstoy.roundcalendar.CalendarAdapter.getCalendars;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
@@ -61,6 +64,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
+
+        List<CalendarAdapter.CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
+        // TODO: add to UI
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
