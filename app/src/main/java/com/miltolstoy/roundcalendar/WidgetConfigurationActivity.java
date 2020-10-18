@@ -34,10 +34,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
+import android.widget.Spinner;
 
 import java.util.List;
+import java.util.Set;
 
-import static com.miltolstoy.roundcalendar.CalendarAdapter.getCalendars;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
@@ -49,6 +50,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     private static final String preferencesName = "RoundCalendarPrefs";
     private static final String eventColorSettingName = "useCalendarEventColor";
+    private static final String calendarIdsSettingName = "calendarIds";
+
+    private SpinnerAdapter spinnerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,11 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
-        List<CalendarAdapter.CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
-        // TODO: add to UI
+        List<CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
+        Spinner dropdown = findViewById(R.id.calendars_dropdown);
+        calendars.add(0, new CalendarInfo()); // "ALL" item
+        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars);
+        dropdown.setAdapter(spinnerAdapter);
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
@@ -98,9 +105,16 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         boolean useCalendarEventColor = calendarEventColorButton.isChecked();
         Log.d(TAG, "Using " + (useCalendarEventColor ? "calendar" : "default") + " event color");
 
+        Set<String> selectedIds = spinnerAdapter.getSelectedCalendarIds();
+        Log.d(TAG, "Selected calendars:");
+        for (String id : selectedIds) {
+            Log.d(TAG, id);
+        }
+
         SharedPreferences preferences = view.getContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(eventColorSettingName, useCalendarEventColor);
+        editor.putStringSet(calendarIdsSettingName, selectedIds);
         editor.apply();
 
         synchronized (saveButtonLock) {

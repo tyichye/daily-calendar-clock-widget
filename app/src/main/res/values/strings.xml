@@ -7,5 +7,8 @@
     <string name="colors_chooser">Event color:</string>
     <string name="use_calendar_color">From calendar</string>
     <string name="use_default_color">Blue (default)</string>
+
+    <string name="calendars_chooser">Displayed calendars:</string>
+
     <string name="save_button">Save</string>
 </resources>
