@@ -29,6 +29,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import static android.provider.CalendarContract.Calendars.ACCOUNT_NAME;
 import static android.provider.CalendarContract.Calendars._ID;
@@ -45,22 +46,22 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 class CalendarAdapter {
 
     private Context context;
-    private int calendarId;
+    private List<String> calendarIds;
     private int daysShift;
 
     static final int CALENDAR_EMPTY_ID = -1;
 
     CalendarAdapter(Context context) {
-        this(context, CALENDAR_EMPTY_ID, 0);
+        this(context, null, 0);
     }
 
-    CalendarAdapter(Context context, int calendarId) {
-        this(context, calendarId, 0);
+    CalendarAdapter(Context context, Set<String> calendarIds) {
+        this(context, calendarIds, 0);
     }
 
-    CalendarAdapter(Context context, int calendarId, int daysShift) {
+    CalendarAdapter(Context context, Set<String> calendarIds, int daysShift) {
         this.context = context;
-        this.calendarId = calendarId;
+        this.calendarIds = new ArrayList<>(calendarIds);
         this.daysShift = daysShift;
     }
 
@@ -96,10 +97,17 @@ class CalendarAdapter {
 
         String where = null;
         String[] selectionArgs = null;
-        if (calendarId != CALENDAR_EMPTY_ID) {
-            where = CALENDAR_ID + "=?";
-            selectionArgs = new String[] {String.valueOf(calendarId)};
+        if (calendarIds != null && !calendarIds.isEmpty()) {
+            StringBuilder whereBuilder = new StringBuilder("(");
+            for (int i = 0; i < calendarIds.size(); i++) {
+                whereBuilder.append(CALENDAR_ID + "=? OR ");
+            }
+            whereBuilder.setLength(whereBuilder.length() - 4);
+            whereBuilder.append(")");
+            where = whereBuilder.toString();
+            selectionArgs = calendarIds.toArray(new String[0]);
         }
+        
         Cursor cursor = context.getContentResolver().query(builder.build(),
                 new String[] {TITLE, DTSTART, DTEND, DURATION, ALL_DAY, DISPLAY_COLOR}, where, selectionArgs, DTSTART);
 
