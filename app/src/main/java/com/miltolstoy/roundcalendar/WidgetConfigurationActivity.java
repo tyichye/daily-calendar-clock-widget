@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Set;
@@ -110,6 +111,12 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         Log.d(TAG, "Using " + (useCalendarEventColor ? "calendar" : "default") + " event color");
 
         Set<String> selectedIds = spinnerAdapter.getSelectedCalendarIds();
+        if (selectedIds.isEmpty()) {
+            Log.e(TAG, "No selected calendars");
+            Toast.makeText(this, "Please select at least one calendar to display", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Log.d(TAG, "Selected calendars:");
         for (String id : selectedIds) {
             Log.d(TAG, id);
