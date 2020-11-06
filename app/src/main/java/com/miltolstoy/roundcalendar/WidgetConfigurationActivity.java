@@ -25,16 +25,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.List;
@@ -54,6 +62,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private static final String calendarIdsSettingName = "calendarIds";
 
     private SpinnerAdapter spinnerAdapter;
+
+    private static TextView sleepStartTimeTextView;
+    private static TextView sleepEndTimeTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,22 +88,32 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars);
         dropdown.setAdapter(spinnerAdapter);
 
+        final Resources resources = getResources();
+
+        sleepStartTimeTextView = findViewById(R.id.sleep_start_time_text);
+        setSleepTimeInfo(sleepStartTimeTextView, resources.getInteger(R.integer.sleep_start_hours),
+                resources.getInteger(R.integer.sleep_start_minutes));
+        sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
+        setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
+                resources.getInteger(R.integer.sleep_end_minutes));
+
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
-        drawWidget(this, views, widgetSize, dayShift, CalendarAdapter.CALENDAR_EMPTY_ID);
+        drawWidget(this, views, widgetSize, dayShift);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
         new WaitForOptionsSaveThread(appWidgetId).start();
     }
 
-    public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift, int calendarId) {
+    public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
         SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
 
         Set<String> selectedCalendars = preferences.getStringSet(calendarIdsSettingName, null);
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, selectedCalendars, dayShift);
 
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
-        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
+        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor,
+                getSleepTimeInfo(sleepStartTimeTextView), getSleepTimeInfo(sleepEndTimeTextView));
         clockView.setCalendarAdapter(calendarAdapter);
 
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
@@ -132,6 +154,40 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             saveButtonLock.notify();
             saveButtonLockNotified = true;
         }
+    }
+
+    public void onSleepStartTimeChanged(View view) {
+        onTimepickerClicked(view, sleepStartTimeTextView);
+    }
+
+    public void onSleepEndTimeChanged(View view) {
+        onTimepickerClicked(view, sleepEndTimeTextView);
+    }
+
+    public void onTimepickerClicked(View view, final TextView textView) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.timepicker, null);
+
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0 /*x*/, 0 /*y*/);
+
+        final TimePicker timePicker = popupView.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
+        TimeInfo timeInfo = getSleepTimeInfo(textView);
+        timePicker.setHour(timeInfo.getHours());
+        timePicker.setMinute(timeInfo.getMinutes());
+
+        Button button = popupView.findViewById(R.id.saveButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSleepTimeInfo(textView, timePicker.getHour(), timePicker.getMinute());
+                popupWindow.dismiss();
+            }
+        });
     }
 
     void requestCalendarPermissionsIfNeeded() {
@@ -196,5 +252,32 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
                 sendResultAndExit(RESULT_CANCELED, appWidgetId);
             }
         }
+    }
+
+    private String formatTimeValue(int value) {
+        String s = String.valueOf(value);
+        if (s.length() == 1) {
+            s = "0" + s;
+        }
+        return s;
+    }
+
+    private void setSleepTimeInfo(TextView textView, int hours, int minutes) {
+        String text = " " + formatTimeValue(hours) + ":" + formatTimeValue(minutes);
+        textView.setText(text);
+    }
+
+    private static TimeInfo getSleepTimeInfo(TextView textView) {
+        if (textView == null) {
+            Log.e(TAG, "Text view is not initialized");
+            return null;
+        }
+        String text = (String) textView.getText();
+        String[] parsed = text.split(":");
+        if (parsed.length != 2) {
+            Log.e(TAG, "Invalid time info: " + text);
+            return null;
+        }
+        return new TimeInfo(Integer.valueOf(parsed[0].trim()), Integer.valueOf(parsed[1].trim()));
     }
 }

@@ -55,14 +55,20 @@ public class ClockView extends AppCompatImageView {
     private CalendarAdapter calendarAdapter = null;
     private boolean useCalendarColors = false;
 
+    private TimeInfo sleepStartTime;
+    private TimeInfo sleepEndTime;
+
     public ClockView(Context context) throws IllegalStateException {
         super(context);
         throw new IllegalStateException("Use another constructor");
     }
 
-    public ClockView(Context context, Point screenSize, boolean useCalendarColors) {
+    public ClockView(Context context, Point screenSize, boolean useCalendarColors, TimeInfo sleepStartTime,
+                     TimeInfo sleepEndTime) {
         super(context);
         this.useCalendarColors = useCalendarColors;
+        this.sleepStartTime = sleepStartTime;
+        this.sleepEndTime = sleepEndTime;
         clockWidget = new ClockWidget(screenSize);
         paints = initPaints();
     }
@@ -255,7 +261,8 @@ public class ClockView extends AppCompatImageView {
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
 
-        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 21, 0, 0);
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), sleepStartTime.getHours(),
+                    sleepStartTime.getMinutes(), 0);
         long startTimeBeforeMidnight = calendar.getTimeInMillis();
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH) + 1, 0, 0, 0);
         long endTimeBeforeMidnight = calendar.getTimeInMillis();
@@ -265,7 +272,8 @@ public class ClockView extends AppCompatImageView {
 
         calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 0, 0, 0);
         long startTimeAfterMidnight = calendar.getTimeInMillis();
-        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 6, 0, 0);
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), sleepEndTime.getHours(),
+                sleepEndTime.getMinutes(), 0);
         long endTimeAfterMidnight = calendar.getTimeInMillis();
         long afterMidnightDuration = endTimeAfterMidnight - startTimeAfterMidnight;
         events.add(new Event("sleep after midnight", startTimeAfterMidnight, endTimeAfterMidnight,

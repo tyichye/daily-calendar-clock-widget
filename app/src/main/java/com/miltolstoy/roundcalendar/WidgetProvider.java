@@ -109,7 +109,7 @@ public class WidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         Point widgetSize = WidgetConfigurationActivity.getWidgetSize(appWidgetManager, widgetId);
-        WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift, CalendarAdapter.CALENDAR_EMPTY_ID);
+        WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift);
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 

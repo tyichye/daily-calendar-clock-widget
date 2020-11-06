@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="sleep_start_hours">21</integer>
+    <integer name="sleep_start_minutes">0</integer>
+
+    <integer name="sleep_end_hours">6</integer>
+    <integer name="sleep_end_minutes">0</integer>
+</resources>
