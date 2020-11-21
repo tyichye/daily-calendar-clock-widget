@@ -41,6 +41,11 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String todayAction = "todayAction";
     private static final String tickAction = "com.miltolstoy.roundcalendar.clockTickAction";
 
+    // If widget update will be too frequent, Android will block it at all. If widget update period will be large, it
+    // will affect user experience.
+    private static int updatePeriod = 60000;
+    private static final Object updatePeriodLock = new Object();
+
     private static int daysShift = 0;
 
     @Override
@@ -96,6 +101,18 @@ public class WidgetProvider extends AppWidgetProvider {
         }
     }
 
+    public static void setUpdatePeriod(int value) {
+        synchronized (updatePeriodLock) {
+            updatePeriod = value;
+        }
+    }
+
+    private int getUpdatePeriod() {
+        synchronized (updatePeriodLock) {
+            return updatePeriod;
+        }
+    }
+
     private static void setOnClickIntent(Context context, RemoteViews views, int widgetId, int viewId,
                                          String intentAction) {
         Intent intent = new Intent(context, WidgetProvider.class);
@@ -122,12 +139,10 @@ public class WidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
-
     private void setupNextClockTick(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
-        final int tickPeriodMillisecond = 1000; // Intents are missed sometimes, so just bombing app with them.
-        calendar.add(Calendar.MILLISECOND, tickPeriodMillisecond);
+        calendar.add(Calendar.MILLISECOND, getUpdatePeriod());
         Intent tickIntent = new Intent(context, WidgetProvider.class);
         tickIntent.setAction(tickAction);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, tickIntent, 0);

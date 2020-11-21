@@ -36,6 +36,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
@@ -138,11 +139,21 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select at least one calendar to display", Toast.LENGTH_LONG).show();
             return;
         }
-
         Log.d(TAG, "Selected calendars:");
         for (String id : selectedIds) {
             Log.d(TAG, id);
         }
+
+        EditText updatePeriodEditText = findViewById(R.id.update_period);
+        String updatePeriodString = updatePeriodEditText.getText().toString();
+        if (updatePeriodString.isEmpty()) {
+            Log.e(TAG, "Widget update period not specified");
+            Toast.makeText(this, "Please specify widget update period", Toast.LENGTH_LONG).show();
+            return;
+        }
+        int updatePeriod = Integer.parseInt(updatePeriodString);
+        Log.d(TAG, "Widget update period: " + updatePeriod);
+        WidgetProvider.setUpdatePeriod(updatePeriod);
 
         SharedPreferences preferences = view.getContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

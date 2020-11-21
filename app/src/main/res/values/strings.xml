@@ -14,5 +14,8 @@
     <string name="sleep_end">Sleep end time - </string>
     <string name="change">Change</string>
 
+    <string name="update_period_label">Widget update period (seconds): </string>
+    <string name="update_period_default">60</string>
+
     <string name="save_button">Save</string>
 </resources>
