@@ -43,7 +43,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     // If widget update will be too frequent, Android will block it at all. If widget update period will be large, it
     // will affect user experience.
-    private static int updatePeriod = 60000;
+    private static int updatePeriodMillis = 30 * 60 * 1000;
     private static final Object updatePeriodLock = new Object();
 
     private static int daysShift = 0;
@@ -103,13 +103,13 @@ public class WidgetProvider extends AppWidgetProvider {
 
     public static void setUpdatePeriod(int value) {
         synchronized (updatePeriodLock) {
-            updatePeriod = value;
+            updatePeriodMillis = value;
         }
     }
 
     private int getUpdatePeriod() {
         synchronized (updatePeriodLock) {
-            return updatePeriod;
+            return updatePeriodMillis;
         }
     }
 
