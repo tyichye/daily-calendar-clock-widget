@@ -36,6 +36,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -67,6 +69,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private static TextView sleepStartTimeTextView;
     private static TextView sleepEndTimeTextView;
 
+    private CheckBox autoUpdateCheckBox;
+    private EditText updatePeriodEditText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
         setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
                 resources.getInteger(R.integer.sleep_end_minutes));
+
+        updatePeriodEditText = findViewById(R.id.update_period);
+        autoUpdateCheckBox = findViewById(R.id.auto_update);
+        autoUpdateCheckBox.setOnCheckedChangeListener(new AutoUpdateCheckBoxListener());
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
@@ -144,14 +153,17 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             Log.d(TAG, id);
         }
 
-        EditText updatePeriodEditText = findViewById(R.id.update_period);
-        String updatePeriodString = updatePeriodEditText.getText().toString();
-        if (updatePeriodString.isEmpty()) {
-            Log.e(TAG, "Widget update period not specified");
-            Toast.makeText(this, "Please specify widget update period", Toast.LENGTH_LONG).show();
-            return;
+        int updatePeriod = 0;
+        if (autoUpdateCheckBox.isChecked()) {
+            EditText updatePeriodEditText = findViewById(R.id.update_period);
+            String updatePeriodString = updatePeriodEditText.getText().toString();
+            if (updatePeriodString.isEmpty()) {
+                Log.e(TAG, "Widget update period not specified");
+                Toast.makeText(this, "Please specify widget update period", Toast.LENGTH_LONG).show();
+                return;
+            }
+            updatePeriod = Integer.parseInt(updatePeriodString);
         }
-        int updatePeriod = Integer.parseInt(updatePeriodString);
         Log.d(TAG, "Widget update period: " + updatePeriod);
         WidgetProvider.setUpdatePeriod(updatePeriod);
 
@@ -290,5 +302,12 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             return null;
         }
         return new TimeInfo(Integer.valueOf(parsed[0].trim()), Integer.valueOf(parsed[1].trim()));
+    }
+
+    private class AutoUpdateCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            updatePeriodEditText.setEnabled(isChecked);
+        }
     }
 }

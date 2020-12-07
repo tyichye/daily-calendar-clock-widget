@@ -42,8 +42,8 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String tickAction = "com.miltolstoy.roundcalendar.clockTickAction";
 
     // If widget update will be too frequent, Android will block it at all. If widget update period will be large, it
-    // will affect user experience.
-    private static int updatePeriodMillis = 30 * 60 * 1000;
+    // will affect user experience. Recommended value >= 1 minute.
+    private static int updatePeriodMillis = 0;
     private static final Object updatePeriodLock = new Object();
 
     private static int daysShift = 0;
@@ -140,9 +140,14 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     private void setupNextClockTick(Context context) {
+        final int updatePeriod = getUpdatePeriod();
+        if (updatePeriod == 0) {
+            Log.d(TAG, "Widget auto-update is disabled");
+            return;
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MILLISECOND, getUpdatePeriod());
+        calendar.add(Calendar.MILLISECOND, updatePeriod);
         Intent tickIntent = new Intent(context, WidgetProvider.class);
         tickIntent.setAction(tickAction);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, tickIntent, 0);

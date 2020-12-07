@@ -14,6 +14,7 @@
     <string name="sleep_end">Sleep end time - </string>
     <string name="change">Change</string>
 
+    <string name="auto_update_enabled">Widget auto-update enabled</string>
     <string name="update_period_label">Widget update period (seconds): </string>
     <string name="update_period_default">1800</string>
 
