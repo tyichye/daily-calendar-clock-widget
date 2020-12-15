@@ -341,27 +341,44 @@ public class ClockView extends AppCompatImageView {
 
         canvas.save();
 
-        Point eventTitlePoint;
-        String titleNormalized = cutEventTitleIfNeeded(title);
+        final String titleNormalized = cutEventTitleIfNeeded(title);
+        /*
+            α = arcsin(l / (2 * R)) * 360 / π
+            where l - horde length (text height)
+        */
+        double titleTextAngle = Math.toDegrees(Math.asin(Math.toRadians(calculateTextHeight(titleNormalized) /
+                (2 * clockWidget.getRadius())))) * (double) 360 / Math.PI;
+        titleTextAngle /= 2; // half of text angle is needed to center it
+        float titleAngle = degrees.getStart() + degrees.getSweep() / 2 + 90;
+        final float rotateAngle;
+        final int padding;
         if (isFinishedFirstDayHalf)
         {
-            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + degrees.getSweep() + 90,
-                    calculateEventTitleWidth(titleNormalized));
-            canvas.rotate(degrees.getStart() + degrees.getSweep(), eventTitlePoint.x, eventTitlePoint.y);
+            titleAngle += (float) titleTextAngle; // move forward on half of text angle
+            rotateAngle = titleAngle - 90;
+            padding = calculateTextWidth(titleNormalized); // title text: center->radius
         } else {
-            eventTitlePoint = clockWidget.calculateEventTitlePoint(degrees.getStart() + 90, 0);
-            canvas.rotate(degrees.getStart() - 180, eventTitlePoint.x, eventTitlePoint.y);
+            titleAngle -= (float) titleTextAngle; // move backward on half of text angle
+            rotateAngle = titleAngle - 270;
+            padding = 0; // title text: radius->center
         }
-        canvas.drawText(titleNormalized, eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
 
+        Point eventTitlePoint = clockWidget.calculateEventTitlePoint(titleAngle, padding);
+        canvas.rotate(rotateAngle, eventTitlePoint.x, eventTitlePoint.y);
+        canvas.drawText(titleNormalized, eventTitlePoint.x, eventTitlePoint.y, paints.get("title"));
         canvas.restore();
     }
 
-    private int calculateEventTitleWidth(String title) {
+    private int calculateTextWidth(String text) {
         Rect bounds = new Rect();
-        Paint titlePaint = paints.get("title");
-        titlePaint.getTextBounds(title, 0, title.length(), bounds);
+        paints.get("title").getTextBounds(text, 0, text.length(), bounds);
         return bounds.width();
+    }
+
+    private int calculateTextHeight(String text) {
+        Rect bounds = new Rect();
+        paints.get("title").getTextBounds(text, 0, text.length(), bounds);
+        return bounds.height();
     }
 
     private List<List<Event>> extractSameTimeEvents(List<Event> events) {

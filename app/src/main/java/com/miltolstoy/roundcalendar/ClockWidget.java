@@ -196,8 +196,8 @@ class ClockWidget {
         return new EventDegreeData(startDegree, sweepDegree);
     }
 
-    Point calculateEventTitlePoint(double degree, int textWidth) {
-        return calculateConcentricPoint(degree + 0.5, radius - markersLength - textWidth);
+    Point calculateEventTitlePoint(double degree, int padding) {
+        return calculateConcentricPoint(degree, radius - markersLength - padding);
     }
 
     List<Point> calculateEventCirclePoints(float startAngle, float sweepAngle) {
