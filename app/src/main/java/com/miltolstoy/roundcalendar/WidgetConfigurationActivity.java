@@ -66,8 +66,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     private SpinnerAdapter spinnerAdapter;
 
-    private static TextView sleepStartTimeTextView;
-    private static TextView sleepEndTimeTextView;
+    private TextView sleepStartTimeTextView;
+    private TextView sleepEndTimeTextView;
+    private static TimeInfo sleepStartTimeCached = new TimeInfo(21, 0);
+    private static TimeInfo sleepEndTimeCached = new TimeInfo(6, 0);
 
     private CheckBox autoUpdateCheckBox;
     private EditText updatePeriodEditText;
@@ -102,6 +104,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
         setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
                 resources.getInteger(R.integer.sleep_end_minutes));
+        storeSleepTime();
 
         updatePeriodEditText = findViewById(R.id.update_period);
         autoUpdateCheckBox = findViewById(R.id.auto_update);
@@ -122,8 +125,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, selectedCalendars, dayShift);
 
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
-        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor,
-                getSleepTimeInfo(sleepStartTimeTextView), getSleepTimeInfo(sleepEndTimeTextView));
+        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor, sleepStartTimeCached,
+                sleepEndTimeCached);
         clockView.setCalendarAdapter(calendarAdapter);
 
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
@@ -172,6 +175,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         editor.putBoolean(eventColorSettingName, useCalendarEventColor);
         editor.putStringSet(calendarIdsSettingName, selectedIds);
         editor.apply();
+
+        storeSleepTime();
 
         synchronized (saveButtonLock) {
             saveButtonLock.notify();
@@ -308,6 +313,17 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             updatePeriodEditText.setEnabled(isChecked);
+        }
+    }
+
+    private void storeSleepTime() {
+        TimeInfo sleepStartInfo = getSleepTimeInfo(sleepStartTimeTextView);
+        if (sleepStartInfo != null) {
+            sleepStartTimeCached = sleepStartInfo;
+        }
+        TimeInfo sleepEndInfo = getSleepTimeInfo(sleepEndTimeTextView);
+        if (sleepEndInfo != null) {
+            sleepEndTimeCached = sleepEndInfo;
         }
     }
 }
