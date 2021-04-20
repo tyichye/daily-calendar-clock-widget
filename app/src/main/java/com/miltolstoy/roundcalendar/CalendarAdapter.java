@@ -61,7 +61,7 @@ class CalendarAdapter {
 
     CalendarAdapter(Context context, Set<String> calendarIds, int daysShift) {
         this.context = context;
-        this.calendarIds = new ArrayList<>(calendarIds);
+        this.calendarIds = (calendarIds != null) ? new ArrayList<>(calendarIds) : null;
         this.daysShift = daysShift;
     }
 
