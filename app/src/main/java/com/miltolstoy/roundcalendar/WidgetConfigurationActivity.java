@@ -79,7 +79,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_configuration);
-
         requestCalendarPermissionsIfNeeded();
 
         final int appWidgetId = getAppWidgetId(getIntent());
@@ -90,6 +89,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
+        // get calendars from googleCalendar and show them as list in the configuration screen
+        // to give the user options which calendars he want to sync
         List<CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
         Spinner dropdown = findViewById(R.id.calendars_dropdown);
         calendars.add(0, new CalendarInfo()); // "ALL" item
@@ -98,6 +99,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
         final Resources resources = getResources();
 
+        // update the text view of sleep start and sleep end for the first time
         sleepStartTimeTextView = findViewById(R.id.sleep_start_time_text);
         setSleepTimeInfo(sleepStartTimeTextView, resources.getInteger(R.integer.sleep_start_hours),
                 resources.getInteger(R.integer.sleep_start_minutes));
@@ -115,23 +117,30 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         drawWidget(this, views, widgetSize, dayShift);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
+        // wait for the user to click on the save button -> when click the app will close and the
+        // widget will appear
         new WaitForOptionsSaveThread(appWidgetId).start();
     }
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
+        // holds the preferences of the widget - which calendars to show, which colors to use
         SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
 
         Set<String> selectedCalendars = preferences.getStringSet(calendarIdsSettingName, null);
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, selectedCalendars, dayShift);
 
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
+
+        // create clockView object with the relevant preferences - size of widget, color to use, etc
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor, sleepStartTimeCached,
                 sleepEndTimeCached);
         clockView.setCalendarAdapter(calendarAdapter);
 
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
         clockView.draw(new Canvas(bitmap));
+
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
+
     }
 
     public static Point getWidgetSize(AppWidgetManager appWidgetManager, int appWidgetId) {
@@ -140,7 +149,13 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         return new Point(widgetInfo.minWidth, widgetInfo.minHeight);
     }
 
+
+    // this function run when the user click on the save button - according to XML file
+    // activity_widget_configuration -> last view -> onClick = onSaveClicked
     public void onSaveClicked(View view) {
+
+        // retrieve the user input for the widget preference:
+        // which calendars to show, which color to use, update period
         RadioButton calendarEventColorButton = findViewById(R.id.calendar_color_radio);
         boolean useCalendarEventColor = calendarEventColorButton.isChecked();
         Log.d(TAG, "Using " + (useCalendarEventColor ? "calendar" : "default") + " event color");
@@ -162,6 +177,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             String updatePeriodString = updatePeriodEditText.getText().toString();
             if (updatePeriodString.isEmpty()) {
                 Log.e(TAG, "Widget update period not specified");
+
+                // Toast help us to show a small message in the screen for a few second
+                // when user forgot to fill the update period we show him the following message
                 Toast.makeText(this, "Please specify widget update period", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -170,6 +188,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         Log.d(TAG, "Widget update period: " + updatePeriod);
         WidgetProvider.setUpdatePeriod(updatePeriod);
 
+        // those lines update the preference of the widget according to user's input
+        // the editor allow us to update the sharedPreference object efficiently
         SharedPreferences preferences = view.getContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(eventColorSettingName, useCalendarEventColor);
@@ -184,6 +204,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
     }
 
+    // the next two functions calls to the function onTimepickerClicked in order to show the user
+    // a small clock where he can insert the hour and minute
     public void onSleepStartTimeChanged(View view) {
         onTimepickerClicked(view, sleepStartTimeTextView);
     }
@@ -192,6 +214,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         onTimepickerClicked(view, sleepEndTimeTextView);
     }
 
+    // this function will run when the user click on the "change" button to change the sleep
+    // start time and the sleep end time.
+    // this function show the user a small clock where he need to choose the hour and the minute
+    // there is a timePicker view in the xml timepicker - a built-in view
     public void onTimepickerClicked(View view, final TextView textView) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.timepicker, null);

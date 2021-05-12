@@ -127,9 +127,12 @@ public class WidgetProvider extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         Point widgetSize = WidgetConfigurationActivity.getWidgetSize(appWidgetManager, widgetId);
         WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift);
+
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
+    // set the behavior of the buttons - NEXT DAT, PREVIOUS DAY, TODAY DAY
+    // the buttons appears as <  T  >
     private static void setOnClickButtonsIntents(Context context, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
@@ -137,6 +140,7 @@ public class WidgetProvider extends AppWidgetProvider {
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
+
     }
 
     private void setupNextClockTick(Context context) {

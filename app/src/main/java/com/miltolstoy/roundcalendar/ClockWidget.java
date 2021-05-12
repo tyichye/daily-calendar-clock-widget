@@ -38,6 +38,8 @@ import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class ClockWidget {
 
+    @Getter private int paddingRadius = 115;
+    @Getter private final int paddingDigits = 0;
     @Getter private final int borderColor = Color.WHITE;
     @Getter private final int fillColor = Color.TRANSPARENT;
     @Getter private final int digitColor = Color.WHITE;
@@ -45,6 +47,7 @@ class ClockWidget {
     @Getter private final int eventArcColor = Color.BLUE; // seems like default Google Calendar event color
     private final int[] degrees = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255,
             270, 285, 300, 315, 330, 345};
+
 
     @Getter private int borderWidth;
     @Getter private int handWidth;
@@ -146,8 +149,16 @@ class ClockWidget {
             else if (degree >= 225) {
                 degree -= 1;
             }
-            if (degree <= 180) {
-                padding = padding - (10 - (float) degree / 15);
+            if (degree < 180 && degree > 90)
+            {
+                padding = padding - (10 - (float) degree / 15) ;
+            }
+            else if (degree < 180) {
+                padding = padding - (10 - (float) degree / 15) - 10;
+            }
+            else if (degree < 240)
+            {
+                padding = padding - (10 -  (360 - (float) degree) / 15) + 10;
             }
             else {
                 padding = padding - (10 -  (360 - (float) degree) / 15);
@@ -158,7 +169,8 @@ class ClockWidget {
     }
 
     Point getDateCoordinates() {
-        return new Point(dateXPadding, dateYPadding);
+//        return new Point(dateXPadding, dateYPadding);
+        return new Point(center.x, center.y);
     }
 
     Point getDayOfWeekCoordinates() {
@@ -169,13 +181,15 @@ class ClockWidget {
         return new Point(allDayEventsXPadding, allDayEventsYPadding);
     }
 
+    // TODO: 06/05/2021 need to change size of circle according to stroke width
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
         List<List<Point>> markers = getHourMarkersCoordinates();
-        oval.set(markers.get(6).get(0).x,
-                markers.get(0).get(0).y,
-                markers.get(2).get(0).x,
-                markers.get(4).get(0).y);
+        oval.set(markers.get(6).get(0).x + paddingRadius,
+                markers.get(0).get(0).y + paddingRadius,
+                markers.get(2).get(0).x - paddingRadius,
+                markers.get(4).get(0).y - paddingRadius);
+
         return oval;
     }
 
@@ -214,12 +228,15 @@ class ClockWidget {
 
     private void calculateSizesAccordingToScreen(int side) {
         int padding = side / 13;
+
+
+
         borderWidth = side / 100;
         dotRadius = side / 100;
         smallDigitSize = side / 40;
         bigDigitSize = side / 25;
         dateSize = side / 18;
-        markersLength = side / 36;
+        markersLength = side / 36 ;
         dateXPadding = side / 36;
         dateYPadding = side / 15;
         dayOfWeekXPadding = side / 36;
@@ -232,10 +249,13 @@ class ClockWidget {
         handWidth = borderWidth / 2;
         tiltedMarkersLength = markersLength * 0.7;
         digitRadiusPadding = padding * 0.5;
-        radius = side / 2 - padding;
+        radius = side / 2 - padding ;
+        paddingRadius = (int)(radius*0.28);
+
 
         center = calculateWidgetCenter(screenSize, radius, dateSize);
         hoursCoordinates = calculateHoursCoordinates();
+
     }
 
     private static Point calculateWidgetCenter(Point screenSize, float radius, int dateSize) {

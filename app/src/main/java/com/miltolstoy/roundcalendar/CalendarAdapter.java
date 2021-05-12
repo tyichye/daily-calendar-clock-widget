@@ -41,6 +41,7 @@ import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.CALENDAR_ID;
 import static android.provider.CalendarContract.Events.DISPLAY_COLOR;
+//import static android.provider.CalendarContract.Events.ORIGINAL_INSTANCE_TIME;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
@@ -123,6 +124,7 @@ class CalendarAdapter {
         do {
             Event event = new Event(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
                     cursor.getString(4), Integer.parseInt(cursor.getString(5)));
+
             int todayDayNumber = getDayOfMonth();
             if ( event.isAllDay() && (event.getFinishDate() == todayDayNumber) ) {
                 continue; // all-day event, which actually ended yesterday, but have finish time today at 3:00
@@ -154,7 +156,7 @@ class CalendarAdapter {
         return getDayStartCalendar().getTime().getTime();
     }
 
-    private int getDayOfMonth() {
+    public int getDayOfMonth() {
         return getDayStartCalendar().get(Calendar.DATE);
     }
 }

@@ -9,52 +9,111 @@
         android:layout_height="fill_parent" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="2"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/dateView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1">
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:visibility="visible"
+            />
 
-            <Button
+        <TextClock
+            android:id="@+id/digitalClock"
+            android:textSize="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            />
+
+        <RelativeLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+           android:layout_gravity="top"
+            >
+
+            <ImageButton
                 android:id="@+id/previous_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prev_day"
-                android:textSize="25sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/round_button"
-                android:layout_weight="1"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                android:background="@null"
 
-            <Button
+                />
+            <ImageButton
                 android:id="@+id/today_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/today"
-                android:textSize="25sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/round_button"
-                android:layout_weight="1"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_baseline_brightness_1_24"
+                android:background="@null"
 
-            <Button
+
+                />
+            <ImageButton
                 android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/next_day"
-                android:textSize="25sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/round_button"
-                android:layout_weight="1"/>
-        </LinearLayout>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_baseline_keyboard_arrow_left_24"
+                android:background="@null"
 
+                />
+
+
+<!--            <Button-->
+<!--                android:id="@+id/previous_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/prev_day"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:textSize="25sp"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:background="@drawable/round_button"-->
+<!--                />-->
+
+
+
+<!--            <Button-->
+<!--                android:id="@+id/today_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/today"-->
+
+<!--                android:layout_centerInParent="true"-->
+<!--                android:textSize="25sp"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:background="@drawable/round_button"-->
+<!--                />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/next_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/next_day"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:textSize="25sp"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:background="@drawable/round_button"-->
+<!--               />-->
+
+        </RelativeLayout>
     </LinearLayout>
 
+
+
+<!--    </LinearLayout>-->
+
+
+
 </RelativeLayout>
+
+

@@ -1,3 +1,21 @@
+/*
+Round Calendar
+Copyright (C) 2020 Mil Tolstoy <miltolstoy@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package com.miltolstoy.roundcalendar;
 
 import android.content.Context;
@@ -9,25 +27,27 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.AppCompatImageView;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RemoteViews;
-import android.widget.TextView;
+import android.util.Log;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
+import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
-public class ClockView extends AppCompatImageView
-{
+
+public class ClockViewOld extends AppCompatImageView {
+
     private Map<String, Paint> paints;
     private ClockWidget clockWidget;
     private static final int backgroundColor = Color.TRANSPARENT;
@@ -38,16 +58,13 @@ public class ClockView extends AppCompatImageView
     private TimeInfo sleepStartTime;
     private TimeInfo sleepEndTime;
 
-
-
-    public ClockView(Context context)
-    {
+    public ClockViewOld(Context context) throws IllegalStateException {
         super(context);
+        throw new IllegalStateException("Use another constructor");
     }
 
-    public ClockView(Context context, Point screenSize, boolean useCalendarColors, TimeInfo sleepStartTime,
-                     TimeInfo sleepEndTime)
-    {
+    public ClockViewOld(Context context, Point screenSize, boolean useCalendarColors, TimeInfo sleepStartTime,
+                     TimeInfo sleepEndTime) {
         super(context);
         this.useCalendarColors = useCalendarColors;
         this.sleepStartTime = sleepStartTime;
@@ -57,30 +74,59 @@ public class ClockView extends AppCompatImageView
     }
 
 
-    private Map<String, Paint> initPaints()
-    {
-        Map <String, Paint> paints = new HashMap<>();
-        RectF ringRect = clockWidget.getWidgetCircleObject();
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawColor(backgroundColor);
+        drawClock(canvas);
+        drawDate(canvas);
+        if (calendarAdapter != null) {
+            drawEvents(canvas);
+            if (!calendarAdapter.isCalendarShifted()) {
+                drawHand(canvas);
+            }
+        }
 
-        Paint ringPaint = new Paint();
-        ringPaint.setColor(Color.GRAY);
-        ringPaint.setStrokeWidth(clockWidget.getPaddingRadius()*2);
-        ringPaint.setAntiAlias(true);
-        ringPaint.setStyle(Paint.Style.STROKE);
-        ringPaint.setAlpha(100);
-        paints.put("ring", ringPaint);
+        postInvalidateDelayed(refreshTimeoutMillis);
+    }
+
+    void setCalendarAdapter(CalendarAdapter adapter) {
+        calendarAdapter = adapter;
+        invalidate();
+    }
+
+
+    private Map<String, Paint> initPaints() {
+        Map <String, Paint> paints = new HashMap<>();
+
+        Paint dotsPaint = new Paint();
+        dotsPaint.setColor(clockWidget.getBorderColor());
+        paints.put("dots", dotsPaint);
+
+        Paint fillPaint = new Paint();
+        fillPaint.setStyle(Paint.Style.FILL);
+//        fillPaint.setStrokeWidth(20);
+//        fillPaint.setStyle(Paint.Style.STROKE);
+
+        fillPaint.setColor(clockWidget.getFillColor());
+        paints.put("fill", fillPaint);
 
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
-//        borderPaint.setColor(clockWidget.getBorderColor());
-        borderPaint.setColor(Color.BLACK);
-        borderPaint.setStrokeWidth(6);
+//        borderPaint.setStrokeWidth(50);
+        borderPaint.setColor(clockWidget.getBorderColor());
+        borderPaint.setStrokeWidth(clockWidget.getBorderWidth());
         paints.put("border", borderPaint);
 
-        Paint clockHandPaint = new Paint();
-        clockHandPaint.setColor(Color.RED);
-        clockHandPaint.setStrokeWidth(clockWidget.getHandWidth());
-        paints.put("hand", clockHandPaint);
+        Paint handPaint = new Paint();
+        handPaint.setColor(Color.RED);
+        handPaint.setStrokeWidth(clockWidget.getHandWidth());
+        paints.put("hand", handPaint);
+
+        Paint smallDigitsPaint = new Paint();
+        smallDigitsPaint.setTextSize(clockWidget.getSmallDigitSize());
+        smallDigitsPaint.setTextAlign(Paint.Align.CENTER);
+        smallDigitsPaint.setColor(clockWidget.getDigitColor());
+        paints.put("smallDigits", smallDigitsPaint);
 
         Paint bigDigitsPaint = new Paint();
         bigDigitsPaint.setTextSize(clockWidget.getBigDigitSize());
@@ -94,138 +140,103 @@ public class ClockView extends AppCompatImageView
         datePaint.setColor(clockWidget.getDigitColor());
         paints.put("date", datePaint);
 
+        Paint eventLinePaint = new Paint();
+        eventLinePaint.setColor(clockWidget.getEventArcColor()); // can be redefined in case of calendar color usage
+        eventLinePaint.setAlpha(100);
+        eventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+//        eventLinePaint.setStrokeWidth(20);
+//        eventLinePaint.setStyle(Paint.Style.STROKE);
+
+        paints.put("eventLine", eventLinePaint);
+
+        Paint sleepEventLinePaint = new Paint();
+        sleepEventLinePaint.setColor(Color.GRAY);
+        sleepEventLinePaint.setAlpha(100);
+        sleepEventLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+//        sleepEventLinePaint.setStrokeWidth(20);
+//        sleepEventLinePaint.setStyle(Paint.Style.STROKE);
+
+        paints.put("sleepEventLine", sleepEventLinePaint);
 
         Paint textTitlePaint = new Paint();
         textTitlePaint.setTextSize(clockWidget.getTitleSize());
         textTitlePaint.setColor(clockWidget.getEventTitleColor());
         paints.put("title", textTitlePaint);
 
-        for (Paint p : paints.values()) {
-            p.setAntiAlias(true);
-        }
+//        for (Paint p : paints.values()) {
+//            p.setAntiAlias(true);
+//        }
+
         return paints;
-
     }
 
+    private void drawClock(Canvas canvas) {
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.drawColor(backgroundColor);
-        drawClock(canvas);
-        drawDate(canvas);
-        if (calendarAdapter != null) {
-            drawEvents(canvas);
-            if (!calendarAdapter.isCalendarShifted()) {
-//                drawHand(canvas);
-            }
-        }
-//        drawDate(canvas);
-
-        drawMarkersAndDigits(canvas);
-
-        postInvalidateDelayed(refreshTimeoutMillis);
-    }
-
-    void setCalendarAdapter(CalendarAdapter adapter)
-    {
-        calendarAdapter = adapter;
-        invalidate();
-    }
-
-    private void drawClock(Canvas canvas)
-    {
-        RectF ringRect = clockWidget.getWidgetCircleObject();
-
-        // draw base ring
-        canvas.drawArc(ringRect, -90, 360, false, paints.get("ring"));
-
-//         draw clock border
-        //subtracted 75 from radius than added 100 to stroke , overall +25 to border
+//        body
         canvas.drawCircle(clockWidget.getCenter().x,
                 clockWidget.getCenter().y,
-                clockWidget.getRadius() + clockWidget.getPaddingDigits(),
+                clockWidget.getRadius(),
+                paints.get("fill"));
+//        border
+        canvas.drawCircle(clockWidget.getCenter().x,
+                clockWidget.getCenter().y,
+                clockWidget.getRadius(),
                 paints.get("border"));
-
-//        // draw markers
-//        List<List<Point>> markers = clockWidget.getHourMarkersCoordinates();
-//        for (List<Point> marker : markers) {
-//            canvas.drawLine(marker.get(0).x, marker.get(0).y,
-//                    marker.get(1).x, marker.get(1).y,
-//                    paints.get("border"));
-//        }
-//
-//        // draw digits
-//        List<Point> digits = clockWidget.getDigitsCoordinates();
-//        for (int i = 0; i < digits.size(); i++) {
-//            Paint paint;
-//            if (i % 3 == 0)
-//            {
-//                paint = paints.get("bigDigits");
-//                Point coords = digits.get(i);
-//                canvas.drawText(Integer.toString(i), coords.x, coords.y, paint);
-//            }
-//        }
-
-    }
-
-    private void drawMarkersAndDigits(Canvas canvas)
-    {
-        // draw markers
+//        markers
         List<List<Point>> markers = clockWidget.getHourMarkersCoordinates();
         for (List<Point> marker : markers) {
             canvas.drawLine(marker.get(0).x, marker.get(0).y,
                     marker.get(1).x, marker.get(1).y,
                     paints.get("border"));
         }
-
-        // draw digits
+//        dots
+        List<Point> dots = clockWidget.getHourDotsCoordinates();
+        for (Point dot : dots) {
+            canvas.drawCircle(dot.x, dot.y, clockWidget.getDotRadius(), paints.get("dots"));
+        }
+//        digits
         List<Point> digits = clockWidget.getDigitsCoordinates();
         for (int i = 0; i < digits.size(); i++) {
             Paint paint;
-            if (i % 3 == 0)
-            {
+            if (i % 3 == 0) {
                 paint = paints.get("bigDigits");
-                Point coords = digits.get(i);
-                canvas.drawText(Integer.toString(i), coords.x, coords.y, paint);
             }
+            else {
+                paint = paints.get("smallDigits");
+            }
+            Point coords = digits.get(i);
+            canvas.drawText(Integer.toString(i), coords.x, coords.y, paint);
         }
     }
 
-    // TODO: 05/05/2021 change the clock hand
     private void drawHand(Canvas canvas) {
         List<Point> hand = clockWidget.getCurrentTimeHandCoordinates();
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
         canvas.drawCircle(hand.get(0).x, hand.get(0).y, clockWidget.getDotRadius(), paints.get("dots"));
     }
 
-
-
-    private void drawDate(Canvas canvas)
-    {
-
+    private void drawDate(Canvas canvas) {
         Calendar calendar = calendarAdapter.getDayStartCalendar();
         String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
                 (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
+        Point datePoint = clockWidget.getDateCoordinates();
+        canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
 
-        RemoteViews views = new RemoteViews(getContext().getPackageName(), R.layout.widget);
-        System.out.println("enter draw date");
-        views.setTextViewText(R.id.dateView, date);
-//
-//        System.out.println(dateView == null);
-//        dateView.setText(date);
-
-//        Point datePoint = clockWidget.getDateCoordinates();
-//        canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
-//
-//        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
-//        String[] dayNames = dateFormatSymbols.getShortWeekdays();
-//        int dayNumber = calendar.get(DAY_OF_WEEK);
-//        Point dayOfWeekPoint = clockWidget.getDayOfWeekCoordinates();
-//        canvas.drawText(dayNames[dayNumber], dayOfWeekPoint.x, dayOfWeekPoint.y, paints.get("date"));
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
+        String[] dayNames = dateFormatSymbols.getShortWeekdays();
+        int dayNumber = calendar.get(DAY_OF_WEEK);
+        Point dayOfWeekPoint = clockWidget.getDayOfWeekCoordinates();
+        canvas.drawText(dayNames[dayNumber], dayOfWeekPoint.x, dayOfWeekPoint.y, paints.get("date"));
     }
 
     private void drawEvents(Canvas canvas) {
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
+
+
+        for (Event event : getSleepEvents()) {
+            ClockWidget.EventDegreeData degrees = clockWidget.getEventDegrees(event);
+            canvas.drawArc(widgetCircle, degrees.getStart(), degrees.getSweep(), true, paints.get("sleepEventLine"));
+        }
 
         List<Event> todayEvents = calendarAdapter.getTodayEvents();
 
@@ -262,8 +273,34 @@ public class ClockView extends AppCompatImageView
                 paints.get("title"));
     }
 
+    private List<Event> getSleepEvents() {
+        Calendar calendar = Calendar.getInstance();
+        List<Event> events = new ArrayList<>();
+
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), sleepStartTime.getHours(),
+                    sleepStartTime.getMinutes(), 0);
+        long startTimeBeforeMidnight = calendar.getTimeInMillis();
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH) + 1, 0, 0, 0);
+        long endTimeBeforeMidnight = calendar.getTimeInMillis();
+        long beforeMidnightduration = endTimeBeforeMidnight - startTimeBeforeMidnight;
+        events.add(new Event("sleep before midnight", startTimeBeforeMidnight, endTimeBeforeMidnight,
+                beforeMidnightduration, false));
+
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), 0, 0, 0);
+        long startTimeAfterMidnight = calendar.getTimeInMillis();
+        calendar.set(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH), sleepEndTime.getHours(),
+                sleepEndTime.getMinutes(), 0);
+        long endTimeAfterMidnight = calendar.getTimeInMillis();
+        long afterMidnightDuration = endTimeAfterMidnight - startTimeAfterMidnight;
+        events.add(new Event("sleep after midnight", startTimeAfterMidnight, endTimeAfterMidnight,
+                afterMidnightDuration, false));
+
+//        System.out.println(events);
+        return events;
+    }
+
     private String cutEventTitleIfNeeded(String title) {
-        return normalizeEventTitle(title, clockWidget.getPaddingRadius()*2);
+        return normalizeEventTitle(title, clockWidget.getRadius());
     }
 
     private String cutAllDayEventsTitlesIfNeeded(String titles) {
@@ -313,21 +350,26 @@ public class ClockView extends AppCompatImageView
                 event.isFinishedInFirstDayHalf(), titleBuilder.toString());
     }
 
-
     private void drawEventGeneralized(Canvas canvas, RectF widgetCircle, ClockWidget.EventDegreeData degrees, int color,
                                       boolean isFinishedFirstDayHalf, String title) {
-        Paint eventPaint = paints.get("ring");
-        if (useCalendarColors) {
+        Paint eventPaint = paints.get("eventLine");
+        if (useCalendarColors)
+        {
             eventPaint.setColor(color);
         }
-        eventPaint.setAlpha(100);
+
         final float minSweep = (float) 0.5;
         float sweepAngle = Math.max(degrees.getSweep(), minSweep);
         float startAngle = degrees.getStart();
-        canvas.drawArc(widgetCircle, startAngle, sweepAngle, false, eventPaint);
+        canvas.drawArc(widgetCircle, startAngle, sweepAngle, true, eventPaint);
 
+        Point widgetCenter = clockWidget.getCenter();
+        List<Point> circlePoints = clockWidget.calculateEventCirclePoints(startAngle + 90, sweepAngle);
         eventPaint.setColor(ColorUtils.blendARGB(eventPaint.getColor(), Color.BLACK, 0.1f));
-        canvas.drawArc(clockWidget.getWidgetCircleObject(), startAngle, sweepAngle, false, eventPaint);
+        eventPaint.setColor(Color.BLACK);
+        canvas.drawLine(widgetCenter.x, widgetCenter.y, circlePoints.get(0).x, circlePoints.get(0).y, eventPaint);
+        canvas.drawLine(widgetCenter.x, widgetCenter.y, circlePoints.get(1).x, circlePoints.get(1).y, eventPaint);
+
         canvas.save();
 
         final String titleNormalized = cutEventTitleIfNeeded(title);
@@ -345,7 +387,7 @@ public class ClockView extends AppCompatImageView
         {
             titleAngle += (float) titleTextAngle; // move forward on half of text angle
             rotateAngle = titleAngle - 90;
-            padding = calculateTextWidth(titleNormalized); // title text: center->radius // need to change according to stroke width
+            padding = 150; // title text: center->radius
         } else {
             titleAngle -= (float) titleTextAngle; // move backward on half of text angle
             rotateAngle = titleAngle - 270;
@@ -415,5 +457,4 @@ public class ClockView extends AppCompatImageView
             }
         }
     }
-
 }

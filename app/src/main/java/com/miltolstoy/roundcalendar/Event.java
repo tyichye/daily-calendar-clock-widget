@@ -24,6 +24,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import lombok.Getter;
@@ -62,6 +63,8 @@ class Event {
         this.allDay = allDay;
     }
 
+
+
     String getStartTime() {
         return formatToTime(start);
     }
@@ -70,6 +73,21 @@ class Event {
         return formatToTime(finish);
     }
 
+    // tal's code
+    boolean isEnd(long currentTime)
+    {
+//        System.out.println(title);
+//        System.out.println(currentTime);
+//        System.out.println(finish);
+//        System.out.println(currentTime > finish);
+
+        return formatToTime(currentTime).compareTo(getFinishTime()) > 0 && getFinishDate() == getStartDate();
+    }
+    // end tal's code
+
+
+
+    // relevant to know how to draw the arc of the event - up-down or down-up
     boolean isFinishedInFirstDayHalf() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(finish);
