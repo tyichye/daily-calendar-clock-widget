@@ -133,7 +133,8 @@ class ClockWidget {
         Log.d(TAG, String.format("Time for hand drawing: %d:%d (%f degrees)", (int) hours, (int) minutes, degrees));
 
         Point handEnd = calculateCircumferencePoint(degrees);
-        List<Point> handLine = new ArrayList<>(Arrays.asList(center, handEnd));
+        Point handStart  = calculateCircumferencePointSmallCircle(degrees);
+        List<Point> handLine = new ArrayList<>(Arrays.asList(handStart, handEnd));
         calendar.get(Calendar.HOUR);
         return handLine;
     }
@@ -273,12 +274,17 @@ class ClockWidget {
         return calculateConcentricPoint(degree, radius);
     }
 
+    private Point calculateCircumferencePointSmallCircle(double degree) {
+        return calculateConcentricPoint(degree, radius - paddingRadius*2);
+    }
+
     private Point calculateConcentricPoint(double degree, float radius) {
         double radians = degree * Math.PI / 180;
         double x = center.x + radius * Math.sin(radians);
         double y = center.y - radius * Math.cos(radians);
         return new Point((int) Math.round(x), (int) Math.round(y));
     }
+
 
     private List<Point> calculateHoursCoordinates() {
         List<Point> hours = new ArrayList<>();

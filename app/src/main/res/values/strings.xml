@@ -4,19 +4,19 @@
     <string name="next_day">&gt;</string>
     <string name="today">T</string>
 
-    <string name="calendars_chooser">Displayed calendars:</string>
+    <string name="calendars_chooser">Displayed calendars </string>
 
-    <string name="colors_chooser">Event color:</string>
-    <string name="use_calendar_color">From calendar</string>
-    <string name="use_default_color">Blue (default)</string>
+    <string name="colors_chooser">Import events color </string>
+    <string name="use_calendar_color">Yes</string>
+    <string name="use_default_color">No</string>
 
-    <string name="sleep_start">Sleep start time - </string>
+    <string name="sleep_start">Sleep start time -d </string>
     <string name="sleep_end">Sleep end time - </string>
     <string name="change">Change</string>
 
-    <string name="auto_update_enabled">Widget auto-update enabled</string>
-    <string name="update_period_label">Widget update period (seconds): </string>
-    <string name="update_period_default">1800</string>
+    <string name="auto_update_enabled">Enable widget auto-update</string>
+    <string name="update_period_label">Widget update period (minutes): </string>
+    <string name="update_period_default">30</string>
 
     <string name="save_button">Save</string>
 </resources>

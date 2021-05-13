@@ -44,14 +44,18 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static java.util.Calendar.YEAR;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
 
@@ -71,14 +75,16 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private static TimeInfo sleepStartTimeCached = new TimeInfo(21, 0);
     private static TimeInfo sleepEndTimeCached = new TimeInfo(6, 0);
 
-    private CheckBox autoUpdateCheckBox;
+    private Switch autoUpdateSwitch;
     private EditText updatePeriodEditText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_widget_configuration);
+        setContentView(R.layout.new_configuration_layout);
+
+//        setContentView(R.layout.activity_widget_configuration);
         requestCalendarPermissionsIfNeeded();
 
         final int appWidgetId = getAppWidgetId(getIntent());
@@ -98,19 +104,28 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         dropdown.setAdapter(spinnerAdapter);
 
         final Resources resources = getResources();
-
-        // update the text view of sleep start and sleep end for the first time
-        sleepStartTimeTextView = findViewById(R.id.sleep_start_time_text);
-        setSleepTimeInfo(sleepStartTimeTextView, resources.getInteger(R.integer.sleep_start_hours),
-                resources.getInteger(R.integer.sleep_start_minutes));
-        sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
-        setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
-                resources.getInteger(R.integer.sleep_end_minutes));
-        storeSleepTime();
-
+//
+////         update the text view of sleep start and sleep end for the first time
+//        sleepStartTimeTextView = findViewById(R.id.sleep_start_time_text);
+//        setSleepTimeInfo(sleepStartTimeTextView, resources.getInteger(R.integer.sleep_start_hours),
+//                resources.getInteger(R.integer.sleep_start_minutes));
+//        sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
+//        setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
+//                resources.getInteger(R.integer.sleep_end_minutes));
+//        storeSleepTime();
+//
+//        // todo: change to switch listener
         updatePeriodEditText = findViewById(R.id.update_period);
-        autoUpdateCheckBox = findViewById(R.id.auto_update);
-        autoUpdateCheckBox.setOnCheckedChangeListener(new AutoUpdateCheckBoxListener());
+        autoUpdateSwitch = findViewById(R.id.auto_update);
+//
+        autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+            }
+        });
+//
+//
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
@@ -138,6 +153,17 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
         clockView.draw(new Canvas(bitmap));
+
+
+        // date view
+        Calendar calendar = calendarAdapter.getDayStartCalendar();
+        String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
+                (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
+
+        System.out.println("enter draw date");
+        views.setTextViewText(R.id.dateView, date);
+        // end date view
+
 
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
 
@@ -172,7 +198,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
 
         int updatePeriod = 0;
-        if (autoUpdateCheckBox.isChecked()) {
+        if (autoUpdateSwitch.isChecked()) {
             EditText updatePeriodEditText = findViewById(R.id.update_period);
             String updatePeriodString = updatePeriodEditText.getText().toString();
             if (updatePeriodString.isEmpty()) {
@@ -196,7 +222,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         editor.putStringSet(calendarIdsSettingName, selectedIds);
         editor.apply();
 
-        storeSleepTime();
+//        storeSleepTime();
 
         synchronized (saveButtonLock) {
             saveButtonLock.notify();

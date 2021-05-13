@@ -128,6 +128,7 @@ public class WidgetProvider extends AppWidgetProvider {
         Point widgetSize = WidgetConfigurationActivity.getWidgetSize(appWidgetManager, widgetId);
         WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift);
 
+
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
@@ -138,6 +139,7 @@ public class WidgetProvider extends AppWidgetProvider {
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
+
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
 

@@ -1,5 +1,6 @@
 package com.miltolstoy.roundcalendar;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -63,11 +64,11 @@ public class ClockView extends AppCompatImageView
         RectF ringRect = clockWidget.getWidgetCircleObject();
 
         Paint ringPaint = new Paint();
-        ringPaint.setColor(Color.GRAY);
+        ringPaint.setColor(Color.BLACK);
         ringPaint.setStrokeWidth(clockWidget.getPaddingRadius()*2);
         ringPaint.setAntiAlias(true);
         ringPaint.setStyle(Paint.Style.STROKE);
-        ringPaint.setAlpha(100);
+        ringPaint.setAlpha(130);
         paints.put("ring", ringPaint);
 
         Paint borderPaint = new Paint();
@@ -86,6 +87,7 @@ public class ClockView extends AppCompatImageView
         bigDigitsPaint.setTextSize(clockWidget.getBigDigitSize());
         bigDigitsPaint.setTextAlign(Paint.Align.CENTER);
         bigDigitsPaint.setColor(clockWidget.getDigitColor());
+//        bigDigitsPaint.setColor(Color.BLACK);
         paints.put("bigDigits", bigDigitsPaint);
 
         Paint datePaint = new Paint();
@@ -112,11 +114,11 @@ public class ClockView extends AppCompatImageView
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(backgroundColor);
         drawClock(canvas);
-        drawDate(canvas);
+//        drawDate(canvas);
         if (calendarAdapter != null) {
             drawEvents(canvas);
             if (!calendarAdapter.isCalendarShifted()) {
-//                drawHand(canvas);
+                drawHand(canvas);
             }
         }
 //        drawDate(canvas);
@@ -195,22 +197,25 @@ public class ClockView extends AppCompatImageView
     private void drawHand(Canvas canvas) {
         List<Point> hand = clockWidget.getCurrentTimeHandCoordinates();
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
-        canvas.drawCircle(hand.get(0).x, hand.get(0).y, clockWidget.getDotRadius(), paints.get("dots"));
+//        canvas.drawCircle(hand.get(0).x, hand.get(0).y, clockWidget.getDotRadius(), paints.get("dots"));
     }
 
 
 
     private void drawDate(Canvas canvas)
     {
-
-        Calendar calendar = calendarAdapter.getDayStartCalendar();
-        String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
-                (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
-
-        RemoteViews views = new RemoteViews(getContext().getPackageName(), R.layout.widget);
-        System.out.println("enter draw date");
-        views.setTextViewText(R.id.dateView, date);
 //
+//        Calendar calendar = calendarAdapter.getDayStartCalendar();
+//        String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
+//                (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
+//
+//        RemoteViews views = new RemoteViews(getContext().getPackageName(), R.layout.widget);
+//        System.out.println("enter draw date");
+//        views.setTextViewText(R.id.dateView, date);
+//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+//        appWidgetManager.updateAppWidget(widgetId, views);
+
+
 //        System.out.println(dateView == null);
 //        dateView.setText(date);
 
@@ -319,6 +324,10 @@ public class ClockView extends AppCompatImageView
         Paint eventPaint = paints.get("ring");
         if (useCalendarColors) {
             eventPaint.setColor(color);
+        }
+        else
+        {
+            eventPaint.setColor(Color.parseColor("#FF81C4FD"));
         }
         eventPaint.setAlpha(100);
         final float minSweep = (float) 0.5;
