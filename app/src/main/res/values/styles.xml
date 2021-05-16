@@ -5,11 +5,14 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">#7AEC73</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginEnd">7dp</item>
+        <item name="android:layout_marginStart">7dp</item>
+
         <item name="android:layout_height">1dp</item>
         <item name="android:background">#979696</item>
     </style>

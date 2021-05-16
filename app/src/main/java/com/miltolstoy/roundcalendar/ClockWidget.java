@@ -230,8 +230,6 @@ class ClockWidget {
     private void calculateSizesAccordingToScreen(int side) {
         int padding = side / 13;
 
-
-
         borderWidth = side / 100;
         dotRadius = side / 100;
         smallDigitSize = side / 40;

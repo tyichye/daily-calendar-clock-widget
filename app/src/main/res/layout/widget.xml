@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_widget"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
@@ -12,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+
         android:orientation="vertical">
 
         <TextView
@@ -30,13 +32,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:textColor="#FFFFFF"
             />
 
         <RelativeLayout
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-           android:layout_gravity="top"
+           android:layout_gravity="center"
             >
 
             <ImageButton
@@ -46,8 +49,8 @@
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
                 android:background="@null"
-
                 />
+
             <ImageButton
                 android:id="@+id/today_button"
                 android:layout_width="20dp"
@@ -55,9 +58,8 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_baseline_brightness_1_24"
                 android:background="@null"
-
-
                 />
+
             <ImageButton
                 android:id="@+id/next_button"
                 android:layout_width="20dp"
@@ -68,49 +70,17 @@
 
                 />
 
-
-<!--            <Button-->
-<!--                android:id="@+id/previous_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/prev_day"-->
-<!--                android:layout_alignParentRight="true"-->
-<!--                android:textSize="25sp"-->
-<!--                android:textColor="#FFFFFF"-->
-<!--                android:background="@drawable/round_button"-->
-<!--                />-->
-
-
-
-<!--            <Button-->
-<!--                android:id="@+id/today_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/today"-->
-
-<!--                android:layout_centerInParent="true"-->
-<!--                android:textSize="25sp"-->
-<!--                android:textColor="#FFFFFF"-->
-<!--                android:background="@drawable/round_button"-->
-<!--                />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/next_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/next_day"-->
-<!--                android:layout_alignParentLeft="true"-->
-<!--                android:textSize="25sp"-->
-<!--                android:textColor="#FFFFFF"-->
-<!--                android:background="@drawable/round_button"-->
-<!--               />-->
-
         </RelativeLayout>
+        <TextView
+            android:id="@+id/margin"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:visibility="visible"
+            />
     </LinearLayout>
 
-
-
-<!--    </LinearLayout>-->
 
 
 
