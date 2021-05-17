@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RoundCalendar</string>
+    <string name="calendars_chooser">לוחות שנה מוצגים</string>
+    <string name="colors_chooser">יבא צבעי אירועים</string>
+    <string name="use_calendar_color">כן</string>
+    <string name="use_default_color">לא</string>
+    <string name="save_button">שמור</string>
+    <string name="auto_update_enabled">אפשר עדכון אוטומטי</string>
+    <string name="update_period_label">קצב רענון (דקות)</string>
+    <string name="all_calendars">הכל</string>
+</resources>

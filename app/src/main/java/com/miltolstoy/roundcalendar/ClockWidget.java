@@ -243,7 +243,7 @@ class ClockWidget {
         allDayEventsXPadding = side / 36;
         allDayEventsYPadding = (int) (side * 0.99);
 
-        titleSize = side / 27;
+        titleSize = side / 30;
 
         handWidth = borderWidth / 2;
         tiltedMarkersLength = markersLength * 0.7;

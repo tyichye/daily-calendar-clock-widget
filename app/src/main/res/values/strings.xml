@@ -3,6 +3,7 @@
     <string name="prev_day">&lt;</string>
     <string name="next_day">&gt;</string>
     <string name="today">T</string>
+    <string name="all_calendars">All</string>
 
     <string name="calendars_chooser">Displayed calendars </string>
 

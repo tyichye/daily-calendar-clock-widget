@@ -86,7 +86,9 @@ class SpinnerAdapter extends ArrayAdapter<CalendarInfo> {
         }
 
         CalendarInfo infoItem = items.get(position);
-        String itemText = infoItem.isAllItem() ? "ALL" : infoItem.toString();
+
+
+        String itemText = infoItem.isAllItem() ? getContext().getString(R.string.all_calendars) : infoItem.toString();
         item.textView.setText(itemText);
         item.checkBox.setTag(position);
         isFromView = true;

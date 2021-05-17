@@ -1,8 +1,10 @@
-# RoundCalendar
-Android widget for Google Calendar events displaying on 24-hour clock view.  
+# Daily Calendar Clock Widget
+An android widget designed for to visualize your google daily calendar in a round clock style visualization.
+At any given moment, one look is enough for you to know your daily status.
 Release application version can be found under "release_apk" directory.
 
-![](docs/readme-screenshot.jpg)
+![](docs/clock_screenshot.jpg)
+![](docs/configuration_screenshot.jpg)
 
 ### Release application
 Release application file can be found under `./release_apk` directory

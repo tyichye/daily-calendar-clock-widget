@@ -160,7 +160,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
                 (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
 
-        System.out.println("enter draw date");
         views.setTextViewText(R.id.dateView, date);
         // end date view
 

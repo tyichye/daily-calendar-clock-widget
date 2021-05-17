@@ -68,7 +68,7 @@ public class ClockView extends AppCompatImageView
         ringPaint.setStrokeWidth(clockWidget.getPaddingRadius()*2);
         ringPaint.setAntiAlias(true);
         ringPaint.setStyle(Paint.Style.STROKE);
-        ringPaint.setAlpha(130);
+        ringPaint.setAlpha(70);
         paints.put("ring", ringPaint);
 
         Paint borderPaint = new Paint();
@@ -279,15 +279,15 @@ public class ClockView extends AppCompatImageView
         float textWidth = paints.get("title").measureText(title);
         if (textWidth > maxWidth) {
             float maxSymbols = (maxWidth * title.length()) / textWidth;
-            maxSymbols -= 4; // "..." + one padding char
+            maxSymbols -= 3; // "..." + one padding char
             title = title.substring(0, Math.round(maxSymbols));
-            title += "...";
+            title += "..";
         }
         return title;
     }
 
     private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
-        // tal's code
+
         Calendar calendar = Calendar.getInstance();
 
 //        if (event.isEnd(calendar.getTimeInMillis()) && !calendarAdapter.isCalendarShifted())
@@ -297,7 +297,6 @@ public class ClockView extends AppCompatImageView
 //                    return;
 //        }
 
-        // end tal's code
 
         drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
                 event.isFinishedInFirstDayHalf(), event.getTitle());
@@ -329,7 +328,7 @@ public class ClockView extends AppCompatImageView
         {
             eventPaint.setColor(Color.parseColor("#FF81C4FD"));
         }
-        eventPaint.setAlpha(100);
+        eventPaint.setAlpha(80);
         final float minSweep = (float) 0.5;
         float sweepAngle = Math.max(degrees.getSweep(), minSweep);
         float startAngle = degrees.getStart();
