@@ -127,7 +127,7 @@ public class WidgetProvider extends AppWidgetProvider {
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
-        setOnClickIntent(context, views, widgetId, R.id.dateView, openCalendarAction); 
+        setOnClickIntent(context, views, widgetId, R.id.dateView, openCalendarAction);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
 
