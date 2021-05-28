@@ -22,6 +22,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String nextDayAction = "nextDayAction";
     private static final String todayAction = "todayAction";
     private static final String tickAction = "com.miltolstoy.roundcalendar.clockTickAction";
+    private static final String openCalendarAction = "openCalendarAction";
 
     // If widget update will be too frequent, Android will block it at all. If widget update period will be large, it
     // will affect user experience. Recommended value >= 1 minute.
@@ -40,6 +41,11 @@ public class WidgetProvider extends AppWidgetProvider {
         String action = intent.getAction();
         if (action == null) {
             Log.d(TAG, "Empty action");
+            return;
+        }
+
+        if (action.equals(openCalendarAction)){
+            WidgetConfigurationActivity.onClockClicked(context, daysShift);
             return;
         }
 
@@ -121,7 +127,7 @@ public class WidgetProvider extends AppWidgetProvider {
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
-
+        setOnClickIntent(context, views, widgetId, R.id.dateView, openCalendarAction); 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);
 

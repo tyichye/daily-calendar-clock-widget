@@ -14,8 +14,8 @@ GUI way: build using Android Studio
 CLI way: ```./gradlew build```
 
 ### Install
--Install Android Studio : https://developer.android.com/studio/install
--GUI way: run using Android Studio
+-Install Android Studio : https://developer.android.com/studio/install \
+-GUI way: run using Android Studio \
 -CLI way: ```adb install ./app/build/outputs/apk/debug/app-debug.apk```
 
 

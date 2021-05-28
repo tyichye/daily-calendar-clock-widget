@@ -261,5 +261,27 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
     }
 
+    public static void onClockClicked(Context context, int daysShift) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        calendar.add(Calendar.DAY_OF_MONTH, daysShift);
+
+        long startMillis = calendar.getTimeInMillis();
+
+        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+        builder.appendPath("time");
+        ContentUris.appendId(builder, startMillis);
+        Intent intent = new Intent(Intent.ACTION_VIEW)
+                .setData(builder.build());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(intent);
+
+    }
+
 
 }
