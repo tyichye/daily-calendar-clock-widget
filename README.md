@@ -5,6 +5,12 @@ At any given moment, one look is enough for you to know your daily status.
 ![](docs/clock_screenshot.jpeg =100x20)
 ![](docs/configuration_screenshot.jpeg =100x20)
 
+<p align="center">
+  <img src="docs/clock_screenshot.jpeg" width="200">
+  <img src="configuration_screenshot.jpeg" width="200">
+</p>
+
+
 ### Build
 GUI way: build using Android Studio  
 CLI way: ```./gradlew build```
