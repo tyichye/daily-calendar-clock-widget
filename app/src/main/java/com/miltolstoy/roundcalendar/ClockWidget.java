@@ -1,30 +1,9 @@
-/*
-Round Calendar
-Copyright (C) 2020 Mil Tolstoy <miltolstoy@gmail.com>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 package com.miltolstoy.roundcalendar;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,8 +38,6 @@ class ClockWidget {
     private int markersLength;
     private double tiltedMarkersLength;
     private double digitRadiusPadding;
-    private int dateXPadding;
-    private int dateYPadding;
     private int dayOfWeekXPadding;
     private int dayOfWeekYPadding;
     private int allDayEventsXPadding;
@@ -170,7 +147,6 @@ class ClockWidget {
     }
 
     Point getDateCoordinates() {
-//        return new Point(dateXPadding, dateYPadding);
         return new Point(center.x, center.y);
     }
 
@@ -182,7 +158,6 @@ class ClockWidget {
         return new Point(allDayEventsXPadding, allDayEventsYPadding);
     }
 
-    // TODO: 06/05/2021 need to change size of circle according to stroke width
     RectF getWidgetCircleObject() {
         RectF oval = new RectF();
         List<List<Point>> markers = getHourMarkersCoordinates();
@@ -215,12 +190,12 @@ class ClockWidget {
         return calculateConcentricPoint(degree, radius - markersLength - padding);
     }
 
-    List<Point> calculateEventCirclePoints(float startAngle, float sweepAngle) {
-        List<Point> points = new ArrayList<>();
-        points.add(calculateConcentricPoint(startAngle, radius));
-        points.add(calculateConcentricPoint(startAngle + sweepAngle, radius));
-        return points;
-    }
+//    List<Point> calculateEventCirclePoints(float startAngle, float sweepAngle) {
+//        List<Point> points = new ArrayList<>();
+//        points.add(calculateConcentricPoint(startAngle, radius));
+//        points.add(calculateConcentricPoint(startAngle + sweepAngle, radius));
+//        return points;
+//    }
 
     float getWidgetWidth() {
         return 2 * (radius + bigDigitSize + (float) digitRadiusPadding);
@@ -236,8 +211,6 @@ class ClockWidget {
         bigDigitSize = side / 25;
         dateSize = side / 18;
         markersLength = side / 36 ;
-        dateXPadding = side / 36;
-        dateYPadding = side / 15;
         dayOfWeekXPadding = side / 36;
         dayOfWeekYPadding = side / 8;
         allDayEventsXPadding = side / 36;

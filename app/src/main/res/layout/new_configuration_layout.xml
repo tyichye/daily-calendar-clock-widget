@@ -95,37 +95,38 @@
                     android:textColor="@color/colorSettingsText" />
             </RadioGroup>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="7dp"
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginTop="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="7dp"
+                android:background="@drawable/round_edges_layout"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
 
-            android:orientation="horizontal"
-            android:layout_marginStart="7dp"
-            android:layout_marginEnd="7dp"
-            android:background="@drawable/round_edges_layout"
-            app:layout_constraintTop_toTopOf="parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-
-                android:text="@string/auto_update_enabled"
-                android:layout_gravity="center"
-                android:textColor="@color/colorSettingsText"
-                android:textSize="20sp" />
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/auto_update_enabled"
+                    android:textColor="@color/colorSettingsText"
+                    android:textSize="20sp" />
 
 
-            <Switch
-                android:id="@+id/auto_update"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/_35sdp"
-                android:switchMinWidth="55dp" />
+                <Switch
+                    android:id="@+id/auto_update"
+                    android:layout_width="60dp"
+                    android:checked="true"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_35sdp"
+                    android:switchMinWidth="55dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

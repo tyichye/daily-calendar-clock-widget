@@ -1,6 +1,5 @@
 package com.miltolstoy.roundcalendar;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,22 +9,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.AppCompatImageView;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RemoteViews;
-import android.widget.TextView;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import static java.util.Calendar.DAY_OF_WEEK;
-import static java.util.Calendar.YEAR;
 
 public class ClockView extends AppCompatImageView
 {
@@ -36,23 +27,16 @@ public class ClockView extends AppCompatImageView
     private CalendarAdapter calendarAdapter = null;
     private boolean useCalendarColors = false;
 
-    private TimeInfo sleepStartTime;
-    private TimeInfo sleepEndTime;
-
-
 
     public ClockView(Context context)
     {
         super(context);
     }
 
-    public ClockView(Context context, Point screenSize, boolean useCalendarColors, TimeInfo sleepStartTime,
-                     TimeInfo sleepEndTime)
+    public ClockView(Context context, Point screenSize, boolean useCalendarColors)
     {
         super(context);
         this.useCalendarColors = useCalendarColors;
-        this.sleepStartTime = sleepStartTime;
-        this.sleepEndTime = sleepEndTime;
         clockWidget = new ClockWidget(screenSize);
         paints = initPaints();
     }
@@ -61,7 +45,7 @@ public class ClockView extends AppCompatImageView
     private Map<String, Paint> initPaints()
     {
         Map <String, Paint> paints = new HashMap<>();
-        RectF ringRect = clockWidget.getWidgetCircleObject();
+//        RectF ringRect = clockWidget.getWidgetCircleObject();
 
         Paint ringPaint = new Paint();
         ringPaint.setColor(Color.BLACK);
@@ -73,7 +57,6 @@ public class ClockView extends AppCompatImageView
 
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
-//        borderPaint.setColor(clockWidget.getBorderColor());
         borderPaint.setColor(Color.BLACK);
         borderPaint.setStrokeWidth(6);
         paints.put("border", borderPaint);
@@ -87,7 +70,6 @@ public class ClockView extends AppCompatImageView
         bigDigitsPaint.setTextSize(clockWidget.getBigDigitSize());
         bigDigitsPaint.setTextAlign(Paint.Align.CENTER);
         bigDigitsPaint.setColor(clockWidget.getDigitColor());
-//        bigDigitsPaint.setColor(Color.BLACK);
         paints.put("bigDigits", bigDigitsPaint);
 
         Paint datePaint = new Paint();
@@ -114,17 +96,13 @@ public class ClockView extends AppCompatImageView
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(backgroundColor);
         drawClock(canvas);
-//        drawDate(canvas);
         if (calendarAdapter != null) {
             drawEvents(canvas);
             if (!calendarAdapter.isCalendarShifted()) {
                 drawHand(canvas);
             }
         }
-//        drawDate(canvas);
-
         drawMarkersAndDigits(canvas);
-
         postInvalidateDelayed(refreshTimeoutMillis);
     }
 
@@ -147,27 +125,6 @@ public class ClockView extends AppCompatImageView
                 clockWidget.getCenter().y,
                 clockWidget.getRadius() + clockWidget.getPaddingDigits(),
                 paints.get("border"));
-
-//        // draw markers
-//        List<List<Point>> markers = clockWidget.getHourMarkersCoordinates();
-//        for (List<Point> marker : markers) {
-//            canvas.drawLine(marker.get(0).x, marker.get(0).y,
-//                    marker.get(1).x, marker.get(1).y,
-//                    paints.get("border"));
-//        }
-//
-//        // draw digits
-//        List<Point> digits = clockWidget.getDigitsCoordinates();
-//        for (int i = 0; i < digits.size(); i++) {
-//            Paint paint;
-//            if (i % 3 == 0)
-//            {
-//                paint = paints.get("bigDigits");
-//                Point coords = digits.get(i);
-//                canvas.drawText(Integer.toString(i), coords.x, coords.y, paint);
-//            }
-//        }
-
     }
 
     private void drawMarkersAndDigits(Canvas canvas)
@@ -193,41 +150,11 @@ public class ClockView extends AppCompatImageView
         }
     }
 
-    // TODO: 05/05/2021 change the clock hand
     private void drawHand(Canvas canvas) {
         List<Point> hand = clockWidget.getCurrentTimeHandCoordinates();
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
-//        canvas.drawCircle(hand.get(0).x, hand.get(0).y, clockWidget.getDotRadius(), paints.get("dots"));
     }
 
-
-
-    private void drawDate(Canvas canvas)
-    {
-//
-//        Calendar calendar = calendarAdapter.getDayStartCalendar();
-//        String date = String.format(Locale.US, "%2d.%2d.%d", calendar.get(Calendar.DAY_OF_MONTH),
-//                (calendar.get(Calendar.MONTH) + 1), calendar.get(YEAR)).replace(' ', '0');
-//
-//        RemoteViews views = new RemoteViews(getContext().getPackageName(), R.layout.widget);
-//        System.out.println("enter draw date");
-//        views.setTextViewText(R.id.dateView, date);
-//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-//        appWidgetManager.updateAppWidget(widgetId, views);
-
-
-//        System.out.println(dateView == null);
-//        dateView.setText(date);
-
-//        Point datePoint = clockWidget.getDateCoordinates();
-//        canvas.drawText(date, datePoint.x, datePoint.y, paints.get("date"));
-//
-//        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
-//        String[] dayNames = dateFormatSymbols.getShortWeekdays();
-//        int dayNumber = calendar.get(DAY_OF_WEEK);
-//        Point dayOfWeekPoint = clockWidget.getDayOfWeekCoordinates();
-//        canvas.drawText(dayNames[dayNumber], dayOfWeekPoint.x, dayOfWeekPoint.y, paints.get("date"));
-    }
 
     private void drawEvents(Canvas canvas) {
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
@@ -247,7 +174,6 @@ public class ClockView extends AppCompatImageView
                 continue;
             }
             drawEvent(canvas, widgetCircle, event);
-
         }
 
         if (allDayEvents.isEmpty()) {

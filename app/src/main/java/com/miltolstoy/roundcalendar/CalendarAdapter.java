@@ -1,21 +1,3 @@
-/*
-Round Calendar
-Copyright (C) 2020 Mil Tolstoy <miltolstoy@gmail.com>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 package com.miltolstoy.roundcalendar;
 
 import android.content.ContentUris;
@@ -41,7 +23,6 @@ import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.CALENDAR_ID;
 import static android.provider.CalendarContract.Events.DISPLAY_COLOR;
-//import static android.provider.CalendarContract.Events.ORIGINAL_INSTANCE_TIME;
 import static com.miltolstoy.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
@@ -49,8 +30,6 @@ class CalendarAdapter {
     private Context context;
     private List<String> calendarIds;
     private int daysShift;
-
-    static final int CALENDAR_EMPTY_ID = -1;
 
     CalendarAdapter(Context context) {
         this(context, null, 0);

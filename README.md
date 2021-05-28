@@ -2,21 +2,17 @@
 An android widget designed for to visualize your google daily calendar in a round clock style visualization.
 At any given moment, one look is enough for you to know your daily status.
 
-Release application version can be found under "release_apk" directory.
-
 ![](docs/clock_screenshot.jpeg)
 ![](docs/configuration_screenshot.jpeg)
-
-### Release application
-Release application file can be found under `./release_apk` directory
 
 ### Build
 GUI way: build using Android Studio  
 CLI way: ```./gradlew build```
 
 ### Install
-GUI way: run using Android Studio  
-CLI way: ```adb install ./app/build/outputs/apk/debug/app-debug.apk```
+-Install Android Studio : https://developer.android.com/studio/install
+-GUI way: run using Android Studio
+-CLI way: ```adb install ./app/build/outputs/apk/debug/app-debug.apk```
 
 ### Analogues
 * [Sectograph](https://play.google.com/store/apps/details?id=prox.lab.calclock) - 24-hours view is paid

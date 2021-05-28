@@ -1,21 +1,3 @@
-/*
-Round Calendar
-Copyright (C) 2020 Mil Tolstoy <miltolstoy@gmail.com>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 package com.miltolstoy.roundcalendar;
 
 import android.Manifest;
@@ -70,11 +52,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     private SpinnerAdapter spinnerAdapter;
 
-    private TextView sleepStartTimeTextView;
-    private TextView sleepEndTimeTextView;
-    private static TimeInfo sleepStartTimeCached = new TimeInfo(21, 0);
-    private static TimeInfo sleepEndTimeCached = new TimeInfo(6, 0);
-
     private Switch autoUpdateSwitch;
     private EditText updatePeriodEditText;
 
@@ -84,7 +61,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_configuration_layout);
 
-//        setContentView(R.layout.activity_widget_configuration);
         requestCalendarPermissionsIfNeeded();
 
         final int appWidgetId = getAppWidgetId(getIntent());
@@ -103,29 +79,26 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars);
         dropdown.setAdapter(spinnerAdapter);
 
-        final Resources resources = getResources();
-//
-////         update the text view of sleep start and sleep end for the first time
-//        sleepStartTimeTextView = findViewById(R.id.sleep_start_time_text);
-//        setSleepTimeInfo(sleepStartTimeTextView, resources.getInteger(R.integer.sleep_start_hours),
-//                resources.getInteger(R.integer.sleep_start_minutes));
-//        sleepEndTimeTextView = findViewById(R.id.sleep_end_time_text);
-//        setSleepTimeInfo(sleepEndTimeTextView, resources.getInteger(R.integer.sleep_end_hours),
-//                resources.getInteger(R.integer.sleep_end_minutes));
-//        storeSleepTime();
-//
-//        // todo: change to switch listener
         updatePeriodEditText = findViewById(R.id.update_period);
+
         autoUpdateSwitch = findViewById(R.id.auto_update);
-//
+
         autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (!b){
+                    updatePeriodEditText.setEnabled(false);
+                    updatePeriodEditText.setText("0");
+                }
+                else {
+                    updatePeriodEditText.setEnabled(true);
+                    updatePeriodEditText.setText("30");
+                }
 
             }
         });
-//
-//
+
 
         Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
         final int dayShift = 0;
@@ -147,8 +120,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
 
         // create clockView object with the relevant preferences - size of widget, color to use, etc
-        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor, sleepStartTimeCached,
-                sleepEndTimeCached);
+        ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
         clockView.setCalendarAdapter(calendarAdapter);
 
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
@@ -162,8 +134,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
         views.setTextViewText(R.id.dateView, date);
         // end date view
-
-
         views.setImageViewBitmap(R.id.widgetClockView, bitmap);
 
     }
@@ -221,52 +191,10 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         editor.putStringSet(calendarIdsSettingName, selectedIds);
         editor.apply();
 
-//        storeSleepTime();
-
         synchronized (saveButtonLock) {
             saveButtonLock.notify();
             saveButtonLockNotified = true;
         }
-    }
-
-    // the next two functions calls to the function onTimepickerClicked in order to show the user
-    // a small clock where he can insert the hour and minute
-    public void onSleepStartTimeChanged(View view) {
-        onTimepickerClicked(view, sleepStartTimeTextView);
-    }
-
-    public void onSleepEndTimeChanged(View view) {
-        onTimepickerClicked(view, sleepEndTimeTextView);
-    }
-
-    // this function will run when the user click on the "change" button to change the sleep
-    // start time and the sleep end time.
-    // this function show the user a small clock where he need to choose the hour and the minute
-    // there is a timePicker view in the xml timepicker - a built-in view
-    public void onTimepickerClicked(View view, final TextView textView) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.timepicker, null);
-
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0 /*x*/, 0 /*y*/);
-
-        final TimePicker timePicker = popupView.findViewById(R.id.timePicker);
-        timePicker.setIs24HourView(true);
-        TimeInfo timeInfo = getSleepTimeInfo(textView);
-        timePicker.setHour(timeInfo.getHours());
-        timePicker.setMinute(timeInfo.getMinutes());
-
-        Button button = popupView.findViewById(R.id.saveButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSleepTimeInfo(textView, timePicker.getHour(), timePicker.getMinute());
-                popupWindow.dismiss();
-            }
-        });
     }
 
     void requestCalendarPermissionsIfNeeded() {
@@ -333,48 +261,5 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
     }
 
-    private String formatTimeValue(int value) {
-        String s = String.valueOf(value);
-        if (s.length() == 1) {
-            s = "0" + s;
-        }
-        return s;
-    }
 
-    private void setSleepTimeInfo(TextView textView, int hours, int minutes) {
-        String text = " " + formatTimeValue(hours) + ":" + formatTimeValue(minutes);
-        textView.setText(text);
-    }
-
-    private static TimeInfo getSleepTimeInfo(TextView textView) {
-        if (textView == null) {
-            Log.e(TAG, "Text view is not initialized");
-            return null;
-        }
-        String text = (String) textView.getText();
-        String[] parsed = text.split(":");
-        if (parsed.length != 2) {
-            Log.e(TAG, "Invalid time info: " + text);
-            return null;
-        }
-        return new TimeInfo(Integer.valueOf(parsed[0].trim()), Integer.valueOf(parsed[1].trim()));
-    }
-
-    private class AutoUpdateCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            updatePeriodEditText.setEnabled(isChecked);
-        }
-    }
-
-    private void storeSleepTime() {
-        TimeInfo sleepStartInfo = getSleepTimeInfo(sleepStartTimeTextView);
-        if (sleepStartInfo != null) {
-            sleepStartTimeCached = sleepStartInfo;
-        }
-        TimeInfo sleepEndInfo = getSleepTimeInfo(sleepEndTimeTextView);
-        if (sleepEndInfo != null) {
-            sleepEndTimeCached = sleepEndInfo;
-        }
-    }
 }
