@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -23,7 +23,7 @@ import static android.provider.CalendarContract.Events.DURATION;
 import static android.provider.CalendarContract.Events.ALL_DAY;
 import static android.provider.CalendarContract.Events.CALENDAR_ID;
 import static android.provider.CalendarContract.Events.DISPLAY_COLOR;
-import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static com.opensource.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
 

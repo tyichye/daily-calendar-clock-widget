@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.support.annotation.NonNull;
 

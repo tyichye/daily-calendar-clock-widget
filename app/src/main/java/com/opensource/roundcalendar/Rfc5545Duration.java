@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static com.opensource.roundcalendar.Logging.TAG;
 
 class Rfc5545Duration {
 

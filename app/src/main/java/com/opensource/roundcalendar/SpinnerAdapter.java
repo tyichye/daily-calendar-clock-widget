@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.opensource.roundcalendar.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;

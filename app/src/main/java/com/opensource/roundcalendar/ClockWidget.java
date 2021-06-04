@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.graphics.Color;
 import android.graphics.Point;
@@ -13,7 +13,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static com.opensource.roundcalendar.Logging.TAG;
 
 class ClockWidget {
 

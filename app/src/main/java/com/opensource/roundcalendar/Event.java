@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import lombok.Getter;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static com.opensource.roundcalendar.Logging.TAG;
 
 class Event {
 

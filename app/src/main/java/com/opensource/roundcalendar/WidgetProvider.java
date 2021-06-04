@@ -1,4 +1,4 @@
-package com.miltolstoy.roundcalendar;
+package com.opensource.roundcalendar;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -11,9 +11,11 @@ import android.graphics.Point;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.opensource.roundcalendar.R;
+
 import java.util.Calendar;
 
-import static com.miltolstoy.roundcalendar.Logging.TAG;
+import static com.opensource.roundcalendar.Logging.TAG;
 
 
 public class WidgetProvider extends AppWidgetProvider {

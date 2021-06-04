@@ -5,5 +5,5 @@
     android:initialLayout="@layout/widget"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:configure="com.miltolstoy.roundcalendar.WidgetConfigurationActivity">
+    android:configure="com.opensource.roundcalendar.WidgetConfigurationActivity">
 </appwidget-provider>
