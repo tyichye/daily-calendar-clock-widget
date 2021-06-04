@@ -216,12 +216,12 @@ public class ClockView extends AppCompatImageView
 
         Calendar calendar = Calendar.getInstance();
 
-//        if (event.isEnd(calendar.getTimeInMillis()) && !calendarAdapter.isCalendarShifted())
-//        {
-//            drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), Color.GRAY,
-//                    event.isFinishedInFirstDayHalf(), event.getTitle());
-//                    return;
-//        }
+        if (event.isEnd(calendar.getTimeInMillis()) && !calendarAdapter.isCalendarShifted())
+        {
+            drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), Color.GRAY,
+                    event.isFinishedInFirstDayHalf(), event.getTitle());
+                    return;
+        }
 
 
         drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),

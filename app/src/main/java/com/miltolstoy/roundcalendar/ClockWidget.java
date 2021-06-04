@@ -190,12 +190,6 @@ class ClockWidget {
         return calculateConcentricPoint(degree, radius - markersLength - padding);
     }
 
-//    List<Point> calculateEventCirclePoints(float startAngle, float sweepAngle) {
-//        List<Point> points = new ArrayList<>();
-//        points.add(calculateConcentricPoint(startAngle, radius));
-//        points.add(calculateConcentricPoint(startAngle + sweepAngle, radius));
-//        return points;
-//    }
 
     float getWidgetWidth() {
         return 2 * (radius + bigDigitSize + (float) digitRadiusPadding);
