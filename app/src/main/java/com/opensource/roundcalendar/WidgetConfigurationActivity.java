@@ -2,6 +2,7 @@ package com.opensource.roundcalendar;
 
 import android.Manifest;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ContentUris;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +30,7 @@ import android.widget.Toast;
 
 import com.opensource.roundcalendar.R;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -55,55 +59,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_configuration_layout);
 
         requestCalendarPermissionsIfNeeded();
-
-        final int appWidgetId = getAppWidgetId(getIntent());
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            sendResultAndExit(RESULT_CANCELED, appWidgetId);
-        }
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
-
-        // get calendars from googleCalendar and show them as list in the configuration screen
-        // to give the user options which calendars he want to sync
-        List<CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
-        Spinner dropdown = findViewById(R.id.calendars_dropdown);
-        calendars.add(0, new CalendarInfo()); // "ALL" item
-        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars);
-        dropdown.setAdapter(spinnerAdapter);
-
-        updatePeriodEditText = findViewById(R.id.update_period);
-
-        autoUpdateSwitch = findViewById(R.id.auto_update);
-
-        autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                if (!b){
-                    updatePeriodEditText.setEnabled(false);
-                    updatePeriodEditText.setText("0");
-                }
-                else {
-                    updatePeriodEditText.setEnabled(true);
-                    updatePeriodEditText.setText("30");
-                }
-
-            }
-        });
-
-
-        Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
-        final int dayShift = 0;
-        drawWidget(this, views, widgetSize, dayShift);
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-
-        // wait for the user to click on the save button -> when click the app will close and the
-        // widget will appear
-        new WaitForOptionsSaveThread(appWidgetId).start();
+        createWidget();
     }
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
@@ -177,6 +135,9 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             updatePeriod = Integer.parseInt(updatePeriodString);
         }
         Log.d(TAG, "Widget update period: " + updatePeriod);
+        final int appWidgetId = getAppWidgetId(getIntent());
+
+        WidgetProvider.setOnClickButtonsIntents(getApplicationContext(), appWidgetId);
         WidgetProvider.setUpdatePeriod(updatePeriod);
 
         // those lines update the preference of the widget according to user's input
@@ -279,5 +240,72 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CALENDAR_PERMISSION_CODE) {
+            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Calendar Permission Granted", Toast.LENGTH_SHORT).show();
+                createWidget();
+            } else {
+                Log.d(TAG, "READ_CALENDAR permission denied");
+                System.exit(0);
+            }
+        }
+    }
+
+
+
+    private void createWidget()
+    {
+        setContentView(R.layout.new_configuration_layout);
+        final int appWidgetId = getAppWidgetId(getIntent());
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            sendResultAndExit(RESULT_CANCELED, appWidgetId);
+        }
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+
+        RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
+
+        // get calendars from googleCalendar and show them as list in the configuration screen
+        // to give the user options which calendars he want to sync
+        List<CalendarInfo> calendars = CalendarAdapter.getCalendars(this);
+        Spinner dropdown = findViewById(R.id.calendars_dropdown);
+        calendars.add(0, new CalendarInfo()); // "ALL" item
+        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars);
+        dropdown.setAdapter(spinnerAdapter);
+
+        updatePeriodEditText = findViewById(R.id.update_period);
+
+        autoUpdateSwitch = findViewById(R.id.auto_update);
+
+        autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (!b){
+                    updatePeriodEditText.setEnabled(false);
+                    updatePeriodEditText.setText("0");
+                }
+                else {
+                    updatePeriodEditText.setEnabled(true);
+                    updatePeriodEditText.setText("30");
+                }
+
+            }
+        });
+
+
+        Point widgetSize = getWidgetSize(appWidgetManager, appWidgetId);
+        final int dayShift = 0;
+        drawWidget(this, views, widgetSize, dayShift);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+        // wait for the user to click on the save button -> when click the app will close and the
+        // widget will appear
+        new WaitForOptionsSaveThread(appWidgetId).start();
+
+    }
 
 }

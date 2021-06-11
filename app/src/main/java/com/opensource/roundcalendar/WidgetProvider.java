@@ -1,5 +1,6 @@
 package com.opensource.roundcalendar;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,9 +8,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.opensource.roundcalendar.R;
 
@@ -34,9 +39,13 @@ public class WidgetProvider extends AppWidgetProvider {
     private static int daysShift = 0;
 
     @Override
-    public void onEnabled(Context context) {
-        setupNextClockTick(context);
+    public void onEnabled(Context context)
+    {
+        if (context.checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            setupNextClockTick(context);
+        }
     }
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -117,14 +126,12 @@ public class WidgetProvider extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         Point widgetSize = WidgetConfigurationActivity.getWidgetSize(appWidgetManager, widgetId);
         WidgetConfigurationActivity.drawWidget(context, views, widgetSize, daysShift);
-
-
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
     // set the behavior of the buttons - NEXT DAT, PREVIOUS DAY, TODAY DAY
     // the buttons appears as <  T  >
-    private static void setOnClickButtonsIntents(Context context, int widgetId) {
+    public static void setOnClickButtonsIntents(Context context, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
