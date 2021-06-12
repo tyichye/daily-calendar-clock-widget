@@ -1,6 +1,6 @@
 # Daily Calendar Clock Widget
-An android widget designed for to visualize your google daily calendar in a round clock style visualization.
-At any given moment, one look is enough for you to know your daily status.
+An android widget designed for to visualize your daily Google Calendar events in a round, clock-style visualization.
+One look is all you need to know your daily status.
 
 
 <p align="center">
@@ -12,13 +12,13 @@ At any given moment, one look is enough for you to know your daily status.
 ## Project installation
 
 **1. Install Android Studio** <br/>
-Follow the instructions in https://developer.android.com/studio/install  <br/>
+Follow the instructions on https://developer.android.com/studio/install  <br/>
 
 **2. Clone the project** <br/>
-Open new folder and run ```git clone https://github.com/tyichye/daily-calendar-clock-widget.git```  <br/>
+Upon launching Android Studio, select `Project from version control` and provide the URL of this repo (or of your fork, for better GitHub integration)
 
 **3. Change Launch Options** <br/>
-Open the project in android studio, go to "Run -> Edit Configuratins -> Launch Options" and change launch value to "Nothing" <br/>
+Open the project in android studio, go to `Run` -> `Edit Configuratins` -> `Launch Options` and change `Launch` to select `Nothing` <br/>
 
 **4. (Optional): Install Android Emulator and Android Virtual Device** <br/>
 **Note:** This step is relevant to you if you want to run the widget on a virtual device instead on your real phone. <br/>
@@ -27,21 +27,22 @@ Open the project in android studio, go to "Run -> Edit Configuratins -> Launch O
 
 **5. Install widget on your device** <br/>
 Connect your device or use your AVD and click **Run** on android studio. <br/>
-**Note:** If you are using AVD you need to connect it to your google account in order to see events on the widget.
+**Note:** A Google account is required to show events on the widget.
 
 
-### Build
-GUI way: in android studio go to "Build -> Rebuild Project"  
-CLI way: ```./gradlew build```
+### Build 
+On Android Studio, click `Build -> Rebuild Project`.
+
+Alternatively, execute `./gradlew build` from terminal.
 
 
 <br/>
 
 
 ## Widget installation
-- Download the apk file to your phone from release_apk folder
-- After taping on the apk file you downloaded android will ask permissions to install unknown apps - allow it and than click Install.
-- Add the widget to your screen
+- Download the apk file to your phone from release_apk folder (Alternatively, `Run` via android studio and confirm installation on the device)
+- Confirm installing an application of "unknown source".
+- Add the widget to your screen (This is usually done by long-clicking an empty slot in the home screen)
 
 
 <br/>
