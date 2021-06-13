@@ -39,7 +39,7 @@ CLI way: ```./gradlew build```
 
 
 ## Widget installation
-- Download the apk file to your phone from release_apk folder
+- Download the apk file to your phone from [here](https://github.com/tyichye/daily-calendar-clock-widget/tree/main/release_apk)
 - After taping on the apk file you downloaded android will ask permissions to install unknown apps - allow it and than click Install.
 - Add the widget to your screen
 
