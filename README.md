@@ -12,7 +12,7 @@ At any given moment, one look is enough for you to know your daily status.
 ## Project installation
 
 **1. Install Android Studio** <br/>
-Follow the instructions in https://developer.android.com/studio/install  <br/>
+Follow the instructions in https://developer.android.com/studio/install (version 4.1 or above)  <br/>
 
 **2. Clone the project** <br/>
 Open new folder and run ```git clone https://github.com/tyichye/daily-calendar-clock-widget.git```  <br/>
