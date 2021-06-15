@@ -39,8 +39,9 @@ CLI way: ```./gradlew build```
 
 
 ## Widget installation
-- Download the apk file to your phone by [clicking here](https://github.com/tyichye/daily-calendar-clock-widget/raw/main/release_apk/round_calendar_v1.0.apk) or by scanning this QR code with your phone!<br/>
-![5d2d02a21da9de5f3d5029228449430d](https://user-images.githubusercontent.com/67260757/121817330-6ad71b00-cc89-11eb-922d-077b80767f9b.png)
+- Download the apk file to your phone by [clicking here](https://github.com/tyichye/daily-calendar-clock-widget/raw/main/release_apk/round_calendar_v1.1.apk) or by scanning this QR code with your phone!<br/>
+![qrcode_704868_bd22dd34279b0d51ec779597143a6665_](https://user-images.githubusercontent.com/81364138/122032279-25753380-cdd8-11eb-905a-af0b48019e5e.png)
+
 
 
 
