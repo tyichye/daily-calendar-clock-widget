@@ -8,11 +8,18 @@ At any given moment, one look is enough for you to know your daily status.
   <img src="docs/configuration_screenshot.jpeg" width="200">
 </p>
 
+## Table of Contents
 
+- [Project installation](#Pinstallation)
+- [Widget installation](#Winstallation)
+- [Analogues](#Analogues)
+- [Authors](#authors)
+
+<a name="Pinstallation"/>
 ## Project installation
 
 **1. Install Android Studio** <br/>
-Follow the instructions in https://developer.android.com/studio/install (version 4.1 or above)  <br/>
+Follow the instructions in https://developer.android.com/studio/install  <br/>
 
 **2. Clone the project** <br/>
 Open new folder and run ```git clone https://github.com/tyichye/daily-calendar-clock-widget.git```  <br/>
@@ -37,23 +44,25 @@ CLI way: ```./gradlew build```
 
 <br/>
 
-
+<a name="Winstallation"/>
 ## Widget installation
-- Download the apk file to your phone by [clicking here](https://github.com/tyichye/daily-calendar-clock-widget/raw/main/release_apk/round_calendar_v1.0.apk) or by scanning this QR code with your phone!<br/>
-![5d2d02a21da9de5f3d5029228449430d](https://user-images.githubusercontent.com/67260757/121817330-6ad71b00-cc89-11eb-922d-077b80767f9b.png)
-
-
-
-- After tapping on the apk file you downloaded android will ask permissions to install unknown apps - allow it and than click Install.
-- Add the widget to your home screen
+- Download the apk file to your phone from release_apk folder
+- After taping on the apk file you downloaded android will ask permissions to install unknown apps - allow it and than click Install.
+- Add the widget to your screen
 
 
 <br/>
 
-
+<a name="Analogues"/>
 ## Analogues
 * [Sectograph](https://play.google.com/store/apps/details?id=prox.lab.calclock) - 24-hours view is paid
 * [Daily Time Planner With Clock Widget](https://play.google.com/store/apps/details?id=com.sectograph.planner.time.clock.manager.reminder) - paid application
 * [Foraday](https://play.google.com/store/apps/details?id=com.compscieddy.foradayapp) - no connection to Google Calendar
 * [Slice Planner](https://play.google.com/store/apps/details?id=com.evopaper.sliceplanner&hl=ru) - no widget
 * [CloudCal Calendar Agenda Planner Organizer To Do](https://play.google.com/store/apps/details?id=net.cloudcal.cal) - non-informative widget
+
+<br/>
+
+<a name="authors"/>
+## Authors
+[miltolstoy](https://github.com/miltolstoy) [Tal Yichye](https://github.com/tyichye) [Liat Weissman](https://github.com/liatweissman) [Daniel Saroussy](https://github.com/DanielSaroussy)
