@@ -88,7 +88,6 @@ public class WidgetProvider extends AppWidgetProvider {
 
         int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         drawAndUpdate(context, widgetId);
-
         super.onReceive(context, intent);
     }
 
