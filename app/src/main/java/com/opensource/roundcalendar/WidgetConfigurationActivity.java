@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RemoteViews;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private static final String preferencesName = "RoundCalendarPrefs";
     private static final String eventColorSettingName = "useCalendarEventColor";
     private static final String calendarIdsSettingName = "calendarIds";
+    private static final String widgetBackgroundTransparency = "widgetBackgroundTransparency";
 
     private SpinnerAdapter spinnerAdapter;
 
@@ -66,11 +68,11 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
         // holds the preferences of the widget - which calendars to show, which colors to use
         SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
-
         Set<String> selectedCalendars = preferences.getStringSet(calendarIdsSettingName, null);
         CalendarAdapter calendarAdapter = new CalendarAdapter(context, selectedCalendars, dayShift);
-
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
+
+        changeWidgetBackground(views, preferences);
 
         // create clockView object with the relevant preferences - size of widget, color to use, etc
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
@@ -114,6 +116,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select at least one calendar to display", Toast.LENGTH_LONG).show();
             return;
         }
+
         Log.d(TAG, "Selected calendars:");
         for (String id : selectedIds) {
             Log.d(TAG, id);
@@ -133,8 +136,12 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
             }
             updatePeriod = Integer.parseInt(updatePeriodString);
         }
+
         Log.d(TAG, "Widget update period: " + updatePeriod);
         final int appWidgetId = getAppWidgetId(getIntent());
+
+        SeekBar selectWidgetBackground = findViewById(R.id.select_widget_background);
+        float opacity = (float)(selectWidgetBackground.getProgress())/10;
 
         WidgetProvider.setOnClickButtonsIntents(getApplicationContext(), appWidgetId);
         WidgetProvider.setUpdatePeriod(updatePeriod);
@@ -145,12 +152,21 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(eventColorSettingName, useCalendarEventColor);
         editor.putStringSet(calendarIdsSettingName, selectedIds);
+        editor.putFloat(widgetBackgroundTransparency, opacity);
         editor.apply();
 
         synchronized (saveButtonLock) {
             saveButtonLock.notify();
             saveButtonLockNotified = true;
         }
+    }
+
+    private static void changeWidgetBackground(RemoteViews views, SharedPreferences preferences)
+    {
+        float opacity = preferences.getFloat(widgetBackgroundTransparency, 0);
+        int backgroundColor = 0x000000;
+        views.setInt(R.id.widget_background, "setBackgroundColor",
+                (int)(opacity * 0xFF) << 24 | backgroundColor);
     }
 
     void requestCalendarPermissionsIfNeeded() {
@@ -189,6 +205,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         resultValue.setAction(action);
+        Log.d("activity", "call on update");
         setResult(result, resultValue);
         finish();
     }
@@ -209,7 +226,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
                         saveButtonLock.wait();
                     }
                 }
-                sendResultAndExit(RESULT_OK, AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED, appWidgetId);
+                sendResultAndExit(RESULT_OK, AppWidgetManager.ACTION_APPWIDGET_UPDATE, appWidgetId);
             } catch (InterruptedException e) {
                 Log.e(TAG, e.getMessage());
                 sendResultAndExit(RESULT_CANCELED, appWidgetId);
@@ -264,7 +281,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
 
         // get calendars from googleCalendar and show them as list in the configuration screen

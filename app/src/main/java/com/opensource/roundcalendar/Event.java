@@ -54,13 +54,6 @@ class Event {
         return formatToTime(finish);
     }
 
-    boolean isEnd(long currentTime)
-    {
-        return formatToTime(currentTime).compareTo(getFinishTime()) > 0 && getFinishDate() == getStartDate();
-    }
-
-
-
     // relevant to know how to draw the arc of the event - up-down or down-up
     boolean isFinishedInFirstDayHalf() {
         Calendar calendar = Calendar.getInstance();

@@ -17,6 +17,7 @@
 
     <string name="auto_update_enabled">Enable widget auto-update</string>
     <string name="update_period_label">Widget update period (minutes): </string>
+    <string name="widget_background_label">Widget background opacity: </string>
     <string name="update_period_default">30</string>
 
     <string name="save_button">Save</string>
