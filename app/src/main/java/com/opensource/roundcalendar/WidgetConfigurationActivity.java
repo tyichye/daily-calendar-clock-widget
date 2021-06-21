@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.opensource.roundcalendar.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -67,17 +68,21 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
         // holds the preferences of the widget - which calendars to show, which colors to use
+        Log.d("DRAW WIDGET", "in draw widget");
         SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         Set<String> selectedCalendars = preferences.getStringSet(calendarIdsSettingName, null);
-        CalendarAdapter calendarAdapter = new CalendarAdapter(context, selectedCalendars, dayShift);
+        CalendarAdapter calendarAdapter = CalendarAdapter.getInstance();
+        ArrayList<String> selectedCalendarsAsArray  =(selectedCalendars != null) ? new ArrayList<>(selectedCalendars) : null;
+        calendarAdapter.setCalendarIds(selectedCalendarsAsArray);
+        calendarAdapter.setContext(context);
+        calendarAdapter.setDaysShift(dayShift);
         boolean useCalendarEventColor = preferences.getBoolean(eventColorSettingName, Boolean.TRUE);
 
         changeWidgetBackground(views, preferences);
 
         // create clockView object with the relevant preferences - size of widget, color to use, etc
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
-        clockView.setCalendarAdapter(calendarAdapter);
-
+        clockView.setCalendarAdapter();
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
         clockView.draw(new Canvas(bitmap));
 
