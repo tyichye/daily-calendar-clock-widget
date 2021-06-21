@@ -13,6 +13,7 @@ import android.support.v7.widget.AppCompatImageView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -180,11 +181,17 @@ public class ClockView extends AppCompatImageView
             return;
         }
 
+        HashSet<String> allDayTitles = new HashSet<>();
+        for(Event event : allDayEvents){
+            allDayTitles.add(event.getTitle());
+        }
+
         // build the string that represent the all day events and show it as text under the clock
         StringBuilder builder = new StringBuilder();
+
         builder.append("All-day: ");
-        for (Event event : allDayEvents) {
-            builder.append(event.getTitle());
+        for (String title : allDayTitles) {
+            builder.append(title.trim());
             builder.append(", ");
         }
         builder.setLength(builder.length() - 2); // cut out last comma
