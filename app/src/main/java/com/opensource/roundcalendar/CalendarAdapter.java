@@ -27,21 +27,27 @@ import static com.opensource.roundcalendar.Logging.TAG;
 
 class CalendarAdapter {
 
+    private static CalendarAdapter instance = null;
+
     private Context context;
     private List<String> calendarIds;
     private int daysShift;
 
-    CalendarAdapter(Context context) {
-        this(context, null, 0);
+
+    public static CalendarAdapter getInstance() {
+        if (instance == null) instance = new CalendarAdapter();
+        return instance;
     }
 
-    CalendarAdapter(Context context, Set<String> calendarIds) {
-        this(context, calendarIds, 0);
+    public void setCalendarIds(List<String> calendarIds) {
+        this.calendarIds = calendarIds;
     }
 
-    CalendarAdapter(Context context, Set<String> calendarIds, int daysShift) {
+    public void setContext(Context context) {
         this.context = context;
-        this.calendarIds = (calendarIds != null) ? new ArrayList<>(calendarIds) : null;
+    }
+
+    public void setDaysShift(int daysShift) {
         this.daysShift = daysShift;
     }
 

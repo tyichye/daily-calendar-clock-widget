@@ -1,5 +1,6 @@
 package com.opensource.roundcalendar;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -103,13 +104,14 @@ public class ClockView extends AppCompatImageView
                 drawHand(canvas);
             }
         }
+
         drawMarkersAndDigits(canvas);
         postInvalidateDelayed(refreshTimeoutMillis);
     }
 
-    void setCalendarAdapter(CalendarAdapter adapter)
+    void setCalendarAdapter()
     {
-        calendarAdapter = adapter;
+        calendarAdapter = CalendarAdapter.getInstance();
         invalidate();
     }
 
