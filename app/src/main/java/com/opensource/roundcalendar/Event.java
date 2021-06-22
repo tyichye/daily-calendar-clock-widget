@@ -107,4 +107,8 @@ class Event {
         }
     }
 
+    boolean isEnd(long currentTime)
+    {
+        return formatToTime(currentTime).compareTo(getFinishTime()) > 0 && getFinishDate() == getStartDate();
+    }
 }
