@@ -17,6 +17,7 @@
         android:layout_height="fill_parent" />
 
     <LinearLayout
+        android:id="@+id/widget_center_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -88,6 +89,27 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        >
+        <TextView
+            android:id="@+id/all_day_event_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            />
+        <TextView
+            android:id="@+id/time_to_next_event_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#F60303"
+            />
+    </LinearLayout>
 
 
 

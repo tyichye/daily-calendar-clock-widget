@@ -122,6 +122,22 @@ class CalendarAdapter {
         return events;
     }
 
+    ////////
+    long getTimeToNextEvent(){
+        long currentTime = System.currentTimeMillis();
+        List<Event> allEvents = getTodayEvents();
+        long minDistance = Long.MAX_VALUE;
+        Event minEvent = null;
+        for (Event event: allEvents){
+            long distance = event.getStartTimeLong() - currentTime;
+            if (distance < minDistance && distance >= 0){
+                minDistance = distance;
+                minEvent = event;
+            }
+        }
+        return minEvent != null ? minEvent.getStartTimeLong() : 0 ;
+    }
+
     Calendar getDayStartCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(

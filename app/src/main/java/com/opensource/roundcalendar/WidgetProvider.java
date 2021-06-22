@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.widget.RemoteViews;
+import android.widget.TextClock;
 import android.widget.Toast;
 
 import com.opensource.roundcalendar.R;
@@ -24,7 +27,7 @@ import java.util.Calendar;
 import static com.opensource.roundcalendar.Logging.TAG;
 
 
-public class WidgetProvider extends AppWidgetProvider {
+public class WidgetProvider extends AppWidgetProvider{
 
     private static final String previousDayAction = "previousDayAction";
     private static final String nextDayAction = "nextDayAction";
@@ -38,6 +41,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final Object updatePeriodLock = new Object();
 
     private static int daysShift = 0;
+
 
     @Override
     public void onEnabled(Context context)
@@ -157,4 +161,5 @@ public class WidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, tickIntent, 0);
         alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
     }
+
 }
