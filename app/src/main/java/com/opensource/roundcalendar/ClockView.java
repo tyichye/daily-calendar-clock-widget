@@ -221,7 +221,17 @@ public class ClockView extends AppCompatImageView
         return title;
     }
 
+
     private void drawEvent(Canvas canvas, RectF widgetCircle, Event event) {
+        Calendar calendar = Calendar.getInstance();
+
+        if (event.isEnd(calendar.getTimeInMillis()) && !calendarAdapter.isCalendarShifted())
+        {
+            drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), Color.GRAY,
+                    event.isFinishedInFirstDayHalf(), event.getTitle());
+            return;
+        }
+
         drawEventGeneralized(canvas, widgetCircle, clockWidget.getEventDegrees(event), event.getColor(),
                 event.isFinishedInFirstDayHalf(), event.getTitle());
     }
@@ -347,5 +357,8 @@ public class ClockView extends AppCompatImageView
             }
         }
     }
+
+
+
 
 }
