@@ -10,7 +10,10 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.AppCompatImageView;
+import android.widget.RemoteViews;
+import android.widget.TextView;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -47,8 +50,6 @@ public class ClockView extends AppCompatImageView
     private Map<String, Paint> initPaints()
     {
         Map <String, Paint> paints = new HashMap<>();
-//        RectF ringRect = clockWidget.getWidgetCircleObject();
-
         Paint ringPaint = new Paint();
         ringPaint.setColor(Color.BLACK);
         ringPaint.setStrokeWidth(clockWidget.getPaddingRadius()*2);
@@ -93,15 +94,17 @@ public class ClockView extends AppCompatImageView
 
     }
 
-
-    @Override
-    protected void onDraw(Canvas canvas) {
+    void drawAll(Canvas canvas, RemoteViews remoteViews){
         canvas.drawColor(backgroundColor);
         drawClock(canvas);
         if (calendarAdapter != null) {
-            drawEvents(canvas);
+            drawEvents(canvas, remoteViews);
             if (!calendarAdapter.isCalendarShifted()) {
                 drawHand(canvas);
+                drawTimeToNextEvent(remoteViews);
+            }
+            else{
+                remoteViews.setTextViewText(R.id.time_to_next_event_textView, "");
             }
         }
 
@@ -158,8 +161,20 @@ public class ClockView extends AppCompatImageView
         canvas.drawLine(hand.get(0).x, hand.get(0).y, hand.get(1).x, hand.get(1).y, paints.get("hand"));
     }
 
+    private void drawTimeToNextEvent(RemoteViews views) {
+        long timeToNextEvent = calendarAdapter.getTimeToNextEvent();
+        if (timeToNextEvent != 0){
+            long timeInMinutes = (timeToNextEvent - System.currentTimeMillis())/60_000;
+            String text = "Time to next event: " + String.valueOf(timeInMinutes) + " minutes";
+            views.setTextViewText(R.id.time_to_next_event_textView, text);
+        }
+        else {
+            views.setTextViewText(R.id.time_to_next_event_textView, "");
+        }
+    }
 
-    private void drawEvents(Canvas canvas) {
+
+    private void drawEvents(Canvas canvas, RemoteViews remoteViews) {
         RectF widgetCircle = clockWidget.getWidgetCircleObject();
 
         List<Event> todayEvents = calendarAdapter.getTodayEvents();
@@ -180,6 +195,7 @@ public class ClockView extends AppCompatImageView
         }
 
         if (allDayEvents.isEmpty()) {
+            remoteViews.setTextViewText(R.id.all_day_event_textView, "");
             return;
         }
 
@@ -197,9 +213,7 @@ public class ClockView extends AppCompatImageView
             builder.append(", ");
         }
         builder.setLength(builder.length() - 2); // cut out last comma
-        Point allDayEventsPoint = clockWidget.getAllDayEventListCoordinates();
-        canvas.drawText(cutAllDayEventsTitlesIfNeeded(builder.toString()), allDayEventsPoint.x, allDayEventsPoint.y,
-                paints.get("title"));
+        remoteViews.setTextViewText(R.id.all_day_event_textView, cutAllDayEventsTitlesIfNeeded(builder.toString()));
     }
 
     private String cutEventTitleIfNeeded(String title) {

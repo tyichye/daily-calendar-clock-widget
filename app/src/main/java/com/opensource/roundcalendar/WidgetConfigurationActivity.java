@@ -84,7 +84,7 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         ClockView clockView = new ClockView(context, widgetSize, useCalendarEventColor);
         clockView.setCalendarAdapter();
         Bitmap bitmap = Bitmap.createBitmap(widgetSize.x, widgetSize.y, Bitmap.Config.ARGB_8888);
-        clockView.draw(new Canvas(bitmap));
+        clockView.drawAll(new Canvas(bitmap), views);
 
 
         // date view

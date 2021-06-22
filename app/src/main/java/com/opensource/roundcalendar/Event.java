@@ -50,6 +50,8 @@ class Event {
         return formatToTime(start);
     }
 
+    long getStartTimeLong(){ return start;}
+
     String getFinishTime() {
         return formatToTime(finish);
     }
