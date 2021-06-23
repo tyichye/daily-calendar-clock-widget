@@ -2,10 +2,10 @@ package com.opensource.roundcalendar;
 
 import android.Manifest;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,10 +16,12 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -29,10 +31,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.opensource.roundcalendar.R;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +45,8 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private final Object saveButtonLock = new Object();
     private boolean saveButtonLockNotified = false;
 
-    static final int CALENDAR_PERMISSION_CODE = 10;
+    static final int CALENDAR_PERMISSION_CODE = 0;
+//    private View mLayout;
 
     private static final String preferencesName = "RoundCalendarPrefs";
     private static final String eventColorSettingName = "useCalendarEventColor";
@@ -62,8 +62,20 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestCalendarPermissionsIfNeeded();
-        createWidget();
+        setContentView(R.layout.main_activity);
+        Button buttonRequest = findViewById(R.id.button);
+        buttonRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(WidgetConfigurationActivity.this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(WidgetConfigurationActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+                    createWidget();
+                }
+                else{
+                    requestCalendarPermissionsIfNeeded();
+                }
+            }
+        });
     }
 
     public static void drawWidget(Context context, RemoteViews views, Point widgetSize, int dayShift) {
@@ -175,22 +187,22 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     }
 
     void requestCalendarPermissionsIfNeeded() {
-        Log.d(TAG, "Checking READ_CALENDAR permission");
-        if (checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED)
-        {
-            Log.d(TAG, "READ_CALENDAR permission granted");
-            return;
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR)){
+            new AlertDialog.Builder(this).setTitle("Permission needed").setMessage("This permission is needed for the widget to work").setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ActivityCompat.requestPermissions(WidgetConfigurationActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                }
+            }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
         }
-
-        Log.d(TAG, "Requesting READ_CALENDAR permission");
-        requestPermissions(new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
-        Log.e(TAG, "Calendar permission not granted");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage());
+        else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
         }
-        System.exit(0);
     }
 
     private int getAppWidgetId(Intent intent) {
@@ -263,14 +275,14 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CALENDAR_PERMISSION_CODE) {
-            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Calendar Permission Granted", Toast.LENGTH_SHORT).show();
+        if (requestCode == CALENDAR_PERMISSION_CODE){
+            // Request for permission
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 createWidget();
-            } else {
-                Log.d(TAG, "READ_CALENDAR permission denied");
-                System.exit(0);
+            }
+            else{
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -325,7 +337,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
         // wait for the user to click on the save button -> when click the app will close and the
         // widget will appear
         new WaitForOptionsSaveThread(appWidgetId).start();
-
     }
 
 }
