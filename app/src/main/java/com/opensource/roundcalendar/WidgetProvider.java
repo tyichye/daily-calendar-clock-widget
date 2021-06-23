@@ -79,25 +79,27 @@ public class WidgetProvider extends AppWidgetProvider{
                 return;
             }
 
-            if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)
-                    && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED) && !action.equals(nextWeekAction) && !action.equals(previousWeekAction)) {
-                Log.d(TAG, "Unhandled action: " + action);
-                super.onReceive(context, intent);
-                return;
-            }
-
-            if (action.equals(previousDayAction)) {
-                daysShift -= 1;
-            } else if (action.equals(nextDayAction)) {
-                daysShift += 1;
-            }
-            else if (action.equals(previousWeekAction)) {
-                daysShift -= 7;
-            } else if (action.equals(nextWeekAction)) {
-                daysShift += 7;
-            }
-            else {
-                daysShift = 0;
+            switch (action) {
+                case previousDayAction:
+                    daysShift -= 1;
+                    break;
+                case nextDayAction:
+                    daysShift += 1;
+                    break;
+                case previousWeekAction:
+                    daysShift -= 7;
+                    break;
+                case nextWeekAction:
+                    daysShift += 7;
+                    break;
+                case todayAction:
+                case AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED:
+                    daysShift = 0;
+                    break;
+                default:
+                    Log.d(TAG, "Unhandled action: " + action);
+                    super.onReceive(context, intent);
+                    return;
             }
 
             int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
