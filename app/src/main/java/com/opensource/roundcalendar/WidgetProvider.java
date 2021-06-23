@@ -31,6 +31,8 @@ public class WidgetProvider extends AppWidgetProvider{
 
     private static final String previousDayAction = "previousDayAction";
     private static final String nextDayAction = "nextDayAction";
+    private static final String previousWeekAction = "previousWeekAction";
+    private static final String nextWeekAction = "nextWeekAction";
     private static final String todayAction = "todayAction";
     private static final String tickAction = "com.miltolstoy.roundcalendar.clockTickAction";
     private static final String openCalendarAction = "openCalendarAction";
@@ -78,7 +80,7 @@ public class WidgetProvider extends AppWidgetProvider{
             }
 
             if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)
-                    && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
+                    && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED) && !action.equals(nextWeekAction) && !action.equals(previousWeekAction)) {
                 Log.d(TAG, "Unhandled action: " + action);
                 super.onReceive(context, intent);
                 return;
@@ -88,7 +90,13 @@ public class WidgetProvider extends AppWidgetProvider{
                 daysShift -= 1;
             } else if (action.equals(nextDayAction)) {
                 daysShift += 1;
-            } else {
+            }
+            else if (action.equals(previousWeekAction)) {
+                daysShift -= 7;
+            } else if (action.equals(nextWeekAction)) {
+                daysShift += 7;
+            }
+            else {
                 daysShift = 0;
             }
 
@@ -137,13 +145,14 @@ public class WidgetProvider extends AppWidgetProvider{
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
-    // set the behavior of the buttons - NEXT DAT, PREVIOUS DAY, TODAY DAY
-    // the buttons appears as <  T  >
+    // set the behavior of the buttons - NEXT DAT, PREVIOUS DAY, TODAY DAY, NEXT WEEK PREVIOUS WEEK
     public static void setOnClickButtonsIntents(Context context, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         setOnClickIntent(context, views, widgetId, R.id.previous_button, previousDayAction);
         setOnClickIntent(context, views, widgetId, R.id.next_button, nextDayAction);
         setOnClickIntent(context, views, widgetId, R.id.today_button, todayAction);
+        setOnClickIntent(context, views, widgetId, R.id.next_week_button, nextWeekAction);
+        setOnClickIntent(context, views, widgetId, R.id.previous_week_button, previousWeekAction);
         setOnClickIntent(context, views, widgetId, R.id.dateView, openCalendarAction);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(widgetId, views);

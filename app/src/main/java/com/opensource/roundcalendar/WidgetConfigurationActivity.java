@@ -46,7 +46,6 @@ public class WidgetConfigurationActivity extends AppCompatActivity {
     private boolean saveButtonLockNotified = false;
 
     static final int CALENDAR_PERMISSION_CODE = 0;
-//    private View mLayout;
 
     private static final String preferencesName = "RoundCalendarPrefs";
     private static final String eventColorSettingName = "useCalendarEventColor";
