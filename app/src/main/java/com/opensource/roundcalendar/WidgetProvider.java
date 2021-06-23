@@ -54,46 +54,49 @@ public class WidgetProvider extends AppWidgetProvider{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (action == null) {
-            Log.d(TAG, "Empty action");
-            return;
-        }
+        if (context.checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED){
+            String action = intent.getAction();
+            if (action == null) {
+                Log.d(TAG, "Empty action");
+                return;
+            }
 
-        if (action.equals(openCalendarAction)){
-            WidgetConfigurationActivity.onClockClicked(context, daysShift);
-            return;
-        }
+            if (action.equals(openCalendarAction)){
+                WidgetConfigurationActivity.onClockClicked(context, daysShift);
+                return;
+            }
 
-        if (action.equals(tickAction)) {
-            setupNextClockTick(context);
-            Intent updateIntent = new Intent(context, WidgetProvider.class);
-            updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
-            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-            context.sendBroadcast(updateIntent);
+            if (action.equals(tickAction)) {
+                setupNextClockTick(context);
+                Intent updateIntent = new Intent(context, WidgetProvider.class);
+                updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+                updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                context.sendBroadcast(updateIntent);
+                super.onReceive(context, intent);
+                return;
+            }
+
+            if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)
+                    && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
+                Log.d(TAG, "Unhandled action: " + action);
+                super.onReceive(context, intent);
+                return;
+            }
+
+            if (action.equals(previousDayAction)) {
+                daysShift -= 1;
+            } else if (action.equals(nextDayAction)) {
+                daysShift += 1;
+            } else {
+                daysShift = 0;
+            }
+
+            int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            drawAndUpdate(context, widgetId);
             super.onReceive(context, intent);
-            return;
         }
 
-        if (!action.equals(previousDayAction) && !action.equals(nextDayAction) && !action.equals(todayAction)
-                && !action.equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
-            Log.d(TAG, "Unhandled action: " + action);
-            super.onReceive(context, intent);
-            return;
-        }
-
-        if (action.equals(previousDayAction)) {
-            daysShift -= 1;
-        } else if (action.equals(nextDayAction)) {
-            daysShift += 1;
-        } else {
-            daysShift = 0;
-        }
-
-        int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-        drawAndUpdate(context, widgetId);
-        super.onReceive(context, intent);
     }
 
     @Override
