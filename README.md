@@ -17,16 +17,26 @@ Follow the instructions in https://developer.android.com/studio/install (version
 **2. Clone the project** <br/>
 Open new folder and run ```git clone https://github.com/tyichye/daily-calendar-clock-widget.git```  <br/>
 
-**3. Change Launch Options** <br/>
-Open the project in android studio, go to "Run -> Edit Configuratins -> Launch Options" and change launch value to "Nothing" <br/>
-
-**4. (Optional): Install Android Emulator and Android Virtual Device** <br/>
+**3. (Optional): Install Android Emulator and Android Virtual Device** <br/>
 **Note:** This step is relevant to you if you want to run the widget on a virtual device instead on your real phone. <br/>
-**4.1 Install Android Emulator** - follow the instructions in https://developer.android.com/studio/run/emulator  <br/>
-**4.2 Install AVD** - follow the instructions in https://developer.android.com/studio/run/managing-avds <br/>
+**3.1 Install Android Emulator** - follow the instructions in https://developer.android.com/studio/run/emulator  <br/>
+**3.2 Install AVD** - follow the instructions in https://developer.android.com/studio/run/managing-avds <br/>
+
+**4. Update project Configurations** <br/>
+Open the project in android studio:<br/>
+**4.1 Change Launch Options** - Go to "Run -> Edit Configuratins -> Launch Options" and change launch value to "Nothing" <br/>
+**4.2 Configure SDK Tools** - Go to "File -> Settings -> Android SDK -> SDK Tools" and make sure the following names are checked:
+* Android SDK Command-line Tools
+* Google Play Licensing Library
+
 
 **5. Install widget on your device** <br/>
 Connect your device or use your AVD and click **Run** on android studio. <br/>
+To add the widget:
+1. On a Home screen, touch and hold an empty space.
+2. Tap the Widgets icon.
+3. Touch and hold the RoundCalender widget and place it on the screen.
+
 **Note:** If you are using AVD you need to connect it to your google account in order to see events on the widget.
 
 
