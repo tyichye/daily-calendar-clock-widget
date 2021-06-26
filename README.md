@@ -1,4 +1,8 @@
 # Daily Calendar Clock Widget
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+<sup> Authors: Daniel Saroussy, Tal Yichye, Liat Weissman </sup>
+
 An android widget designed for to visualize your google daily calendar in a round clock style visualization.
 At any given moment, one look is enough for you to know your daily status.
 
