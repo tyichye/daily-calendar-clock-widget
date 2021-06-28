@@ -225,14 +225,15 @@ public class ClockView extends AppCompatImageView
     }
 
     private String normalizeEventTitle(String title, float maxWidth) {
+        String newTitle = title;
         float textWidth = paints.get("title").measureText(title);
         if (textWidth > maxWidth) {
             float maxSymbols = (maxWidth * title.length()) / textWidth;
             maxSymbols -= 3; // "..." + one padding char
-            title = title.substring(0, Math.round(maxSymbols));
-            title += "..";
+            newTitle = title.substring(0, Math.round(maxSymbols));
+            newTitle += "..";
         }
-        return title;
+        return newTitle;
     }
 
 
@@ -293,19 +294,24 @@ public class ClockView extends AppCompatImageView
         */
         double titleTextAngle = Math.toDegrees(Math.asin(Math.toRadians(calculateTextHeight(titleNormalized) /
                 (2 * clockWidget.getRadius())))) * (double) 360 / Math.PI;
-        titleTextAngle /= 2; // half of text angle is needed to center it
+        // half of text angle is needed to center it
+        titleTextAngle /= 2;
         float titleAngle = degrees.getStart() + degrees.getSweep() / 2 + 90;
         final float rotateAngle;
         final int padding;
         if (isFinishedFirstDayHalf)
         {
-            titleAngle += (float) titleTextAngle; // move forward on half of text angle
+            // move forward on half of text angle
+            titleAngle += (float) titleTextAngle; 
             rotateAngle = titleAngle - 90;
-            padding = calculateTextWidth(titleNormalized); // title text: center->radius // need to change according to stroke width
+            // title text: center->radius // need to change according to stroke width
+            padding = calculateTextWidth(titleNormalized); 
         } else {
-            titleAngle -= (float) titleTextAngle; // move backward on half of text angle
+            // move backward on half of text angle
+            titleAngle -= (float) titleTextAngle; 
             rotateAngle = titleAngle - 270;
-            padding = 0; // title text: radius->center
+            // title text: radius->center
+            padding = 0; 
         }
 
         Point eventTitlePoint = clockWidget.calculateEventTitlePoint(titleAngle, padding);
