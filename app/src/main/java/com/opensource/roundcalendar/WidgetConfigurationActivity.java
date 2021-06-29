@@ -41,6 +41,11 @@ import static com.opensource.roundcalendar.Logging.TAG;
 import static java.util.Calendar.YEAR;
 
 public class WidgetConfigurationActivity extends AppCompatActivity {
+    /**
+    * Request access to google calander info.
+    * View configuration screen to user and receive user inputs.
+    * Create the widget after configuration.
+    */
 
     private final Object saveButtonLock = new Object();
     private boolean saveButtonLockNotified = false;
