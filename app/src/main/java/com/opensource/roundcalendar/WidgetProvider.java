@@ -28,6 +28,10 @@ import static com.opensource.roundcalendar.Logging.TAG;
 
 
 public class WidgetProvider extends AppWidgetProvider{
+    /**
+    * Class that receive broadcasts from the widget app and determines the buttons behavor when tapped.
+    * Allows for determined periodic updates that can be set on the widget configuration menu.
+    *//
 
     private static final String previousDayAction = "previousDayAction";
     private static final String nextDayAction = "nextDayAction";
